@@ -1256,6 +1256,7 @@
     <Content Include="Scripts\kendo\2014.1.318\jquery.min.map" />
     <None Include="Scripts\_references.js" />
     <Content Include="Themes\DefaultClean\Content\images\free-shipping.png" />
+    <Content Include="Themes\DefaultClean\Content\images\logo.gif" />
     <Content Include="Themes\DefaultClean\Content\images\mobile-menu-collapse.png" />
     <Content Include="Themes\DefaultClean\Content\images\mobile-menu-expand.png" />
     <Content Include="Themes\DefaultClean\Content\images\top-menu-background.png" />
@@ -1657,7 +1658,6 @@
     <Content Include="Themes\DefaultClean\Content\images\ico-move-topic.gif" />
     <Content Include="Themes\DefaultClean\Content\images\ico-pm.png" />
     <Content Include="Themes\DefaultClean\Content\images\arrow-up.png" />
-    <Content Include="Themes\DefaultClean\Content\images\logo.gif" />
     <Content Include="Themes\DefaultClean\Content\images\progress-step-active.gif" />
     <Content Include="Themes\DefaultClean\Content\images\progress-step-inactive.gif" />
     <Content Include="Themes\DefaultClean\Content\styles.css" />
