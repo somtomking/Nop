@@ -1,0 +1,59 @@
+﻿@model IList<ProductOverviewModel>
+
+@using Nop.Web.Models.Catalog;
+@if (Model.Count > 0)
+{
+    <div class="also-purchased-products-grid product-grid">
+        <div class="title mid-content-title">
+            <strong>@T("Products.AlsoPurchased")</strong>
+        </div>
+        @*<div class="product-list">
+            @foreach (var item in Model)
+            {
+                <div class="row">
+                            
+                        
+                    <div class="col-md-12">
+                        <div class="offer offer-default">
+                            @Html.Partial("_ProductBox", item)
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>*@
+
+
+        <div class="product-grid home-page-product-grid related-products">
+            @{
+                var pg_i = 0;
+            }
+            @foreach (var item in Model)
+            {
+                if(pg_i%3==0)
+                {
+                    @:<div class="row">
+                }
+                        
+                <div class="col-md-4">
+                    <div class="offer offer-default silde-show-offer pull-text-center" id="rating_center">
+                        @Html.Partial("_ProductBox", item)
+                    </div>
+                </div>
+                if(pg_i%3==2)
+                {
+                    @:</div>
+                }
+
+                pg_i++;
+            }
+            @if(pg_i%3!=0)
+            {
+                @:</div>
+            }
+
+        </div>
+
+
+
+    </div>
+}
