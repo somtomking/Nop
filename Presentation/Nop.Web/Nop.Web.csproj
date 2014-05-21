@@ -406,7 +406,8 @@
     <Content Include="App_Data\Localization\Installation\installation.ur.xml" />
     <Content Include="App_Data\Localization\Installation\installation.vi.xml" />
     <Content Include="App_Data\Localization\Installation\installation.zhs.xml" />
-    <None Include="App_Data\Settings.txt.bak" />
+    <Content Include="App_Data\Settings.bak2.txt" />
+    <Content Include="App_Data\Settings.txt" />
     <Content Include="App_Data\SqlServer.StoredProcedures.sql" />
     <Content Include="App_Data\Localization\defaultResources.nopres.xml">
       <SubType>Designer</SubType>
