@@ -1,0 +1,19 @@
+﻿@model CheckoutShippingMethodModel
+@using Nop.Web.Models.Checkout;
+@{
+    
+}
+
+@if (Model.ShippingMethods.Any(n => n.Selected))
+{
+    var shippingMethod = Model.ShippingMethods.FirstOrDefault(n => n.Selected);
+    @Html.Widget("op_checkout_shipping_method_top")
+    @*<div class="col-md-1">@T("Checkout.ShippingMethod.Also")</div>
+    <div class="col-md-5">
+        <button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span>@T("Checkout.ShippingMethod.CustomDeliverTime")</button>
+        @T("Checkout.ShippingMethod.CustomDeliverTime.Hints")
+    </div>
+    <div class="col-md-6">@T("Checkout.ShippingMethod.Prompt")</div>*@
+    @Html.Hidden("shippingoption", shippingMethod.Name + "___" + shippingMethod.ShippingRateComputationMethodSystemName)
+    @Html.Widget("op_checkout_shipping_method_bottom")
+}

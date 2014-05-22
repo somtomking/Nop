@@ -1,0 +1,29 @@
+﻿<div class="fixedTopShow"></div>
+<div class="fixedTop">
+    <div class="topBar">
+        <div class="container">
+            <div class="fixedLogo"><a href="@Url.RouteUrl("HomePage")"></a></div>
+            <ul class="topLink">
+                @Html.Action("HeaderLinks", "Common")
+                @Html.Widget("header_links_after")
+            </ul>
+        </div>
+    </div>
+    <div class="fixedNav">
+        <div class="container">
+            <div class="dropdown" id="topFixedCategory">
+                <a href="###" class="classCloose">@T("AllCategories")<b class="caret"></b></a>
+                <div class="dropdown-menu" style="display: none" id="fixed-flyout-categories">
+                    @Html.Action("FlyoutCategories", "Catalog")
+                </div>
+            </div>
+            <div class="fixedSearchBox">
+                <div class="fixedSearchText">
+                    <input id="fixed-search-text" type="text" maxlength="60" onblur="if(this.value=='') {this.value = '站内搜索';}" onfocus="if(this.value=='站内搜索')this.value=''" value="站内搜索" name="q" autocomplete="off"></input>
+                </div>
+                <input id="fixed-search-button" name="" type="button" class="fixedSearchBtn">
+            </div>
+        </div>
+    </div>
+</div>
+@{Html.AddScriptParts("~/Themes/60GO2/Content/js/public.fixedhead.js");}

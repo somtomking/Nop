@@ -1,0 +1,41 @@
+﻿@model ShoppingCartModel
+@using Nop.Web.Models.Checkout
+@using Nop.Web.Models.ShoppingCart;
+@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_sale.css");
+    Html.AppendScriptParts("~/Themes/60GO2/Content/js/jquery.colorbox.js");
+    Html.AppendScriptParts("~/Themes/60GO2/Content/js/jquery.numeric.js");
+
+    //title
+    Html.AddTitleParts(T("PageTitle.ShoppingCart").Text);
+}
+
+@section _menu{}
+@section _fixed_header{}
+
+<!-- shopping cart start -->
+<div class="container mar_b_20 clearfix">
+   @* @if (Model.Items.Count > 0)
+    {
+        @Html.Action("CheckoutProgress", "Checkout", new { step = CheckoutProgressStep.Cart })
+    }*@
+     @Html.Action("CheckoutProgress", "Checkout", new { step = CheckoutProgressStep.Cart })
+    <div id="ordersummary">
+        @Html.Partial("OrderSummary", Model)
+    </div>
+    <!-- 随心搭 start -->
+    <div id="crosssellproducts">
+        @Html.Action("CrossSellProducts", "Catalog")
+    </div>
+</div>
+<script type="text/javascript">
+    $(".num-text input").numeric();
+    
+    $(function () {
+        $("#fixedWishlist").hide();
+        $("#sename").hide();
+        $("#fixedShoppingCart").hide();
+    });
+</script>

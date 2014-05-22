@@ -1,0 +1,108 @@
+﻿@model CheckoutPaymentMethodModel
+@using Nop.Web.Models.Checkout;
+
+@Html.Widget("op_checkout_payment_method_top")
+
+@*
+@if (Model.PaymentMethods.Count > 0)
+{
+    <ul class="paymentList">
+        @for (int i = 0; i < Model.PaymentMethods.Count; i++)
+        {
+            var paymentMethod = Model.PaymentMethods[i];
+            <li>
+                <input id="paymentmethod_@(i)" type="radio" name="paymentmethod" value="@(paymentMethod.PaymentMethodSystemName)" checked="@paymentMethod.Selected" />
+                @paymentMethod.Name
+                @if (!String.IsNullOrEmpty(paymentMethod.Fee))
+                {
+                    <text>(</text>
+                    @paymentMethod.Fee
+                    <text>)</text>
+                }
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <div class="message-error">
+        @T("Checkout.NoPaymentMethods")
+    </div>
+}
+*@
+
+@{
+    var paymethodIconFolder = "/Themes/60GO2/Content/images/";
+}
+
+<div id="spnPaymentList" class="paymentList">
+    @if (Model.PaymentMethods.Count > 0)
+    {         
+        <dl>
+            <dt>
+                <h3>@T("Checkout.PaymentPlantform")：</h3>
+            </dt>
+            <dd>
+                <ul class="onlinePayment clearfix payment_method_list">
+                    @for (int i = 0; i < Model.PaymentMethods.Count; i++)
+                    {
+                        var paymentMethod = Model.PaymentMethods[i];
+                        if (paymentMethod.SubItemList == null || paymentMethod.SubItemList.Count == 0)
+                        {                            
+                        <li>
+                            <input value="@paymentMethod.PaymentMethodSystemName" name="PaymentMethod" type="radio" />
+                            <label>
+                                <img src="@(paymethodIconFolder + paymentMethod.IconUrl)" alt="@paymentMethod.Name" height="50" width="150"></label>
+                        </li>
+                        }
+                    }
+                </ul>
+            </dd>
+            <dt>
+                <h3>@T("Checkout.PaymentBank")：</h3>
+            </dt>
+            <dd>
+                <ul class="onlinePayment clearfix payment_method_list">
+                    @for (int i = 0; i < Model.PaymentMethods.Count; i++)
+                    {
+                        var paymentMethod = Model.PaymentMethods[i];
+                        if (paymentMethod.SubItemList != null && paymentMethod.SubItemList.Count > 0)
+                        {
+                            foreach (var subItem in paymentMethod.SubItemList)
+                            {                 
+                        <li>
+                            <input value="@(paymentMethod.PaymentMethodSystemName + "_" + subItem.GateId)" name="PaymentMethod" type="radio" />
+                            <label>
+                                <img src="@(paymethodIconFolder + subItem.IconUrl)" alt="@subItem.Name" data-paymenttype="chinapay" height="50" width="150"/>
+                            </label>
+                        </li>
+                            }
+                        }
+                    }
+                </ul>
+            </dd>
+        </dl>        
+    }
+    else
+    { 
+        @T("Checkout.NoPaymentMethods")
+    }
+</div>
+<div id="spnConfirmPaymentMethod" class="paymentList box-orange" style="display: none;">
+    <dl class="clearfix beleft">
+        <dt>
+            <h3 id="paymentMethodTypeName">@T("Checkout.PaymentPlantform")：</h3>
+        </dt>
+        <dd>
+            <ul class="onlinePayment clearfix">
+                <li id="confirmPaymentMethodLogoContainer"></li>
+            </ul>
+        </dd>
+    </dl>
+    <div id="spnRemainPaymentTotal" class="beright other">
+        <span class="beleft">@T("Checkout.RemainPaymentTotal")</span>
+        <h1 class="beleft"><span id="remainPaymentTotal" class="cred"></span></h1>
+        @T("Common.CNY.CurrencyUnit")
+    </div>
+</div>
+@Html.Widget("op_checkout_payment_method_bottom")

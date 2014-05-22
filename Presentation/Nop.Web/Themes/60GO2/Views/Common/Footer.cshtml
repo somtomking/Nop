@@ -1,0 +1,16 @@
+﻿@model FooterModel
+@using Nop.Web.Models.Common;
+<div class="footer">
+    <div class="container">
+        Copyright © 2014 60go.cn, All Rights Reserved 使用本网站即表示接受60购用户协议。版权所有 湖南掌尚科技有限公司
+        <div class="authentication">
+            <a href="javascript:void(0);">
+                <img width="108" height="40" alt="银联" src="/Themes/60GO2/Content/images/onlinepay.jpg"></a>
+            <a href="javascript:void(0);">
+                <img width="108" height="40" alt="支付宝" src="/Themes/60GO2/Content/images/alipay.jpg"></a>
+        </div>
+    </div>
+</div>
+@Html.Action("ChangeDeviceBlock", "Common")
+@Html.Action("StoreThemeSelector", "Common")
+@Html.Widget("footer")

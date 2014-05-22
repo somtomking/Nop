@@ -1,0 +1,72 @@
+﻿@model ChangeEmailStepModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core.Infrastructure;
+@using Nop.Core.Domain.Common;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+    Html.AddTitleParts(T("PageTitle.Email").Text);
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.authenticode.js");
+    var breadcrumbDelimiter = EngineContext.Current.Resolve<CommonSettings>().BreadcrumbDelimiter;
+}
+@section _left
+{
+    @Html.Partial("MyAccountNavigation", Model.NavigationModel, new ViewDataDictionary())
+}
+
+<div class="breadcrumbs clearfix">
+    <ul>
+        <li><a href="@Url.RouteUrl("CustomerAccountSecurity")">账户安全</a><span>@breadcrumbDelimiter</span></li>
+        <li>验证邮箱</li>
+    </ul>
+</div>
+
+<div class="mycneterCon">
+    @using (Html.BeginForm("ChangeEmailStep2", null, FormMethod.Post, new { @class = "form-center" }))
+    {
+        @Html.AntiForgeryToken()   
+        if (!string.IsNullOrEmpty(Model.Message))
+        {  
+        <div class="box-error-s">
+            @Model.Message
+        </div>
+        }        
+        <div class="formList">
+            <dl class="clearfix">
+                <dt>新邮箱：</dt>
+                <dd>@Html.TextBoxFor(model => model.NewEmail, new { @class = "input-style input-m", maxlength = 30 })
+                    <br />@Html.ValidationMessageFor(model => model.NewEmail)</dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>@T("Account.Fields.Authenticode")：</dt>
+                <dd>
+                    @Html.TextBoxFor(model => model.Authenticode, new { @class = "input-style input-sm", maxlength = 6 })
+                    <a id="get_authenticode_btn" class="link_green uline mar_l_10" href="javascript:void(0);">获取验证码</a>
+                    <span id="again_get_authenticode_time" class="cgray mar_l_10" style="display: none"></span>
+                    <br />@Html.ValidationMessageFor(model => model.Authenticode)
+                </dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>&nbsp;</dt>
+                <dd>
+                    <input type="submit" class="btn btn-green btn-md" value="提交设置" />
+                </dd>
+            </dl>
+        </div>    
+        @Html.HiddenFor(model => model.ChangeEmailStep)            
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#@Html.FieldIdFor(model => model.NewEmail)").rules("add", { required: true, messages: { required: "请输入新邮箱" } });
+        $("#@Html.FieldIdFor(model => model.NewEmail)").rules("add", { email: true, messages: { email: "请输入您正确的新邮箱" } });
+
+        $("#get_authenticode_btn").click(function () {
+            var email = $("#@Html.FieldIdFor(model => model.NewEmail)").val();
+            Authenticode.getAuthenticode({ "email": email });
+        });
+    });
+
+    Authenticode.init("get_authenticode_btn", "again_get_authenticode_time",
+                    "@T("Common.AuthenticodeButton.Stop")",
+                    "@Url.RouteUrl("GetNewEmailAuthenticode")",@Model.AgainGetAuthenticodeSpacingTime);
+</script>

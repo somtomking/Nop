@@ -1,0 +1,25 @@
+﻿@using Nop.Core;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Framework.UI
+@{    
+    //add browser specific CSS files
+    var browser = Request.Browser;
+    //if (browser.Browser == "IE" && browser.MajorVersion < 9)
+    if (browser.Browser == "IE" && browser.MajorVersion < 7)
+    {
+        //Html.AppendScriptParts("~/Themes/60GO2/Content/js/html5shiv.min.js");
+        //Html.AppendScriptParts("~/Themes/60GO2/Content/js/respond.min.js");
+        Html.AppendScriptParts("~/Themes/60GO2/Content/js/DD_belatedPNG.js");
+        Html.Raw("<script type=\"text/javascript\">DD_belatedPNG.fix('*');</script>");
+    } 
+
+    //Html.AppendScriptParts("~/Themes/60GO2/Content/js/focus.js");
+    //Html.AppendScriptParts("~/Themes/60GO2/Content/js/jquery.min.js");
+    
+    //add main CSS file
+    //var supportRtl = EngineContext.Current.Resolve<IWorkContext>().WorkingLanguage.Rtl;
+    //Html.AppendCssFileParts("~/Themes/60GO2/Content/css/css.css");
+    //Html.AppendCssFileParts("~/Themes/60GO2/Content/css/media-queries.css");
+    //Html.AppendCssFileParts("~/Themes/60GO2/Content/css/bootstrap.min.css");
+    
+}

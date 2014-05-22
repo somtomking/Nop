@@ -1,0 +1,8 @@
+﻿@model string
+
+@if (!String.IsNullOrWhiteSpace(Model))
+{
+    <div class="clearfix">
+        @Html.Raw(Model)
+    </div>
+}

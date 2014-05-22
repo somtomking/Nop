@@ -1,0 +1,37 @@
+﻿@model ProductDetailsModel.ProductBreadcrumbModel
+@using Nop.Core.Domain.Common;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Catalog;
+@{
+    var breadcrumbDelimiter = EngineContext.Current.Resolve<CommonSettings>().BreadcrumbDelimiter;
+}
+<div class="breadcrumbs clearfix">
+    <ul id="ulcategory">
+        @Html.Widget("productbreadcrumb_before")
+        @*<li>
+            <a href="@Url.RouteUrl("HomePage")">@T("Products.Breadcrumb.Top")</a><span>/</span>
+        </li>*@
+        @*  @foreach (var category in Model.CategoryBreadcrumb)
+        { 
+        <li><a href="@Url.RouteUrl("Category", new { SeName = category.SeName })" >@category.Name</a><span>@breadcrumbDelimiter</span></li>
+        }*@
+
+        @for (int i = 0; i < Model.CategoryBreadcrumb.Count(); i++)
+        {
+            if (i == Model.CategoryBreadcrumb.Count() - 1)
+            {
+            <li><a href="@Url.RouteUrl("Category", new { SeName = Model.CategoryBreadcrumb[i].SeName })" id="linksename" runat="server" tag="@Model.CategoryBreadcrumb[i].SeName" >@Model.CategoryBreadcrumb[i].Name</a><span>@breadcrumbDelimiter</span></li>
+            }
+            else
+            {
+            <li><a href="@Url.RouteUrl("Category", new { SeName = Model.CategoryBreadcrumb[i].SeName })" >@Model.CategoryBreadcrumb[i].Name</a><span>@breadcrumbDelimiter</span></li>
+            }
+        }
+        @*<li>@T("Products.Breadcrumb.ProductDetail")</li>*@
+        <li>@Model.ProductName</li>
+        @Html.Widget("productbreadcrumb_after")
+    </ul>
+</div>
+
+
+

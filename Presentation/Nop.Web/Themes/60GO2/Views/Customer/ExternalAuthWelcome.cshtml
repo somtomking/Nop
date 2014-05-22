@@ -1,0 +1,23 @@
+﻿@model ExternalAuthWelcomeModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Account").Text);
+}
+@section _left
+{
+    @Html.Partial("MyAccountNavigation", Model.NavigationModel, new ViewDataDictionary())
+}
+
+<div class="breadcrumbs clearfix">
+    <ul>
+        <li class="home">@T("Account.MyAccount")<span>/</span></li>
+        <li>账户安全</li>
+    </ul>
+</div>
+<div class="mycenterCon">
+    <div class="questionBox f18px" style="margin: 50px;">您的账号属于第三方账号登录用户，请您在安全中心验证手机后，再修改登录密码。如有问题，请联系客服：400-996-6060</div>
+</div>

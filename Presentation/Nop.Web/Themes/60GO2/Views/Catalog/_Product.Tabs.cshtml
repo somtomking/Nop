@@ -1,0 +1,53 @@
+﻿@model ProductDetailsModel.AddToCartModel
+@using Nop.Web.Models.Catalog;
+@using Nop.Core.Domain.Orders;
+<ul class="tab_02" id="producttabs">
+    <li><a href="javascript:void(0)" class="on">@T("Products.Description")</a></li>
+    <li><a href="javascript:void(0)">@T("Products.Comments")</a></li>
+
+    @*<li class="tab_right">
+        <button type="button" class="btn btn-green btn-sm @(Model.OutOfStock ? "disabled" : "")" 
+            data-productid="@Model.ProductId" onclick="ShowCart(this)" style="z-index:15;">
+            <span class="glyphicon glyphicon-shopping-cart"></span>@(Model.AvailableForPreOrder ? T("ShoppingCart.PreOrder") : T("ShoppingCart.AddToCart"))
+        </button>
+    </li>*@
+</ul>
+
+<script>
+    $(document).ready(function () {
+        var elm1 = $('.fixedTabShow');
+        var startPos1 = $(elm1).offset().top;
+        @*$.event.add(window, "scroll", function () {
+            var p1 = $(window).scrollTop();
+            if ((p1) > startPos1) {
+                $('#producttabs').css('position', 'fixed');
+            }
+            else { $('#producttabs').css('position', ''); }
+        });*@
+
+        function initTags() {
+            $("#producttabs li:first a").attr("class", "on");
+            $("#description").css("display", "block");
+
+            $("#producttabs li:last a").removeAttr("class");
+            $("#reviews").css("display", "none");
+        }
+        initTags();
+
+        $("#producttabs li a").click(function () {
+            $("#producttabs li a").each(function () {
+                $(this).removeAttr("class");
+            });
+            $("#reviews").css("display", "none");
+            $("#description").css("display", "none");
+
+            $(this).attr("class", "on");
+            if ($(this).html() == "商品评价") {
+                $("#reviews").css("display", "block");
+            } else {
+                $("#description").css("display", "block");
+            }
+        });
+    });
+</script>
+<div class="fixedTabShow"></div>

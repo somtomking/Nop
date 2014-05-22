@@ -1,0 +1,10 @@
+﻿@model CustomerOrderDetailModel
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+}
+@using Nop.Web.Models.Customer;
+@section _left
+{
+    @Html.Partial("MyAccountNavigation", Model.NavigationModel, new ViewDataDictionary())
+}
+@Html.Action("Details", "Order", new { orderId=Model.OrderId})

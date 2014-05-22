@@ -1,0 +1,46 @@
+﻿<html>
+<head>
+    <title>注册结果页面</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+</head>
+<body>
+    <div>
+        <table>
+            <tr>
+                <td colspan="2">
+                    <h5>注册成功</h5>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">账号绑定成功！</td>
+            </tr>
+            @if (!string.IsNullOrEmpty(Request.QueryString["returnUrl"]))
+            {
+                <tr>
+                    <td colspan="2"><a href="@(Request.QueryString["returnUrl"])">点击链接马上返回上一个页面（<span id="spnTime">5</span> 秒后自动返回）</a></td>
+                </tr>
+            }
+        </table>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            WeixinJSBridge.call('hideToolbar');
+        });
+    </script>
+    @if (!string.IsNullOrEmpty(Request.QueryString["returnUrl"]))
+    {
+        <script type="text/javascript">
+            var time = 5;
+            var handler = function () {
+                if (time > 0) {
+                    time--;
+                    document.getElementById("spnTime").innerHTML = time;
+                } else {
+                    document.location.href = "@(Request.QueryString["returnUrl"])";
+                }
+            }
+            var timer = setInterval(handler, 1000);
+        </script>
+    }
+</body>
+</html>

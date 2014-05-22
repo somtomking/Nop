@@ -1,0 +1,12 @@
+﻿@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_index.css");
+}
+<div class="container mar_b_20 clearfix">
+    <div class="construction">
+        <h2>@T("underbuilding.websitebuilding")</h2>
+        <p>@T("underbuilding.isbuildinghard")</p>
+        <p>@T("underbuilding.youcan")<a href="@(Url.RouteUrl("HomePage"))" class="link_green">@T("underbuilding.returnhomepage")</a></p>
+    </div>
+</div>
+

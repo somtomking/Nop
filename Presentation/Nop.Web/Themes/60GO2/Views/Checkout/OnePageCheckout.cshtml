@@ -1,0 +1,239 @@
+﻿@model OnePageCheckoutModel
+@using Nop.Web.Models.Checkout;
+@using Nop.Core.Infrastructure.DependencyManagement;
+@using Nop.Core.Infrastructure;
+@using Nop.Core.Domain;
+@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_sale.css");
+    Html.AppendScriptParts("~/Themes/60GO2/Content/js/jquery.colorbox.js");
+    //Html.AddScriptParts("~/Scripts/public.accordion.js");
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.onepagecheckout.js");
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/jquery.numeric.js");
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.address_selector.js");
+
+    var storeLocation = EngineContext.Current.Resolve<Nop.Core.IWebHelper>().GetStoreLocation();
+    if (EngineContext.Current.Resolve<StoreInformationSettings>().SubDirectoryForStoreEnabled)
+    {
+        var currentStore = EngineContext.Current.Resolve<Nop.Core.IStoreContext>().CurrentStore;
+
+        if (storeLocation.EndsWith("/"))
+        {
+            if (!storeLocation.EndsWith("/" + currentStore.Hosts + "/", StringComparison.InvariantCultureIgnoreCase))
+            {
+                storeLocation += currentStore.Hosts + "/";
+            }
+        }
+        else
+        {
+            if (!storeLocation.EndsWith("/" + currentStore.Hosts, StringComparison.InvariantCultureIgnoreCase))
+            {
+                storeLocation += "/" + currentStore.Hosts + "/";
+            }
+        }
+    }
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Checkout").Text);
+
+    Response.Buffer = true;
+    Response.ExpiresAbsolute = DateTime.Now.AddDays(-1);
+    Response.Cache.SetExpires(DateTime.Now.AddDays(-1));
+    Response.Expires = 0;
+    Response.CacheControl = "no-cache";
+    Response.Cache.SetNoStore();
+
+    Model.DisplayCoupons = true;
+    Model.DisplayRewardPoints = false;
+}
+@section _menu{}
+@section _fixed_header{}
+@* 核对订单信息页面 *@
+<div class="container mar_b_20 clearfix">
+    @Html.Action("CheckoutProgress", "Checkout", new { step = CheckoutProgressStep.Confirm })
+    <div class="gwcTitle clearfix">
+        <h2>@T("Checkout")</h2>
+        <a href="@Url.RouteUrl("ShoppingCart")" class="mar_l_20 link_green">@T("Checkout.BackToShoppingCart")</a>
+    </div>
+    @if (Model.ShippingRequired)
+    {
+        <div class="gwcCon clearfix">
+            <div class="title clearfix">
+                <a name="shipping-point"></a>
+                <h2>@T("Checkout.ShippingAddress")</h2>
+                <a id="checkout-shipping-edit" href="javascript:void(0)" onclick="Shipping.edit()">@T("Checkout.EditShippingAddress")</a>
+                <span id="shipping-please-confirm" style="display: none;" class="cred">@T("Checkout.PleaseConfirmShippingAddress")</span>
+            </div>
+            <div id="checkout-shipping-selection" class="shrInfo">@Html.Raw(Model.ShippingAddress)</div>
+            <div class="con" id="opc-shipping">
+                <div id="checkout-shipping-load">
+                    @if (string.IsNullOrEmpty(Model.ShippingAddress))
+                    {
+                        @Html.Action("OpcShippingForm", "Checkout")
+                    }
+                </div>
+                <script type="text/javascript">
+                    Shipping.init('#co-shipping-form',
+                        '@(storeLocation)checkout/OpcGetShippingForm/',
+                        '@(storeLocation)checkout/OpcSaveShipping/',
+                        '@(Url.RouteUrl("CustomerGetAddress"))');
+                    //if ($("#shipping-address-select").length > 0) {
+                    //    Shipping.newAddress(!$('#shipping-address-select').val());
+                    //}
+                </script>
+            </div>
+        </div>
+        <div class="gwcCon clearfix">
+            <div class="title clearfix">
+                <a name="shipping-method-point"></a>
+                <h2>@T("Checkout.ShippingMethod")</h2>
+                @*<a href="javascript:void(0)" onclick="ShippingMethod.edit()">@T("Checkout.EditShippingMethod")</a>*@
+                <span id="shipping-method-please-confirm" style="display: none;">@T("Checkout.PleaseConfirmShippingMethod")</span>
+            </div>
+            <div class="con">
+                <div class="formList">
+                    <dl class="clearfix">
+                        <dt>@T("Checkout.ShippingTime")：</dt>
+                        <dd id="checkout-shipping-method-selection">@Html.Raw(Model.ShippingMethod)</dd>
+                    </dl>
+                    <dl class="clearfix" id="opc-shipping-method" style="display: none;">
+                        <form id="co-shipping-method-form" action="">
+                            <div id="checkout-shipping-method-load">
+                                @if (string.IsNullOrEmpty(Model.ShippingMethod))
+                                {
+                                    @Html.Action("OpcShippingMethodForm", "Checkout");
+                                }
+@*shipping methods content will be loaded here*@
+                            </div>
+                            <script type="text/javascript">
+                                ShippingMethod.init('#co-shipping-method-form', '@(storeLocation)checkout/OpcGetShippingMethodForm/', '@(storeLocation)checkout/OpcSaveShippingMethod/');
+                            </script>
+                        </form>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>@T("Checkout.ProductList")：</dt>
+                        <dd id="checkout-order-summary">
+                            @Html.Partial("OrderSummary")
+                        </dd>
+                    </dl>
+                    <div class="btnArea" id="opc-shipping-method-save" style="display: none;">
+                        <button type="button" class="btn btn-green btn-sm mar_r_20" onclick="ShippingMethod.save()">@T("Checkout.SaveShippingMethod") </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="gwcCon clearfix">
+        <div class="title clearfix">
+            <a name="invoice-point"></a>
+            <h2>@T("Checkout.Invoice")</h2>
+            <a id="checkout-invoice-edit" data-toggle="collapse" href="javascript:void(0)" onclick="Invoice.edit()">@T("Checkout.EditInvoice")</a>
+            <span id="invoice-please-confirm" style="display: none;">@T("Checkout.PleaseConfirmInvoice")</span>
+        </div>
+        <div class="pad_10" id="checkout-invoice-selection">
+            @Html.Raw(Model.Invoice)
+        </div>
+        <div class="editArea" id="opc-invoice" style="display: none;">
+            <form class="form-inline" action="" id="co-invoice-form">
+                <div id="checkout-invoice-load">
+                    @if (string.IsNullOrEmpty(Model.Invoice))
+                    {
+                        @Html.Action("OpcInvoiceForm", "Checkout");
+                    }
+@*invoice content will be loaded here*@
+                </div>
+            </form>
+            <script type="text/javascript">
+                Invoice.init('#co-invoice-form', '@(storeLocation)checkout/OpcGetInvoiceForm/', '@(storeLocation)checkout/OpcSaveInvoice/');
+            </script>
+            <div class="btns">
+                <button type="button" class="btn btn-green btn-sm mar_r_20" onclick="Invoice.save(true)">@T("Checkout.SaveInvoice") </button>
+                <button type="button" class="btn btn-default btn-sm mar_r_20" onclick="Invoice.save(false)">@T("Checkout.Invoice.DontNeedNow") </button>
+            </div>
+        </div>
+    </div>
+
+    @*
+    <div class="gwcCon clearfix">
+        <div class="title clearfix">
+            <h2>@T("Checkout.PaymentMethod")</h2>*@
+    @*<a href="javascript:void(0)" onclick="PaymentMethod.edit()">@T("Checkout.EditPaymentMethod")</a>*@
+    @*
+        </div>
+        <form action="" id="co-payment-method-form">
+            @Html.Action("OpcPaymentMethodForm", "Checkout")
+        </form>
+        <script type="text/javascript">
+            PaymentMethod.init('#co-payment-method-form', '@(storeLocation)checkout/OpcGetPaymentMethodForm/', '@(storeLocation)checkout/OpcSavePaymentMethod/');
+        </script>
+    </div>
+*@
+
+    @if (Model.DisplayCoupons || Model.DisplayRewardPoints)
+    {
+        <div class="gwcCon clearfix">
+            @if (Model.DisplayCoupons)
+            {       
+                @Html.Action("OpcDiscountForm", "Checkout")
+                <script type="text/javascript">
+                    var infos = {
+                        CouponCodeRequired: '@T("Checkout.Discount.CouponCode.Required")',
+                        Remove: '@T("Checkout.Discount.Remove")'
+                    };
+
+                    Discount.init('@(storeLocation)checkout/OpcSaveDiscount/',
+                                    '@(storeLocation)checkout/OpcSaveDiscount/',
+                                    'checkout-ordertotals',
+                                    infos);
+                </script>
+            }
+            @if (Model.DisplayRewardPoints)
+            {
+                <script type="text/javascript">
+                    RewardPoints.init('#co-reward-points-form', '@(storeLocation)checkout/OpcGetRewardPointsForm/', '@(storeLocation)checkout/OpcSaveRewardPoints/');
+                </script>
+                <div id="checkout-rewardpoints">
+                    @Html.Action("OpcRewardPointsForm", "Checkout")
+                </div>
+            }
+        </div>
+    }
+
+    <div class="totalArea">
+        <script type="text/javascript">
+            ConfirmOrder.init('@(storeLocation)checkout/OpcConfirmOrder/', '@(storeLocation)checkout/completed/');
+        </script>
+        <div id="checkout-ordertotals">
+            @Html.Action("OrderTotals", "ShoppingCart", new { IsEditable = false, isCheckoutPage = true })
+        </div>
+        <div class="btnArea" id="confirm-order-buttons-container">
+            <button type="button" class="btn btn-orange btn-lg" onclick="ConfirmOrder.save()">
+                <span class="glyphicon glyphicon-ok"></span>@T("Checkout.SubmitOrder")
+            </button>
+            @*<span class="please-wait" id="confirm-order-please-wait" style="display: none;">@T("Checkout.SubmittingOrder")</span>*@
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        @{
+            if (Model.ShippingRequired)
+            {
+                if (string.IsNullOrEmpty(Model.ShippingAddress))
+                {
+            <text>Checkout.gotoSection('shipping');</text>
+                }
+            }
+            else
+            {
+            }
+        }
+
+    Checkout.init('@(storeLocation)cart/');
+    $(function () {
+        $("#fixedWishlist").hide();
+        $("#sename").hide();
+        $("#fixedShoppingCart").hide();
+    });
+</script>
+

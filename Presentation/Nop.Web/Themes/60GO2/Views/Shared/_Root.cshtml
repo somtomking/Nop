@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "~/Views/Shared/_Root.Head.cshtml";
+}
+@Html.Widget("body_start_html_tag_after")
+@*@Html.Partial("_Notifications")*@
+@Html.Action("JavaScriptDisabledWarning", "Common")
+<script type="text/javascript">
+    var topcartselector1 = '.cart-items-count';
+    var topcartselector2 = '.shoppingCart .cart-qty';
+    var fixedcartselector = '#fixedShoppingCart .numChat';
+    var flyoutcartselector = '#flyout-cart';
+    var fixedflyoutcartselector = '#fixedFlyoutShoppingCart';
+    var topwishlistselector = null;
+    var fixedwishlistselector = '#fixedWishlist .numChat';
+    var fixedflyoutwishlistselector = '#fixedFlyoutWishlist';
+    AjaxCart.init(true, topcartselector1, topcartselector2, fixedcartselector, flyoutcartselector, fixedflyoutcartselector, topwishlistselector, fixedwishlistselector, fixedflyoutwishlistselector);
+</script>
+
+<a name="top"></a>
+@if (IsSectionDefined("_header"))
+{
+    @RenderSection("_header", false)
+}
+else
+{
+    @Html.Partial("Header")
+}
+
+@if (IsSectionDefined("_menu"))
+{ 
+    @RenderSection("_menu", false)
+}
+else
+{
+    <div class="nav">
+        <div class="container">
+            @Html.Action("Menu", "Common")
+        </div>
+    </div>
+}
+
+@if (IsSectionDefined("_fixed_header"))
+{ 
+    @RenderSection("_fixed_header", false)
+}
+else
+{
+}
+
+@*@Html.Partial("FixedShow")*@
+@Html.Widget("content_before")
+@RenderBody()
+@Html.Widget("content_after")
+@if (IsSectionDefined("_footer_before"))
+{ 
+    @RenderSection("_footer_before", false)
+}
+else
+{  
+    @Html.Partial("Footer.Before")    
+}
+@Html.Action("Footer", "Common")
+@if (IsSectionDefined("_floatarea"))
+{
+    @RenderSection("_floatarea", false)
+}
+else
+{
+    @Html.Action("FloatArea", "Common", new { pageTurningEnabled = false })
+}
+@Html.Widget("body_end_html_tag_before")

@@ -1,0 +1,49 @@
+﻿@model OrderTotalsModel
+@using Nop.Web.Models.ShoppingCart;
+<div class="col-md-7 col-xs-7"></div>
+<div class="col-md-2 col-xs-2 text-right">选中 <span class="text-danger">@Model.OrderTotalProducts</span> 件商品</div>
+<div class="col-md-3 col-xs-3 row">
+	<div class="col-md-6 col-xs-6 text-left">@T("ShoppingCart.Totals.SubTotal")：</div>
+
+	<div class="col-md-6 col-xs-6 text-right">@Model.SubTotal</div>
+    @if (!String.IsNullOrEmpty(Model.SubTotalDiscount))
+    {
+	<div class="col-md-6 col-xs-6 text-left">@T("ShoppingCart.Totals.SubTotalDiscount")：</div>
+	<div class="col-md-6 col-xs-6 text-right">@Model.SubTotalDiscount</div>
+    }
+    else
+    {
+	<div class="col-md-6 col-xs-6 text-left">@T("ShoppingCart.Totals.SubTotalDiscount")：</div>
+	<div class="col-md-6 col-xs-6 text-right">0</div>    
+    }
+    @if (Model.RequiresShipping)
+    {
+	<div class="col-md-6 col-xs-6 text-left">@T("ShoppingCart.Totals.Shipping")：</div>
+	<div class="col-md-6 col-xs-6 text-right">
+
+            @if (!String.IsNullOrEmpty(Model.Shipping))
+            {
+            @Model.Shipping
+                           
+            }
+            else
+            {
+            @T("ShoppingCart.Totals.CalculatedDuringCheckout")
+            }
+
+	</div>
+    }
+	<div class="col-md-6 col-xs-6 text-left">@T("ShoppingCart.Totals.OrderTotal")：</div>
+	<div class="col-md-6 col-xs-6 text-right"><big><strong>￥<span class="corange">
+        @if (!String.IsNullOrEmpty(Model.OrderTotal))
+        {
+            @(Model.OrderTotal.Replace("¥",""))
+        }
+        else
+        {
+            @T("ShoppingCart.Totals.CalculatedDuringCheckout")
+        }
+
+    </span></strong></big></div>
+</div>
+

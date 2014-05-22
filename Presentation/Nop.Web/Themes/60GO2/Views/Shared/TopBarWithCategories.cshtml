@@ -1,0 +1,14 @@
+﻿<div class="topBar">
+    @Html.Widget("header")
+    <div class="container">
+        <ul class="topLink">
+            @Html.Action("HeaderLinks", "Common")
+            <li class="display"><a href="###" data-toggle="dropdown">所有商品分类<b class="caret"></b></a>
+                @Html.Action("FlyoutCategories", "Catalog")
+            </li>
+            @Html.Widget("header_links_after")
+        </ul>
+        @Html.Widget("header_selectors")
+    </div>
+</div>
+

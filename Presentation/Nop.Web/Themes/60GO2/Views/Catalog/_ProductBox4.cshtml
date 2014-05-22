@@ -1,0 +1,34 @@
+﻿@model ProductOverviewModel
+@using Nop.Core.Domain.Orders
+@using Nop.Web.Models.Catalog;
+@{
+    //prepare "Add to cart" AJAX link
+    string addtocartlink = "";
+    var shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart;
+    var quantity = 1;
+    if (Model.ProductPrice.ForceRedirectionAfterAddingToCart)
+    {
+        addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, forceredirection = Model.ProductPrice.ForceRedirectionAfterAddingToCart });
+    }
+    else
+    {
+        addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, });
+    }    
+}
+
+<li class="col-md-3">
+<div class="pic">
+    <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title" target="_blank">
+    <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" />
+    </a>
+</div>
+<div class="text clearfix">
+						<h5><a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" target="_blank">@Model.Name</a></h5>
+						<h4><strong>@Model.ProductPrice.Price</strong> 
+                                    @if (Model.ProductPrice.OldPrice != null) { 
+                                       <small>/@Model.ProductPrice.OldPrice</small> 
+                                    }
+						</h4>
+</div>
+    @Html.Widget("productbox_add_info")
+</li>

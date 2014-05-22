@@ -1,0 +1,20 @@
+﻿@model OrderFilteringModel.OrderStatusRangeFilterModel
+@using Nop.Web.Models.Customer;
+@{
+    var selectedItem = Model.Items.FirstOrDefault(x => x.Selected);
+}
+@helper FormatCreateOnRangeText(OrderFilteringModel.OrderStatusRangeFilterItem filterItem)
+{
+    string rangeText = filterItem.Value;
+    rangeText = string.Format(T("Filtering.OrderStatusRangeFilter." + rangeText).Text);
+    <text>@Html.Raw(rangeText)</text>
+}
+@if (Model.Enabled)
+{
+    <select class="select-style" name="filter-createon" id="filter-createon" onchange="location=$(this).val()">
+        @foreach (var item in Model.Items)
+        {
+            <option value="@item.FilterUrl" @(selectedItem != null ? (selectedItem.FilterUrl == item.FilterUrl ? "selected" : "") : "")>@FormatCreateOnRangeText(item)</option>
+        }
+    </select>
+}

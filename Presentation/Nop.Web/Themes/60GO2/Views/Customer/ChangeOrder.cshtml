@@ -1,0 +1,232 @@
+﻿@model ChangeOrderModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+    Html.AddTitleParts("我要换货");
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_my.css");
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.address_selector.js");
+}
+@section _left
+{
+    @Html.Partial("MyAccountNavigation", Model.NavigationModel, new ViewDataDictionary())
+}
+
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<div class="breadcrumbs clearfix">
+    <ul>
+        <li><a href="@Url.RouteUrl("CustomerReturnOrders")">退换货管理</a><span>/</span></li>
+        <li>我要换货</li>
+    </ul>
+</div>
+<div id="return-order-form-container" class="mycneterCon">
+    @using (Html.BeginForm())
+    { 
+        <div class="ddCon" style="border: 2px solid #EEE; padding: 10px;">
+            <p>
+                a)退换货时请保证商品外包装完整未损坏，商品及其标配配件、赠品（如购买时有赠品）、说明书、保修凭证和发票齐全，如有物件缺失、残损、污损等影响二次销售的情形，将影响退款；
+            </p>
+            <p>
+                b)只支持同种商品的换货，不同商品换货请直接申请退货后重新提交新订单；
+            </p>
+            <p>
+                c)我司会在12小时内对退换货申请进行初审； 
+            </p>
+            <p>
+                d)退换货申请审核通过后，我司会安排工作人员在1个工作日内上门取件；
+            </p>
+            <p>
+                e)我司会在收到需退换的商品后1个工作日内完成退换货手续办理并支付退款。
+            </p>
+        </div>
+        @Html.AntiForgeryToken()
+        if (Html.ValidationSummary(true) != null)
+        {  
+        <div class="box-error-s">
+            @Html.ValidationSummary(true)
+        </div>
+        }   
+        <div class="ddCon">
+            <div class="inventoryTitle">
+                <span>@T("Account.CustomerOrders.Order.OrderId")：@Model.OrderNumber</span>
+                <span>@T("Account.CustomerOrders.Order.CreateOn")：@Model.CreatedOn</span>
+            </div>
+            <div class="clear"></div>
+            <ul class="row">
+                <li class="col-md-12">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="inventoryTable">
+                        <tbody>
+                            <tr>
+                                <th width="3%">
+                                    <input id="toggleSelectd" type="checkbox" /></th>
+                                <th width="50%">@T("Account.CustomerOrders.Order.ProductName")</th>
+                                <th width="10%">@T("Account.CustomerOrders.Order.ProductUnitPrice")</th>
+                                <th width="10%">购买数量</th>
+                                <th width="10%">换货数量</th>
+                                <th width="15%">换货原因</th>
+                            </tr>
+                            @{int i = 0; int rowspan = Model.ChangeOrderItems.Count; }
+                            @foreach (var orderItem in Model.ChangeOrderItems)
+                            {
+                                i++;
+                                <tr>
+                                    <td align="center">
+                                        <input id="item@(orderItem.Id)" @if (orderItem.Selected)
+                                                                        {<text>checked="checked"</text>} name="returnorderitems" value="@orderItem.Id" type="checkbox" />
+                                    </td>
+                                    <td>
+                                        <div class="td-inner-s">
+                                            <div class="pic">
+                                                <a href="@Url.RouteUrl("Product", new { SeName = orderItem.ProductSeName })"  target="_blank" data-point="tbcart.8.12">
+                                                    <img src="@orderItem.Picture.ImageUrl"></a>
+                                            </div>
+                                            <div class="text">
+                                                <a class="item-title J_MakePoint" href="@Url.RouteUrl("Product", new { SeName = orderItem.ProductSeName })"  target="_blank" data-point="tbcart.8.11">
+                                                    @orderItem.ProductName
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td align="center">@orderItem.UnitPrice</td>
+                                    <td align="center">@orderItem.AllowReturnMaxQuantity</td>
+                                    <td align="center">
+                                        <input name="itemquantity@(orderItem.Id)" class = "input-style input-xs" maxlength="2" id="itemquantity@(orderItem.Id)" data-maxquantity="@orderItem.AllowReturnMaxQuantity" type="text" value="@orderItem.ReturnQuantity"/>
+                                    </td>
+                                    <td align="center">
+                                        <select id="itemreason@(orderItem.Id)"  name="itemreason@(orderItem.Id)"  class = "select-style">
+                                            <option value="质量问题" @if (orderItem.Reason == "质量问题")
+                                                                 {<text>selected="selected"</text>}>质量问题</option>
+                                            <option value="商品错发（漏发）" @if (orderItem.Reason == "商品错发（漏发）")
+                                                                     {<text>selected="selected"</text>}>商品错发（漏发）</option>
+                                            <option value="实物与描述不符" @if (orderItem.Reason == "实物与描述不符")
+                                                                    {<text>selected="selected"</text>}>实物与描述不符</option>
+                                            <option value="外观破损" @if (orderItem.Reason == "外观破损")
+                                                                 {<text>selected="selected"</text>}>外观破损</option>
+                                            <option value="物流原因" @if (orderItem.Reason == "物流原因")
+                                                                 {<text>selected="selected"</text>}>物流原因</option>
+                                            <option value="其他原因" @if (orderItem.Reason == "其他原因")
+                                                                 {<text>selected="selected"</text>}>其他原因</option>
+                                            <option value="个人原因" @if (orderItem.Reason == "个人原因")
+                                                                 {<text>selected="selected"</text>}>个人原因</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </li>
+            </ul>
+        </div>  
+        <div class="formList" style="border: 2px solid #EEE; padding: 10px;">
+            <dl class="clearfix">
+                <dt>@T("Address.Fields.FirstName")：</dt>
+                <dd>
+                    @Html.TextBoxFor(model => model.ChangeAddress.FirstName, new { @class = "input-style input-m", maxlength = 30 })<br />
+                    @Html.ValidationMessageFor(model => model.ChangeAddress.FirstName)
+                </dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>@T("Address.Fields.PhoneNumber")：</dt>
+                <dd>
+                    @Html.TextBoxFor(model => model.ChangeAddress.PhoneNumber, new { @class = "input-style input-m", maxlength = 11 })<br />
+                    @Html.ValidationMessageFor(model => model.ChangeAddress.PhoneNumber)
+                </dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>@T("Address.Fields.ZipPostalCode")：</dt>
+                <dd>
+                    @Html.TextBoxFor(model => model.ChangeAddress.ZipPostalCode, new { @class = "input-style input-m", maxlength = 6 })<br />
+                    @Html.ValidationMessageFor(model => model.ChangeAddress.ZipPostalCode)</dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>@T("Address.Fields.Location")：</dt>
+                <dd>
+                    @Html.DropDownListFor(model => model.ChangeAddress.StateProvinceId, Model.ChangeAddress.AvailableStates, new { @class = "select-style" })
+                    <span id="states-loading-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+                    @Html.DropDownListFor(model => model.ChangeAddress.CityId, Model.ChangeAddress.AvailableCities, new { @class = "select-style" })
+                    <span id="states-loading-progress2" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+                    @Html.DropDownListFor(model => model.ChangeAddress.DistrictId, Model.ChangeAddress.AvailableDistricts, new { @class = "select-style" })
+                    <span id="states-loading-progress3" style="display: none;" class="please-wait">@T("Common.Wait...")</span><br />
+                    @Html.ValidationMessageFor(model => model.ChangeAddress.StateProvinceId)
+                    @Html.ValidationMessageFor(model => model.ChangeAddress.CityId)
+                    @Html.ValidationMessageFor(model => model.ChangeAddress.DistrictId)
+                </dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>@T("Address.Fields.Address1")：</dt>
+                <dd>
+                    @Html.TextBoxFor(model => model.ChangeAddress.Address1, new { @class = "input-style input-m", maxlength = 50 })<br />
+                    @Html.ValidationMessageFor(model => model.ChangeAddress.Address1)
+                </dd>
+            </dl>
+        </div>  
+        <div class="btnArea" style="padding: 10px; text-align: center;">
+            <input id="submitbtn" type="submit" class="btn btn-green btn-md" onclick="return CheckRequest();" value="确 认" />
+        </div>    
+    }
+</div>
+<script type="text/javascript">
+    AddressSelector.init("@Url.RouteUrl("GetCitiesByStateProvinceId")",
+    "@Url.RouteUrl("GetDistrictsByCityId")",
+            "#@Html.FieldIdFor(model => model.ChangeAddress.StateProvinceId)",
+            "#@Html.FieldIdFor(model => model.ChangeAddress.CityId)",
+            "#@Html.FieldIdFor(model => model.ChangeAddress.DistrictId)");
+
+    function CheckRequest() {
+        try {
+            var returnOrderItems = $("input[name='returnorderitems']:checked");
+            var returnCount = 0;
+            for (i = 0; i < returnOrderItems.length; i++) {
+                try {
+                    var itemId = $(returnOrderItems[i]).val();
+                    var quantity = $.trim($("#itemquantity" + itemId).val());
+                    returnCount = returnCount + parseInt(quantity);
+                } catch (e) { };
+            }
+
+            if (returnCount == 0) {
+                alert("请至少选择一个需要换货的商品！");
+                return false;
+            }
+
+            var form = $("#return-order-form-container").children("form:first");
+            if (!form.valid())
+                return false;
+
+            $("#submitbtn").attr("disabled", "disabled");
+            return true;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+        $("input[data-maxquantity]").each(function () {
+            var inputBox = $(this);
+            inputBox.keyup(function () {
+                var maxquantity = parseInt(inputBox.attr("data-maxquantity"));
+                inputBox.val(inputBox.val().replace(/[^\d.]/g, ""));
+
+                if (inputBox.val() == "")
+                    inputBox.val(maxquantity);
+
+                var quantity = parseInt($.trim(inputBox.val()));
+                if (quantity > maxquantity || quantity <= 0)
+                    inputBox.val(maxquantity);
+            });
+        });
+
+        $("#toggleSelectd").click(function () {
+            if ($("#toggleSelectd").attr("checked"))
+                $("input[name='returnorderitems']").attr("checked", true);
+            else
+                $("input[name='returnorderitems']").attr("checked", false);
+        });
+    });
+
+</script>

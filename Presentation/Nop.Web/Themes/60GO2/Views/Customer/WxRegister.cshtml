@@ -1,0 +1,109 @@
+﻿@model WxRegisterModel
+@using Nop.Web.Models.Customer;
+@{
+    var loginUrlParameters = new
+    {
+        openId = this.Context.Request.QueryString["openId"],
+        plantform = this.Context.Request.QueryString["plantform"],
+        returnUrl = this.Context.Request.QueryString["returnUrl"]
+    };
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>微信注册页面</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <script src="/Scripts/jquery-1.7.1.min.js"></script>
+    <script src="/Scripts/jquery.validate.min.js"></script>
+    <script src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="/Themes/60GO2/Content/js/public.authenticode.js"></script>
+</head>
+<body>
+    <b>注册</b>
+    <hr />
+    @using (Html.BeginForm())
+    {
+        <div>
+            @Html.ValidationSummary(false)
+        </div>
+        <table>
+            <tr>
+                <td>@T("Account.Fields.Username")：</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Username, new { @class = "input-style input-m", placeholder = T("Account.Fields.Username.Hint"), maxlength = 30 })
+                    @Html.ValidationMessageFor(model => model.Username)
+                </td>
+            </tr>
+            <tr>
+                <td>@T("Account.Fields.Authenticode")：</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Authenticode, new { @class = "input-style input-s", placeholder = T("Account.Fields.Authenticode.Hint"), maxlength = 6 })
+                    @Html.ValidationMessageFor(model => model.Authenticode)
+                    <a id="get_authenticode_btn" class="uline mar_l_10" href="javascript:void(0);">获取验证码</a>
+                    <span id="again_get_authenticode_time" class="cgray mar_l_10" style="display: none"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>@T("Account.Fields.Password")：</td>
+                <td>
+                    @Html.PasswordFor(model => model.Password, new { @class = "input-style input-m", placeholder = T("Account.Fields.Password.Hint"), maxlength = 16, onpaste = "return false" })
+                    @Html.ValidationMessageFor(model => model.Password)
+                </td>
+            </tr>
+            <tr>
+                <td>@T("Account.Fields.ConfirmPassword")：</td>
+                <td>
+                    @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-style input-m", placeholder = T("Account.Fields.ConfirmPassword.Hint"), maxlength = 16, onpaste = "return false" })
+                    @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                </td>
+            </tr>
+
+            @if (Model.InviteCodeEnabled)
+            {
+                <tr>
+                    <td>@T("Account.Fields.InviteCode")：</td>
+                    <td>
+                        @Html.TextBoxFor(model => model.InviteCode, new { @class = "input-style input-m", placeholder = T("Account.Fields.InviteCode.Hint"), maxlength = 6 })
+                        @Html.ValidationMessageFor(model => model.InviteCode)
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input id="cb_license" type="checkbox" checked="checked">
+                    <label for="cb_license">@T("Account.Register.LicenseText")<a id="dialog-chick" href="javascript:void(0)">@T("Account.Register.LicenseTitle")</a></label>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input id="register_btn" type="submit"  value="@T("Account.Register.Button")" />
+                    <input type="button" value="已经有账号，去登录" onclick="document.location.href='@Url.RouteUrl("WxLogin", loginUrlParameters)    '" />
+                </td>
+            </tr>
+        </table> 
+    }
+
+    <script type="text/javascript">
+        Authenticode.init("get_authenticode_btn","again_get_authenticode_time",
+             "@T("Common.AuthenticodeButton.Stop")",
+         "@Url.Action("GetWxRegisterAuthenticode")",@Model.AgainGetAuthenticodeSpacingTime);
+
+        $(document).ready(function(){
+            $("#get_authenticode_btn").click(function () {
+                var userName = $.trim($("#@Html.FieldIdFor(model => model.Username)").val());
+                if (userName!="") {                
+                    Authenticode.getAuthenticode({ "userName": userName });
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            WeixinJSBridge.call('hideToolbar');
+        });
+    </script>
+</body>
+</html>

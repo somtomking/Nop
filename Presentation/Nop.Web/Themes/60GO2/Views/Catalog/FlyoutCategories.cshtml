@@ -1,0 +1,41 @@
+﻿@model IList<CategoryModel>
+
+@using Nop.Web.Models.Catalog;
+
+<ul class="mainClass">
+    @for (var i = 0; i < Model.Count; i++)
+    {
+        var firstItem = Model[i];
+        <li index="@i">
+            <a href="@Url.RouteUrl("Category", new { SeName = firstItem.SeName })" target="_blank" class="classIcon classIcon_@(firstItem.Id) @(i % 2 == 1 ? "jg" : "")"  title="@firstItem.Name" >@firstItem.Name</a>
+        </li>
+    }
+</ul>
+@for (var i = 0; i < Model.Count; i++)
+{
+    var firstItem = Model[i];
+@*<div class="subClass @(i == 0 ? "" : "hide")" index="@i" style="@(i == 0 ? "" : "display: none;")">*@
+    <div class="subClass @(i == 0 ? "" : "hide")" index="@i" style="display: none;">
+        @for (var j = 0; j < firstItem.Children.Count; j++)
+        {
+            var secondItem = firstItem.Children[j];
+            <dl class="clearfix">
+                <dt onclick="setLocationInNewTab('@Url.RouteUrl("Category", new { SeName = @secondItem.SeName })')" style="cursor: pointer;">
+                    @*<a href="@Url.RouteUrl("Category", new { SeName = @secondItem.SeName })" title="@secondItem.Name">@secondItem.Name</a>*@
+                    @secondItem.Name
+                </dt>
+                <dd>
+                    <div class="inner">
+                        @for (var k = 0; k < secondItem.Children.Count; k++)
+                        {
+                            var thirdItem = secondItem.Children[k];
+                            <a href="@Url.RouteUrl("Category", new { SeName = @thirdItem.SeName })" target="_blank" title="@thirdItem.Name">@thirdItem.Name</a>
+                        }
+                    </div>
+                </dd>
+            </dl>
+        }
+    </div>
+}
+
+

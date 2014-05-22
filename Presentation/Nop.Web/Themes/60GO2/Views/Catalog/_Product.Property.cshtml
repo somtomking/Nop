@@ -1,0 +1,221 @@
+﻿@model ProductDetailsModel
+@using Nop.Services.Helpers
+@using Nop.Web.Models.Catalog;
+
+<style>
+    .attributes dt {
+        width: 80px;
+        float: left;
+    }
+
+    .attributes dd {
+        float: left;
+    }
+
+    .option-list li input {
+        height: 30px;
+        line-height: 30px;
+    }
+
+    .option-list li label {
+        width: 200px;
+    }
+</style>
+
+<div class="proBasic-m">
+    <div class="proProperty">
+        <h1>
+            @if (!string.IsNullOrEmpty(Model.NameColor))
+            {
+                <span style="color: @Model.NameColor;">@Model.Name</span>
+            }
+            else
+            {
+                @Model.Name
+            }
+            @if (!string.IsNullOrEmpty(@Model.SubNameColor))
+            {
+                <span style="color: @Model.SubNameColor;">@Model.SubName</span>
+            }
+            else
+            {
+                @Model.SubName
+            }
+        </h1>
+        <ul class="propertyList">
+            <!--product manufacturers-->
+            @Html.Action("ProductBrand", "Catalog", new { productId = Model.Id })
+            @if (!String.IsNullOrWhiteSpace(Model.Sku) && Model.ShowSku)
+            {
+                <li>
+                    <label>@T("Products.Sku")：</label><span>@Model.Sku</span></li>
+            }
+            <li>
+                <label>@T("Products.Weight")：</label><span>@Model.Weight</span></li>
+            <!--attributes-->
+            @{
+                var dataDictAttributes = new ViewDataDictionary();
+                dataDictAttributes.TemplateInfo.HtmlFieldPrefix = string.Format("attributes_{0}", Model.Id);
+                @Html.Partial("_ProductAttributes", Model.ProductVariantAttributes, dataDictAttributes)                  
+            }
+            @{
+                var dataDictPrice = new ViewDataDictionary();
+                dataDictPrice.TemplateInfo.HtmlFieldPrefix = string.Format("price_{0}", Model.Id);
+                @Html.Partial("_ProductPrice", Model.ProductPrice, dataDictPrice)
+            }
+            @*    <li>
+        <label>@T("Products.MemberDiscount")： </label>
+        <a href="#">登录查看</a> <span class="discount">9.7折</span></li>*@
+            <li>
+                @{
+                   // var showSelQuantity = Model.CustomerMaximumQuantity == 1 ? true : false;
+                    var dataDictAddToCart = new ViewDataDictionary();
+                    dataDictAddToCart.TemplateInfo.HtmlFieldPrefix = string.Format("addtocart_{0}", Model.Id);
+                    Model.AddToCart.ShowQuantity = true;
+                    Model.AddToCart.ShowButtons = false;
+                    Model.AddToCart.StockAvailability = Model.StockAvailability;
+                    @Html.Partial("_AddToCart", Model.AddToCart, dataDictAddToCart)
+                }
+                @* @Model.StockAvailability*@
+                &nbsp;
+                @*（剩余库存 <span class="cgreen">@Model.StockQuantity</span>）*@
+            </li>
+        </ul>
+        <ul class="serviceList clearfix">
+            @*<li class="icon_1hours">1小时送货上门</li>*@
+            <li class="icon_7days">7天无条件退货</li>
+            <li class="icon_service_brd">极速送达</li>
+        </ul>
+        @{Model.AddToCart.DisableAddToCartButton = true;}
+        @if (Model.ActivityProduct.Count > 0)
+        {
+            Model.AddToCart.DisableAddToCartButton = false;
+            var item = Model.ActivityProduct.Where(n =>  n.ProductId == @Model.Id).ToList().FirstOrDefault();
+            if (item != null)
+            {
+          
+                var totalSeconds = 0;
+                var now = DateTime.UtcNow;
+                var hour = 99;
+                var minute = 59;
+                var second = 59;
+                var isStart = item.Promotion.StartDateTimeUtc < DateTime.UtcNow &&
+                              item.Promotion.EndDateTimeUtc > DateTime.UtcNow;
+                var monthofdaycount = DateTime.DaysInMonth(item.Promotion.EndDateTimeUtc.Year, item.Promotion.EndDateTimeUtc.Month);
+                var isActivityEndAnHour = item.Promotion.EndDateTimeUtc < DateTime.UtcNow && item.Promotion.EndDateTimeUtc.AddHours(1) > DateTime.UtcNow;
+                if (isStart)
+                {
+                   // totalSeconds = (item.Promotion.EndDateTimeUtc.Hour - now.Hour) * 60 * 60 + (item.Promotion.EndDateTimeUtc.Minute - now.Minute) * 60 + (item.Promotion.EndDateTimeUtc.Second - now.Second);
+                    totalSeconds = (item.Promotion.EndDateTimeUtc.Year - now.Year) * 365 * monthofdaycount * 24 * 60 * 60 + (item.Promotion.EndDateTimeUtc.Month - now.Month) * monthofdaycount * 24 * 60 * 60 + (item.Promotion.EndDateTimeUtc.Day - now.Day) * 24 * 60 * 60 + (item.Promotion.EndDateTimeUtc.Hour - now.Hour) * 60 * 60 + (item.Promotion.EndDateTimeUtc.Minute - now.Minute) * 60 + (item.Promotion.EndDateTimeUtc.Second - now.Second);
+                }
+                else
+                {
+                   // totalSeconds = (item.Promotion.StartDateTimeUtc.Hour - now.Hour) * 60 * 60 + (item.Promotion.StartDateTimeUtc.Minute - now.Minute) * 60 + (item.Promotion.StartDateTimeUtc.Second - now.Second);
+                    totalSeconds = (item.Promotion.StartDateTimeUtc.Day - now.Day) * 24 * 60 * 60 + (item.Promotion.StartDateTimeUtc.Hour - now.Hour) * 60 * 60 + (item.Promotion.StartDateTimeUtc.Minute - now.Minute) * 60 + (item.Promotion.StartDateTimeUtc.Second - now.Second);
+                }
+                var hours = totalSeconds / 60 / 60;
+                if (hours < 100)
+                {
+                    hour = (int)hours;
+                    minute = (int)((totalSeconds - hour * 60 * 60) / 60);
+                    second = (int)(totalSeconds - hour * 60 * 60 - minute * 60);
+                }
+                else 
+                {
+                    hour = 99;
+                    minute = 59;
+                    second = 59;
+                    totalSeconds = 59 + 59 * 60 + 99 * 60 * 60;
+                }
+            
+            <div class="xsqg-banner">
+                <span class="countdown-price beleft">抢购价：<big><strong>@Model.ProductPrice.SpecialPrice</strong></big></span>
+                @if (!isActivityEndAnHour)
+                {
+                    <span class="point-watch beright"><span class="watch_title">@(isStart ? "剩余" : "离开始")</span> <s class="hand hand-h"><s class="digital digital-0 " id="hour_1">@hour.ToString("00").Substring(0, 1)</s><s class="digital digital-0 " id="hour_2">@hour.ToString("00").Substring(1, 1)</s></s><b> : </b><s class="hand hand-m"><s class="digital digital-5 " id="minute_1">@minute.ToString("00").Substring(0, 1)</s><s class="digital digital-0 " id="minute_2">@minute.ToString("00").Substring(1, 1)</s></s><b> : </b><s class="hand hand-s"><s class="digital digital-3 " id="second_1">@second.ToString("00").Substring(0, 1)</s><s class="digital digital-9 " id="second_2">@second.ToString("00").Substring(1, 1)</s></s></span>
+                }
+                else
+                {
+                    <span class="point-watch beright">抢购活动已结束</span>
+                }
+            </div>
+            <script type="text/javascript">
+                setTimeout("countdown(@totalSeconds)", 1000);
+            </script>
+            }
+            else
+            {
+                Model.AddToCart.DisableAddToCartButton = true;
+            }
+        }
+        <div class="btnArea">
+            @{
+                Model.AddToCart.ShowQuantity = false;
+                Model.AddToCart.ShowButtons = true;
+                @Html.Partial("_AddToCart", Model.AddToCart, dataDictAddToCart)                              
+            }
+        </div>
+
+    </div>
+</div>
+@{
+    var paymethodIconFolder = "/Themes/60GO2/Content/images/";
+}
+<div class="proBasic-r">
+    @Html.Partial("_ReviewSummary", Model.ReviewSummary)
+    <div class="proOther clearfix">
+        <h5>支付方式</h5>
+        <div class="con">
+            @foreach (var pm in Model.PaymentMethods)
+            {
+                if (pm.SubItemList == null || pm.SubItemList.Count == 0)
+                {                         
+                <img src="@(paymethodIconFolder + pm.SmallIconUrl)" title="@pm.Name" alt="@pm.Name">
+                }
+            }
+        </div>
+    </div>
+    <div class="proOther clearfix">
+        <h5>分享此商品</h5>
+        <div class="con">
+            @Html.Action("ShareButton", "Catalog")
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function countdown(totalSeconds) {
+        totalSeconds = totalSeconds - 1;
+        var hour = parseInt(totalSeconds / 60 / 60);
+        if (isNaN(hour))
+            hour = 0;
+        var minute = parseInt((totalSeconds - hour * 60 * 60) / 60);
+        if (isNaN(minute))
+            minute = 0;
+        var second = parseInt(totalSeconds - hour * 60 * 60 - minute * 60);
+        if (isNaN(second))
+            second = 0;
+
+        hour = hour.toString();
+        if (hour.length == 1)
+            hour = "0" + hour;
+        minute = minute.toString();
+        if (minute.length == 1)
+            minute = "0" + minute;
+        second = second.toString();
+        if (second.length == 1)
+            second = "0" + second;
+
+
+        $("#hour_1").html(hour.substring(0, 1));
+        $("#hour_2").html(hour.substring(1, 2));
+        $("#minute_1").html(minute.substring(0, 1));
+        $("#minute_2").html(minute.substring(1, 2));
+        $("#second_1").html(second.substring(0, 1));
+        $("#second_2").html(second.substring(1, 2));
+
+        if (totalSeconds > 0) {
+            setTimeout("countdown(" + totalSeconds + ")", 1000);
+        }
+    }
+</script>

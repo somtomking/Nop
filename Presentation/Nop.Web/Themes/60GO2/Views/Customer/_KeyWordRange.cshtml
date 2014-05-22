@@ -1,0 +1,29 @@
+﻿@model OrderFilteringModel.KeyWordRangeFilterModel
+@using Nop.Web.Models.Customer;
+
+@{Model.Enabled = true;  }
+
+@if (Model.Enabled)
+{
+
+    <li>
+        <input type="text" class="input-style input-m" id="itemproductnamekeyword" placeholder="@T("Filtering.KeyWordRangeFilter.PlaceHolder")" value="@Model.Item.Value" ></li>
+    <li>
+        <button type="submit" class="btn btn-green btn-sm" id="orderSearch">@T("Filtering.KeyWordRangeFilter.SearchButtonText")</button></li>
+    <script>
+
+        function order_search_form() {
+            
+            var input = $('#itemproductnamekeyword');
+            
+            var keyword = input.val();
+            var prevUrl = '@(Model.RemoveFilterUrl!=null?(Model.RemoveFilterUrl.Contains("?") ? Model.RemoveFilterUrl + "&" : Model.RemoveFilterUrl + "?"):"?")';            
+            prevUrl = prevUrl.replace(/&amp;/g, "&");
+            var surl = prevUrl + '@OrderFilteringModel.KeyWordRangeFilterModel.QUERYSTRINGPARAM=' + encodeURIComponent(keyword);
+
+            location = surl;
+                return false;
+
+            }
+    </script>
+}

@@ -1,0 +1,187 @@
+﻿@model TopicModel
+@using Nop.Web.Models.Topics;
+@using Nop.Core.Infrastructure.DependencyManagement;
+@using Nop.Core.Infrastructure;
+@using Nop.Core.Domain;
+@{
+    var isPopup = ViewBag.IsPopup;
+    if (isPopup == null || isPopup == false)
+    {
+        Layout = "~/Views/Shared/_ColumnsThree.cshtml";
+    }
+    else
+    {
+        /*pop-up windows*/
+        Layout = "~/Views/Shared/_RootPopup.cshtml";
+    }
+
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_my.css");
+
+    if (!Model.IsPasswordProtected)
+    {
+        Html.AddTitleParts(!String.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Title);
+        Html.AddMetaDescriptionParts(Model.MetaDescription);
+        Html.AddMetaKeywordParts(Model.MetaKeywords);
+    }
+
+    var storeLocation = EngineContext.Current.Resolve<Nop.Core.IWebHelper>().GetStoreLocation();
+    if (EngineContext.Current.Resolve<StoreInformationSettings>().SubDirectoryForStoreEnabled)
+    {
+        var currentStore = EngineContext.Current.Resolve<Nop.Core.IStoreContext>().CurrentStore;
+
+        if (storeLocation.EndsWith("/"))
+        {
+            if (!storeLocation.EndsWith("/" + currentStore.Hosts + "/", StringComparison.InvariantCultureIgnoreCase))
+            {
+                storeLocation += currentStore.Hosts + "/";
+            }
+        }
+        else
+        {
+            if (!storeLocation.EndsWith("/" + currentStore.Hosts, StringComparison.InvariantCultureIgnoreCase))
+            {
+                storeLocation += "/" + currentStore.Hosts + "/";
+            }
+        }
+    }
+}
+
+@if (Model.IsPasswordProtected)
+{
+    // For popup topics, use a minimal layout that includes the Ajax and jQuery scripts
+    if (isPopup != null && isPopup == true)
+    {
+        Layout = "~/Views/Shared/_RootPopup.cshtml";
+    }    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#ph-topic').hide();
+            $('#ph-password #password').select().focus();
+        });
+        function OnAuthenticateSuccess(context) {
+            if (context.Authenticated) {
+                $('#ph-title .page-title h1').html(context.Title);
+                if ($('#ph-title .page-title h1').text().length == 0) {
+                    $('#ph-title').hide();
+                }
+                $('#ph-topic .page-body').html(context.Body);
+                $('#ph-password').hide();
+                $('#ph-topic').show();
+            }
+            else {
+                $('#password-error').text(context.Error);
+                $('#ph-password #password').select().focus();
+            }
+        }
+    </script>
+    <div id="ph-password">
+        @using (Ajax.BeginRouteForm("TopicAuthenticate", new AjaxOptions
+        {
+            HttpMethod = "Post",
+            OnSuccess = "OnAuthenticateSuccess",
+            LoadingElementId = "authenticate-progress"
+        }))
+        {
+            @Html.HiddenFor(model => model.Id)
+            <div class="enter-password-title">
+                @T("Topic.EnterPassword")
+            </div>
+            <div class="enter-password-form">
+                @Html.Password("password")
+                <input type="submit" value="@T("Topic.Button")" class="button-1 topic-password-button"/>
+                <span id="authenticate-progress" style="display: none;" class="please-wait">@T("Common.Wait...")</span>
+            </div>
+            <div class="password-error">
+                <span id="password-error"></span>
+            </div>
+        }
+    </div>
+}
+<div class="container pad_t_10 mar_b_20 clearfix">
+    <div class="leftSide">
+        <script>$(document).ready(function () {
+    var elm = $('.fixedShow');
+    var startPos = $(elm).offset().top;
+    $.event.add(window, "scroll", function () {
+        var p = $(window).scrollTop();
+        if ((p) > startPos) {
+            $('.mycenterMenu').css('position', 'fixed');
+            $('.mycenterMenu').css('width', '180px');
+            $('.mycenterMenu').css('top', '0px');
+        }
+        else {
+            $('.mycenterMenu').css('position', '');
+            $('.mycenterMenu').css('width', 'auto');
+        }
+    });
+
+    var location = window.location.href;
+    var lastIndex = location.lastIndexOf("/");
+    var pageName = location.substring(lastIndex + 1);
+    var $li = $(".sub li");
+    $.each($li, function () {
+        var link = $(this).context.childNodes[0];
+        if (link.href.indexOf(pageName) > -1) {
+            $(this).addClass("on");
+        } else {
+            $(this).removeClass("on");
+        }
+    });
+});</script>
+        <div class="fixedShow"></div>
+        <div class="helpMenu">
+            <h2>帮助中心</h2>
+            <ul>
+                <li><a href="###" class="a1">新手入门</a>
+                    <ul class="sub">
+                        <li><a href="@(storeLocation)t/ProductGuarantee">正品保证</a></li>
+                        <li><a href="@(storeLocation)t/ShoppingFlow">购物流程</a></li>
+                        <li><a href="@(storeLocation)t/InvoiceRequest">发票开具</a></li>
+                        <li><a href="@(storeLocation)t/CustomerSupport">联系客服</a></li>
+                        <li><a href="@(storeLocation)t/FAQ">常见问题</a></li>
+                    </ul>
+                </li>
+                <li><a href="###" class="a1">配送服务</a>
+                    <ul class="sub">
+                        <li><a href="@(storeLocation)t/AcceptanceAndSign">商品验货及签收</a></li>
+                        <li><a href="@(storeLocation)t/DeliverySchedule">配送进度查询</a></li>
+                        <li><a href="@(storeLocation)t/DistributionRange">配送范围及运费</a></li>
+                        <li><a href="@(storeLocation)t/EveningReturnService">晚间达服务</a></li>
+                    </ul>
+                </li>
+                <li><a href="###" class="a1">支付方式</a>
+                    <ul class="sub">
+                        <li><a href="@(storeLocation)t/PaymentCashAccount">现金账户支付</a></li>
+                        <li><a href="@(storeLocation)t/PaymentGiftCard">礼品卡支付</a></li>
+                        <li><a href="@(storeLocation)t/PaymentVoucher">优惠券支付</a></li>
+                        <li><a href="@(storeLocation)t/PaymentNet">网上支付</a></li>
+                    </ul>
+                </li>
+                <li><a href="###" class="a1">售后服务</a>
+                    <ul class="sub">
+                        <li><a href="@(storeLocation)t/ReturnPolicy">退换货政策</a></li>
+                        <li><a href="@(storeLocation)t/ReturnFlow">退换货流程</a></li>
+                        <li><a href="@(storeLocation)t/ReturnFee">退换货费用</a></li>
+                        <li><a href="@(storeLocation)t/ReturnTiming">退款方式及时效</a></li>
+                        <li><a href="@(storeLocation)t/ReturnNote">退换货相关说明</a></li>
+                    </ul>
+                </li>
+                <li><a href="###" class="a1">自助服务</a>
+                    <ul class="sub">
+                        <li><a href="@(storeLocation)t/ReturnOnline">在线退换货</a></li>
+                        <li><a href="@(storeLocation)t/ReturnTel">电话退换货</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="rightSide">
+        <div class="helpCon mar_b_10">
+            <h2>@Model.Title</h2>
+            <div class="pad_20">
+                @Html.Raw(Model.Body)
+            </div>
+        </div>
+    </div>
+</div>
+

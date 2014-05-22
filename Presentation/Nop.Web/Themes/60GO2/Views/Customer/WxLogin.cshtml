@@ -1,0 +1,95 @@
+﻿@model WxLoginModel
+@using Nop.Web.Models.Customer;
+@{
+    var registerUrlParameters = new
+    {
+        openId = this.Context.Request.QueryString["openId"],
+        plantform = this.Context.Request.QueryString["plantform"],
+        returnUrl = this.Context.Request.QueryString["returnUrl"]
+    };
+}
+<!doctype html>
+<html>
+<head>
+    <title>60购</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="UTF-8">
+    <meta name="author" content="www.60go.cn">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/Themes/60GO2/Content/wx_css/global.css?v=20140401">
+    <link rel="stylesheet" href="/Themes/60GO2/Content/wx_css/view.css?v=20140401">
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        if (!string.IsNullOrEmpty(Model.LoginMessage))
+        {
+        <div id="message_dialog" class="dialog">
+            <div class="modal">
+                <div class="modal-header">
+                    <h4 class="modal-title">登录失败</h4>
+                </div>
+                <div class="modal-body clearfix" style="padding: 15px 0;">
+                    @Model.LoginMessage
+                </div>
+                <div class="modal-footer">
+                    <span class="btn03 btnOrange" onclick="close_dialog()">确定</span>
+                </div>
+            </div>
+        </div>
+        }
+        <div class="loginBg"></div>
+        <div class="logininput">
+            <span class="loginlogo"></span>
+            <div class="inputbox">
+                <div>
+                    @Html.TextBoxFor(model => model.Username, new { placeholder = "邮箱/手机号" })<br />
+                    @*       @Html.ValidationMessageFor(model => model.Username)*@
+                </div>
+            </div>
+            <div class="inputbox password">
+                <div>
+                    @Html.PasswordFor(model => model.Password, new { placeholder = "请输入密码" })<br />
+                    @*      @Html.ValidationMessageFor(model => model.Password)*@
+                </div>
+            </div>
+            <div class="btmBtn">
+                <div id="submit_btn_ele" onclick="login()" class="btn02 btnGreen">登录</div>
+                <input id="submit_btn" type="submit" style="display: none;" value="登录" />
+                <div onclick="wx_login()" class="btn02 btnGreen">
+                    <img src="/Themes/60GO2/Content/wx_images/weixinLogin.png" />微信一键登录
+                </div>
+            </div>
+            @*            <div class="otherLogin">
+                <div class="otherTitle">
+                    <i></i>
+                    使用三方帐号登录
+                    <i></i>
+                </div>
+                @Html.Action("ExternalMethods", "ExternalAuthentication", new
+                       {
+                           OpenId = HttpContext.Current.Request.QueryString["OpenId"],
+                           Plantform = HttpContext.Current.Request.QueryString["Plantform"]
+                       })
+            </div>*@
+        </div> 
+    }
+    <script type="text/javascript">
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            WeixinJSBridge.call('hideToolbar');
+        });
+
+        function login() {
+            document.getElementById("submit_btn").click();
+        }
+
+        function close_dialog() {
+            document.getElementById("message_dialog").style.display = "none";
+        }
+
+        function wx_login() {
+            document.location.href = "@Url.RouteUrl("Plugin.ExternalAuth.OAuth2.WeChat.Login", new { ReturnUrl = HttpContext.Current.Request.QueryString["returnUrl"] })";
+        }
+    </script>
+</body>
+</html>

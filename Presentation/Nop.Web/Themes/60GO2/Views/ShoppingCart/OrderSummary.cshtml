@@ -1,0 +1,250 @@
+﻿@model ShoppingCartModel
+@using Nop.Web.Models.ShoppingCart;
+@using Nop.Core.Domain.Orders;
+@{
+    
+}
+@if (Model.Items.Count > 0)
+{
+    @Html.Widget("order_summary_content_before")
+    if (Model.IsEditable)
+    {
+        if (Model.Warnings.Count > 0)
+        {
+    <div class="message-error">
+        <ul>
+            @for (int i = 0; i < Model.Warnings.Count; i++)
+            {
+                if (Model.Warnings[i] == T("ShoppingCart.ProductUnpublished").Text)
+                {
+                    continue;
+                }
+                <li>@Model.Warnings[i]</li>
+            }
+        </ul>
+    </div>
+        }
+    @Html.Partial("_OrderReviewData", Model.OrderReviewData)
+@*we add enctype = "multipart/form-data" because "File upload" attribute control type requries it*@
+        using (Html.BeginRouteForm("ShoppingCart", FormMethod.Post, new { enctype = "multipart/form-data", id = "shoppingcart_form" }))
+        {
+    <div class="cartMain">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tb_01">
+            <tr>
+                <th width="80">
+                    <input type="checkbox" onclick="AjaxCart.selectAllItems('@Url.RouteUrl("SelectAllCartItem")    ', this)" id="selectAllItems" checked="@(Model.Items.Count(sci => sci.Selected) == Model.Items.Count)" />
+                    @T("ShoppingCart.SelectAll")
+                </th>
+                <th width="400">
+                    @T("ShoppingCart.Product(s)")
+                    <span class="tags_01 mar_l_10">@Model.ShoppingCarMessage</span>
+                </th>
+                <th width="150">@T("ShoppingCart.UnitPrice")</th>
+                <th width="130">@T("ShoppingCart.Quantity")</th>
+                <th width="100">@T("ShoppingCart.ItemTotal")</th>
+                <th width="100">@T("ShoppingCart.Operation")</th>
+            </tr>
+            @foreach (var item in Model.Items)
+            {
+                <tr sciId="sci-@item.Id" id="items-@item.Id" class="@if (!item.Published)
+                                                                    {<text>bg02</text>}">
+                    <td align="center">
+                        @if (item.Published)
+                        {
+                            <input type="checkbox" name="removefromcart" value="@item.Id" checked="@item.Selected" storeId="@item.StoreId"
+                                onclick="AjaxCart.selectItem('@Url.RouteUrl("SelectCartItem", new { sciId = item.Id })    ',this,@item.Id);" />
+                        }
+                        else
+                        {
+                            <span class="tags_02">已下架</span>
+                        }
+                    </td>
+                    <td>
+                        <div class="td-inner">
+                            <div class="pic">
+                                <a href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })"  target="_blank">
+                                    <img src="@item.Picture.ImageUrl" />
+                                </a>
+                            </div>
+                            <div class="text">
+                                <a class="item-title" href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })"  target="_blank">
+                                    @item.ProductName
+                                </a>
+                                @if (!String.IsNullOrEmpty(item.AttributeInfo))
+                                {
+                                    <div class="cgray">
+                                        @Html.Raw(item.AttributeInfo)
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </td>
+                    <td align="center" id="unitPrice@(item.Id)">
+                        <div class="price">
+                            @item.UnitPrice
+                            @if (item.UnitPrice != item.OldPrice)
+                            {
+                                <em>@item.OldPrice</em>
+                            }
+                        </div>
+                    </td>
+                    <td align="center">
+                        @if (item.Published)
+                        {
+                            <div class="buy-num-01 mar_l_20">
+                                <a href="javascript:void(0)" class="minus" onclick="AjaxCart.minusQuantity('@Url.RouteUrl("UpdateCartItem", new { sciId = item.Id })    ',this,@item.Id,changeQuantityRequestSuccess);"></a>
+                                <span class="num-text">
+                                    <input name="itemquantity@(item.Id)" id="itemquantity@(item.Id)" onblur="AjaxCart.changedQuantity('@Url.RouteUrl("UpdateCartItem", new { sciId = item.Id })    ',this,@item.Id,changeQuantityRequestSuccess);" type="text" value="@item.Quantity" maxlength="2" />
+                                </span>
+                                <a href="javascript:void(0)" class="plus" onclick="AjaxCart.plusQuantity('@Url.RouteUrl("UpdateCartItem", new { sciId = item.Id })    ', this,@item.Id,changeQuantityRequestSuccess);"></a>
+                            </div>
+                        }
+                    </td>
+                    <td align="center" id="subTotal@(item.Id)">@item.SubTotal</td>
+                    <td align="center">
+                        <a href="javascript:void(0)" class="link_green" onclick="if(confirm('@T("ShoppingCart.DelCartItem")')){AjaxCart.deletecartitem(@item.Id,'@Url.RouteUrl("DelCartItem", new { sciId = item.Id })')}">@T("Common.Remove")</a>
+                        <br />
+                        <a title="@T("ShoppingCart.MoveToWishlist")" name="addtowishlist-@(item.Id)" class="link_green" href="javascript:void(0)" onclick="AjaxCart.addproducttowishlistfromcart(@item.Id,'@Url.RouteUrl("AddOneItemtoWishlistFromCart", new { sciId = item.Id })')">@T("ShoppingCart.MoveToWishlist")</a>
+                        <input type="submit" name="addtowishlist-@(item.Id)" value="@T("ShoppingCart.MoveToWishlist")" style="display: none;" />
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="totalArea">
+        <div class="row clearfix">
+            <div class="totalArea-l">
+                @if (Model.IsEditable)
+                {
+                    <input type="checkbox" onclick="AjaxCart.selectAllItems('@Url.RouteUrl("SelectAllCartItem")    ', this)" id="selectAllItems1" checked="@(Model.Items.Count(sci => sci.Selected) == Model.Items.Count)" />
+                    @T("ShoppingCart.SelectAll")
+                    <a href="javascript:void(0)" id="orderSummaryEndTag" class="mar_l_20" onclick="if(confirm('@T("ShoppingCart.DelCartItems")')){AjaxCart.deletecartitems('@Url.RouteUrl("DelCartItems")', '#shoppingcart_form');return false;}">@T("ShoppingCart.DeleteCartItems")</a>
+                    <a href="javascript:void(0)" class="mar_l_20" onclick="if(confirm('@T("ShoppingCart.ClearShoppingCart")')){AjaxCart.clearShoppingCart('@Url.RouteUrl("ClearShoppingCart")', '#shoppingcart_form');return false;}">@T("ShoppingCart.ClearCart")</a>
+                    <a href="javascript:void(0)" class="mar_l_20" onclick="AjaxCart.addproductstowishlistfromcart('@Url.RouteUrl("AddToWishlistFromCart")', '#shoppingcart_form');return false;">@T("ShoppingCart.MoveToWishlist")</a>
+                }
+            </div>
+            <div class="totalArea-r" id="sci-ordertotal">
+                @Html.Action("OrderTotals", "ShoppingCart", new { isEditable = Model.IsEditable })
+            </div>
+        </div>
+        <div class="btnArea">
+            @*<span>满300减20哦！您还差<strong class="corange">9</strong>元，赶紧再去选点东西吧！</span>*@
+            <input type="submit" id="continueshopping" name="continueshopping" value="@T("ShoppingCart.ContinueShopping")" class="btn btn-green btn-lg mar_l_20" />
+            <input type="submit" id="checkout" name="checkout" onclick="return checkSelectedAnything();" value="@T("Checkout.Button")" class="btn btn-orange btn-lg mar_l_20" />
+        </div>
+    </div>
+        }
+    }
+    else
+    {
+        if (Model.Items.Count > 5)
+        {
+    <table width="600" border="0" cellspacing="0" cellpadding="0" class="inventoryTable" id="total_products">
+        <tr>
+            <th>@T("ShoppingCart.ProductName(s)")</th>
+            <th>@T("ShoppingCart.TotalQuantity")</th>
+        </tr>
+        <tr>
+            <td align="center">
+                @T("ShoppingCart.ProductShortDesc", Model.Items[0].ProductName, Model.Items.Count)
+                <a href="javascript:void(0)" class="link_green" onclick="expendProductList(true)">@T("ShoppingCart.ExpendProductList")</a>
+            </td>
+            <td align="center">@Model.Items.Sum(i => i.Quantity)</td>
+        </tr>
+    </table>
+        }
+    <table width="600" border="0" cellspacing="0" cellpadding="0" class="inventoryTable" id="all_products" style="display: @(Model.Items.Count > 5 ? "none" : "")">
+        <tr>
+            <th>@T("ShoppingCart.Product(s)")</th>
+            <th>@T("ShoppingCart.UnitPrice")</th>
+            <th>@T("ShoppingCart.Quantity")</th>
+        </tr>
+        @for (var i = 0; i < Model.Items.Count; i++)
+        {
+            var item = Model.Items[i];
+            <tr>
+                <td>
+                    <div class="td-inner-s">
+                        <div class="pic">
+                            <a href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })"  target="_blank">
+                                <img src="@item.Picture.ImageUrl" />
+                            </a>
+                        </div>
+                        <div class="text">
+                            <a href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })"  target="_blank">
+                                @item.ProductName
+                            </a>
+                            @if (!String.IsNullOrEmpty(item.AttributeInfo))
+                            {
+                                <div class="cgray">
+                                    @Html.Raw(item.AttributeInfo)
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </td>
+                <td align="center">@item.UnitPrice</td>
+                <td align="center">x@(item.Quantity)</td>
+            </tr>
+        }
+        @if (Model.Items.Count > 5)
+        {
+            <tr>
+                <td colspan="3" align="center"><a href="javascript:void(0)" class="link_green" onclick="expendProductList(false)">@T("ShoppingCart.ShrinkProductList")</a></td>
+            </tr>
+        }
+@*@Html.Action("OrderTotals", "ShoppingCart", new { isEditable = Model.IsEditable })*@
+    </table>
+    }
+    @Html.Widget("order_summary_content_after")
+    <script type="text/javascript">
+        function expendProductList(isExpend) {
+            if (isExpend) {
+                $("#all_products").show();
+                $("#total_products").hide();
+            }
+            else {
+                $("#all_products").hide();
+                $("#total_products").show();
+            }
+        }
+    </script>
+}
+else
+{
+@*shopping cart is empty*@
+    <div class="cart_no_box">
+        <p class="f16px">
+            @T("ShoppingCart.Empty")
+        </p>
+        <p>
+            <button type="button" class="btn btn-green btn-sm" onclick="setLocation('@Url.RouteUrl("HomePage")')">@T("ShoppingCart.ShoppingNow")</button>
+        </p>
+    </div>
+}
+<script type="text/javascript">
+    function checkSelectedAnything() {
+        var haveCheckedAnything = false;
+        var checklists = document.getElementsByName("removefromcart");
+        for (var i = 0; i < checklists.length; i++) {
+            if (checklists[i].checked) {
+                haveCheckedAnything = true;
+                break;
+            }
+        }
+        if (!haveCheckedAnything) {
+            alert('@T("ShoppingCart.NotCheckedAnything")');
+            return false;
+        }
+        return true;
+    }
+
+    function changeQuantityRequestSuccess(response, id) {
+        if (response.success) {
+            AjaxCart.success_desktop(response);
+        } else {
+            alert(response.message);
+            $('#itemquantity' + id).val(response.updateSciQuantity);
+        }
+    }
+</script>

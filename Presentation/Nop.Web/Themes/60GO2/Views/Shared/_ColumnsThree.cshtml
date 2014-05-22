@@ -1,0 +1,50 @@
+﻿@{
+    Layout = "~/Views/Shared/_Root.cshtml";
+}
+@section _header{
+    @if (IsSectionDefined("_header"))
+    {
+        @RenderSection("_header", false)
+    }
+    else
+    {
+        @Html.Partial("Header")
+    }
+}
+@section _menu{
+    @if (IsSectionDefined("_menu"))
+    { 
+        @RenderSection("_menu", false)
+    }
+    else
+    {
+        <div class="nav">
+            <div class="container">
+                @Html.Action("Menu", "Common")
+            </div>
+        </div>
+    }
+}
+@section _footer_before{
+    @if (IsSectionDefined("_footer_before"))
+    { 
+        @RenderSection("_footer_before", false)
+    }
+    else
+    {  
+        @Html.Partial("Footer.Before")    
+    }
+}
+@section _floatarea{
+    @if (IsSectionDefined("_floatarea"))
+    {
+        @RenderSection("_floatarea", false)
+    }
+    else
+    {
+        @Html.Action("FloatArea", "Common", new { pageTurningEnabled = false })
+    }
+}
+@Html.Widget("main_column_before")
+@RenderBody()
+@Html.Widget("main_column_after")

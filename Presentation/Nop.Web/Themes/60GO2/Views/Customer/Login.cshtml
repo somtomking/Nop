@@ -1,0 +1,65 @@
+﻿@model LoginModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core;
+@using Nop.Core.Infrastructure;
+@{
+    Html.AddTitleParts(T("PageTitle.Login").Text);
+    Layout = "~/Views/Shared/_LoginMaster.cshtml";
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_login.css");
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.login.js");
+
+    //register URL with return URL (if specified)
+    var registerUrl = Url.RouteUrl("Register");
+    if (!String.IsNullOrEmpty(this.Context.Request.QueryString["returnUrl"]))
+    {
+        var webHelper = EngineContext.Current.Resolve<IWebHelper>();
+        registerUrl = webHelper.ModifyQueryString(registerUrl, "returnurl=" + HttpUtility.UrlEncode(this.Context.Request.QueryString["returnUrl"]), null);
+    }
+}
+
+<div class="login-box">
+    <div id="login-box" class="login">
+        <h3><strong>@T("Account.Login.Welcome")</strong></h3>
+        @using (Html.BeginForm("Login", null, FormMethod.Post, new { id = "login-form", onsubmit = "return false;" }))
+        { 
+            <input type="hidden" name="returnurl" value="@Request.QueryString["returnUrl"]" />
+            <div class="tipsPostion">
+                <div id="errorMsg" class="box-error-s" @if (string.IsNullOrEmpty(@Model.LoginMessage))
+                                                       { <text>style="display: none;"</text>}>@Model.LoginMessage
+                </div>
+            </div>
+            @Html.Partial("_ExternalAuthentication.AssociateMessage")
+            @Html.Partial("_ExternalAuthentication.Errors")
+            <p class="clearfix">
+                <span class="user"></span>
+                @Html.TextBoxFor(m => m.Username, new { @class = "login-input", placeholder = T("Account.Fields.Username.Hint"), maxlength = 40 })
+            </p>
+            <p class="clearfix">
+                <span class="lock"></span>
+                @Html.PasswordFor(m => m.Password, new { @class = "login-input", placeholder = T("Account.Login.Fields.Password"), maxlength = 20, onpaste = "return false" })
+            </p>
+            <p class="clearfix">
+                <label>
+                    @Html.CheckBoxFor(m => m.RememberMe)@T("Account.Login.Fields.RememberMe")
+                </label>
+                <a href="@Url.RouteUrl("PasswordRecovery")" class="beright"><u>@T("Account.Login.ForgetPasswordLink")</u></a>
+            </p>
+            <p class="clearfix">
+                <a id="register_btn" href="javascript:void(0);" class="btn btn-green btn-block">@T("Account.Login.LoginButton")</a>
+                <input id="submit_btn" style="display: none;" type="submit" value="" />
+            </p>
+            <p class="clearfix">@Html.Action("ExternalMethods", "ExternalAuthentication")</p>       
+            <p class="clearfix">
+                <a href="@registerUrl" class="btn btn-orange btn-block">@T("Account.Login.RegisterLink")</a>
+            </p>
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    Login.init("@Html.FieldIdFor(model => model.Username)",
+        "@Html.FieldIdFor(model => model.Password)",
+        {
+            EmailRequired: "@T("Account.Login.Fields.Email.Required")",
+            PasswordRequired: "@T("Account.Login.Fields.Password.Required")"
+        });
+</script>

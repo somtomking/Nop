@@ -1,0 +1,99 @@
+﻿@model ExternalAuthBindModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core.Domain.Customers;
+@{
+    Layout = "~/Views/Shared/_LoginMaster.cshtml";
+    Html.AddTitleParts(T("PageTitle.ExternalAuthBind").Text);
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_login.css");
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.authenticode.js");
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.externalauthbind.js");
+}
+<div class="reg-box">
+    <div class="password clearfix">
+        <h3><strong>@T("Account.ExternalAuthBind")</strong></h3>
+        <div class="reg-l">
+            <div class="tipsPostion">
+                <div id="errorMsgBox" class="box-error-s"  @if (string.IsNullOrEmpty(Model.Message))
+                                                           {<text>style="display: none;"</text>}>@Html.ValidationSummary(true)
+                </div>
+            </div>
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "externalauthbind-form", onsubmit = "return false;" }))
+            {
+                @Html.AntiForgeryToken()         
+                @Html.Partial("_ExternalAuthentication.AssociateMessage") 
+                <input type="hidden" name="returnurl" value="@Request.QueryString["returnUrl"]" />    
+                <div class="formList" role="form">
+                    <dl class="clearfix">
+                        <dt><a href="###">
+                            @{var imgUrl = string.IsNullOrEmpty(Model.UserIconUrl) ? "/Themes/60GO2/Content/images/comment_user.jpg" : Model.UserIconUrl;}
+                            <img src="@imgUrl" class="userIcon" height="80" width="80"></a></dt>
+                        <dd><strong>@Model.Nickname</strong>，您好<br>
+                            立即设置一个密码，以后就可以直接登录60购了！</dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>@T("Account.Fields.Username")：</dt>
+                        <dd>
+                            @Html.TextBoxFor(model => model.Username, new { @class = "input-style input-m", placeholder = T("Account.Fields.Username.Hint"), maxlength = 40 })
+                            <em id="username_ok" style="display: none;" class="status-ok"></em>
+                        </dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>@T("Account.Fields.Authenticode")：</dt>
+                        <dd>
+                            @Html.TextBoxFor(model => model.Authenticode, new { @class = "input-style input-s", placeholder = T("Account.Fields.Authenticode.Hint"), maxlength = 6 })
+                        </dd>
+                        <dd>
+                            <a id="get_authenticode_btn" class="uline mar_l_10" href="javascript:void(0);">@T("Common.AuthenticodeButton.Get")</a>
+                            <span id="again_get_authenticode_time" class="cgray mar_l_10" style="display: none"></span>
+                            <em id="authenticode_ok" style="display: none;" class="status-ok"></em>
+                        </dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>@T("Account.Fields.Password")：</dt>
+                        <dd>
+                            @Html.PasswordFor(model => model.Password, new { @class = "input-style input-m", placeholder = T("Account.Fields.Password.Hint"), maxlength = 16, onpaste = "return false" })
+                            <em id="password_ok" style="display: none;" class="status-ok"></em>
+                        </dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>@T("Account.Fields.ConfirmPassword")：</dt>
+                        <dd>
+                            @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-style input-m", placeholder = T("Account.Fields.ConfirmPassword.Hint"), maxlength = 16, onpaste = "return false" })
+                            <em id="confirmpassword_ok" style="display: none;" class="status-ok"></em>
+                        </dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>&nbsp;</dt>
+                        <dd>
+                            <input id="cb_license" type="checkbox" checked="checked">
+                            <label for="cb_license">@T("Account.Register.LicenseText")<a href="#">@T("Account.Register.LicenseTitle")</a></label>
+                        </dd>
+                    </dl>
+                    <dl class="clearfix">
+                        <dt>&nbsp;</dt>
+                        <dd>
+                            <input id="bind_btn" type="button" class="btn btn-orange btn-lg" value="@T("Account.ExternalAuthBind.Button")" />
+                            <input id="submit_btn" style="display: none;" type="submit" value="" />
+                            <a href="@Url.RouteUrl("HomePage")" class="mar_l_20">@T("Account.ExternalAuthBind.StopBind")&gt;&gt;</a>
+                        </dd>
+                    </dl>
+                </div> 
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    Authenticode.init("get_authenticode_btn","again_get_authenticode_time",
+         "@T("Common.AuthenticodeButton.Stop")",
+         "@Url.Action("GetExternalAuthBindAuthenticode")",
+         @Model.AgainGetAuthenticodeSpacingTime);
+
+    ExternalAuthBind.init("@Html.FieldIdFor(model => model.Username)",
+        "@Html.FieldIdFor(model => model.Authenticode)",
+        "@Html.FieldIdFor(model => model.Password)",
+        "@Html.FieldIdFor(model => model.ConfirmPassword)",
+        "@Url.Action("CheckMobileAvailability")",
+        "@Url.Action("CheckEmailAvailability")",
+        "@Url.Action("CheckExternalAuthBindAuthenticode")");
+</script>
+

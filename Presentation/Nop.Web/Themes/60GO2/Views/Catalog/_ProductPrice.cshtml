@@ -1,0 +1,66 @@
+﻿@model ProductDetailsModel.ProductPriceModel
+@using Nop.Web.Models.Catalog;
+@using System.Globalization;
+@using System.Text.RegularExpressions;
+@{
+    string pattern = "(?<val>(\\d+[\\s\\,\\.]?)+)";
+    string replacement = String.Format("<span class=\"price-val-for-dyn-upd-{0}\">${{val}}</span> ", Model.ProductId);  
+}
+@if (Model.DynamicPriceUpdate)
+{
+    <script type="text/javascript">
+        var priceValForDynUpd_@(Model.ProductId) = @(((float)(Model.PriceValue != Model.PriceWithDiscountValue ? Model.PriceWithDiscountValue : Model.PriceValue)).ToString(new CultureInfo("en-US")));
+    </script>
+}
+<li>
+    <label>@T("Products.Price"):</label>
+    @if (Model.CustomerEntersPrice)
+    {
+@*display nothing*@
+    }
+    else if (Model.CallForPrice)
+    {
+@*call for price*@
+        <h3>
+            <span>@T("Products.CallForPrice")</span>
+        </h3>
+    }
+    else
+    {
+        <h3>
+            @*render price*@
+            @if (!String.IsNullOrWhiteSpace(Model.PriceWithDiscount))
+            {
+@*discounted price*@
+                if (Model.DynamicPriceUpdate && !Model.HidePrices)
+                {
+                @Html.Raw(Regex.Replace(Model.PriceWithDiscount, pattern, replacement))
+                }
+                else
+                {
+                @Html.Raw(Model.PriceWithDiscount)
+                }
+            }
+            else
+            {
+                if (Model.DynamicPriceUpdate && !Model.HidePrices && String.IsNullOrWhiteSpace(Model.PriceWithDiscount))
+                {
+                @Html.Raw(Regex.Replace(Model.Price, pattern, replacement))
+                }
+                else
+                {
+                @Html.Raw(Model.Price)
+                }
+            }
+            @if (!String.IsNullOrEmpty(Model.CurrencyCode))
+            {
+                <meta itemprop="priceCurrency" content="@Model.CurrencyCode" />
+            }
+            @if (!String.IsNullOrWhiteSpace(Model.OldPrice))
+            {
+@*old price*@
+                <small>(@Model.OldPrice)</small>
+            }
+        </h3>
+    }
+</li>

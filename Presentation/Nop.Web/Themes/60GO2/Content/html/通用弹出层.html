@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>60购</title>
+<link href="../css/include_my.css" rel="stylesheet" />
+<script src="../js/jquery-1.7.min.js"></script>
+<script src="../js/jquery.lightbox_me.js"></script>
+<!--[if IE 6]>
+    <script src="../js/DD_belatedPNG.js"></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+<script charset="utf-8">
+	$(function() {
+		function launch() {
+			 $('#dialog').lightbox_me({centered: true, onLoad: function() { $('#dialog').find('input:first').focus()}});
+		}
+		$('#dialog-chick').click(function(e) {
+			$("#dialog").lightbox_me({centered: true, onLoad: function() {
+				$("#dialog").find("input:first").focus();
+			}
+		});
+		e.preventDefault();
+	});
+	$('table tr:nth-child(even)').addClass('stripe');
+});
+</script>
+</head>
+
+<body>
+<div class="pad_20">
+	<a id="dialog-chick" class="btn btn-orange btn-sm" href="###">点击弹出</a>
+	<!-- Modal -->
+	<div id="dialog" style="display:none;">
+		<div class="modal" id="inline_content">
+			<a href="###" class="close closeBtn"></a>
+			<div class="modal-header">
+				<h4 class="modal-title">通用弹出层</h4>
+			</div>
+			<div class="modal-body clearfix">
+				<p>通用弹出层样式，宽度可以自行修改</p>
+			</div>
+			<div class="modal-footer text-center">
+				<a href="###" class="btn btn-orange">确定</a><a href="###" class="btn btn-default mar_l_20 close">取消</a>
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->
+</div>
+</body>
+</html>

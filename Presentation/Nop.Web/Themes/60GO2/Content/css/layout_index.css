@@ -1,0 +1,623 @@
+﻿@charset "utf-8";
+	/*
+for index layout---------------------------*/
+	#full-screen-slider {
+	height: 400px;
+	overflow: hidden;
+	clear: both;
+	position: relative;
+	z-index: 2;
+	-moz-box-shadow: 0 5px 5px #ccc;
+	-webkit-box-shadow: 0 5px 5px #ccc;
+	box-shadow: 0 5px 5px #ccc;
+}
+#slides {
+	display: block;
+	width: 100%;
+	height: 400px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	z-index: 1;
+}
+#slides li {
+	display: block;
+	width: 100%;
+	height: 400px;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	z-index: 1;
+}
+#slides li a {
+	display: block;
+	width: 100%;
+	height: 400px;
+	text-indent: -9999px
+}
+#pagination {
+	display: block;
+	list-style: none;
+	position: absolute;
+	left: 50%;
+	bottom: 10px;
+	z-index: 1;
+	padding: 5px 0;
+	margin: 0
+}
+#pagination li {
+	display: block;
+	list-style: none;
+	width: 15px;
+	height: 15px;
+	overflow: hidden;
+	float: left;
+	margin-left: 15px;
+	border-radius: 10px;
+	background: #666 }
+#pagination li a {
+	display: block;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	text-indent: -9999px;
+}
+#pagination li.current {
+	background: #f60
+}
+.adBox_01 {
+	width: 220px;
+	position: absolute;
+	top: -12px;
+	right: 0;
+	z-index: 999;
+}
+.adBox_01 .title {
+	width: 220px;
+	height: 48px;
+	background: url(../images/ad_01_t.png) no-repeat;
+}
+.adBox_01 .con {
+	-moz-box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+	-webkit-box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+	box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.grayBox {
+	padding: 20px;
+	margin-bottom: 20px;
+	background-color: #ececec;
+	-moz-box-shadow: 0px -5px 5px #ccc inset;
+	-webkit-box-shadow: 0px -5px 5px #ccc inset;
+	box-shadow: 0px -5px 5px #ccc inset;
+}
+.classList {
+	float: left;
+	width: 630px;
+	padding: 0px;
+	background-color: #fff;
+}
+.classList ul {
+	overflow: hidden;
+}
+.classList li {
+	width: 192px;
+	float: left;
+	display: inline;
+	vertical-align: middle;
+	padding: 8px;
+	border-left: 1px dashed #ccc;
+	border-top: 1px dashed #ccc;
+	margin: -1px 0 0 -1px;
+}
+.classList li a {
+	float: left;
+	width: 190px;
+	height: 75px;
+	overflow: hidden;
+	border: 1px solid #fff;
+}
+.classList li a:hover{
+	border:1px solid #f60;
+}
+@media screen and (min-width:0) {
+	.classList li a:hover {
+		border:1px solid #fff;
+		transition:100ms;
+		transform:rotate(1deg) scale(1.05);/*兼容性强*/
+		-ms-transform:rotate(1deg) scale(1.05);/*ie9以上*/
+		-webkit-transform:rotate(1deg) scale(1.05);/*chrome safria opera*/
+	}
+}
+.mrysBox {
+	float: left;
+	margin-left: 10px;
+	display: inline;
+	width: 240px;
+	height: 185px;
+	position: relative;
+	z-index: 100;
+}
+.mrysBox .title {
+	height: 24px;
+	padding: 0 10px;
+	line-height: 24px;
+	border-bottom: 1px solid #ffd7bc;
+	background-color: #f50;
+}
+.mrysBox .title h2 {
+	font-size: 14px;
+	color: #fff;
+}
+.adBox_02 {
+	width: 240px;
+	height: 160px;
+	overflow: hidden;
+	background-color: #fff;
+}
+.slideNum {
+	float: right;
+	height: 10px;
+	position: absolute;
+	right: 5px;
+	top: 8px;
+	z-index: 100;
+}
+.slideNum a {
+	float: left;
+	margin: 0 3px;
+	display: inline;
+	width: 8px;
+	height: 8px;
+	overflow: hidden;
+	border-radius: 8px;
+	background-color: #aaa;
+}
+.slideNum a.on {
+	background-color: #fff;
+}
+.flashSale {
+	float: right;
+	width: 240px;
+	height: 185px;
+	overflow: hidden;
+	background-color: #fff;
+	position: relative;
+	z-index: 100;
+}
+.flashSale .title {
+	height: 24px;
+	padding: 0 10px;
+	line-height: 24px;
+	border-bottom: 1px solid #ffd7bc;
+	background-color: #f50;
+}
+.flashSale .title h2 {
+	font-size: 14px;
+	color: #fff;
+}
+.flashSale .con {
+	padding: 5px 10px;
+}
+.flashSale .time {
+	margin-bottom: 10px;
+	line-height: 24px;
+}
+.flashSale .time b {
+	float: left;
+	font-size: 20px;
+	padding: 0 3px;
+	line-height: 24px;
+	height: 24px;
+	background-color: #2e2e2e;
+	color: #fff;
+	margin: 0 2px;
+}
+.flashSale .time em {
+	float: left;
+	font-style: normal;
+	font-size: 24px;
+	margin: 0 2px;
+}
+.flashSale .pic {
+	float: left;
+	width: 100px;
+	height: 100px;
+	border: 1px solid #ddd;
+	overflow: hidden;
+}
+.flashSale .text {
+	float: right;
+	width: 110px;
+}
+.flashSale .text h2 {
+	font-size: 12px;
+	color: #333;
+	margin-bottom: 5px;
+	height:3em;
+	overflow:hidden;
+}
+.flashSale .text p {
+	margin-bottom: 5px;
+}
+.flashSale .text p strong {
+	font-size: 16px;
+	color: #f60;
+}
+.flashSale .text p span {
+	font-size: 12px;
+	color: #999;
+	text-decoration: line-through;
+}
+.flashSale .progress {
+	height: 10px;
+	width: 40px;
+	float: left;
+	margin: 4px 0 0 3px;
+}
+.indexBox {
+	clear: both;
+	margin-bottom: 20px;
+}
+.indexBox .title {
+	float: left;
+	width: 187px;
+	padding: 7px 10px 7px 7px;
+	color: #fff;
+}
+.indexBox .title h2 {
+	color: #fff;
+	font-size: 24px;
+	line-height: 35px;
+	padding-bottom: 10px;
+}
+.indexBox .title a {
+	color: #fff;
+}
+.indexBox .title a:hover {
+	color: #f60;
+}
+.indexBox .subClass {
+	border-top: 1px dashed #fff;
+	padding: 8px 0 0;
+	margin-bottom: 10px;
+	height: 152px;
+	overflow: hidden;
+}
+.indexBox .subClass a {
+	display: inline-block;
+	padding: 0 3px;
+	margin: 0 15px 4px 0;
+}
+.indexBox .subClass a:hover {
+	background-color: #fff;
+}
+.indexBox .more {
+	height: 30px;
+	clear: both;
+	border-bottom: 1px dashed #fff;
+	margin-bottom: 10px;
+}
+.indexBox .more .btn {
+	color: #fff;
+	padding: 2px 10px;
+	float: right;
+}
+.indexBox .more .btn:hover {
+	color: #fff;
+}
+.indexBox .list {
+	float: left;
+	width: 930px;
+	background-color: #fff;
+}
+.indexBox .list ul {
+	margin: 0;
+}
+.indexBox .list ul li {
+	float: left;
+	width: 186px;
+	height: 260px;
+}
+.indexBox .list ul li .btn-cart-b {
+	display: none;
+}
+.indexBox .list ul li .pic {
+	width: 185px;
+	height: 185px;
+	overflow: hidden;
+	background-color: #fff;
+	border-left: 1px solid #eee;
+	position: relative;
+	z-index: 1;
+}
+.indexBox .list ul li .pic img {
+	width: 100%;
+	height: auto;
+}
+.indexBox .list ul li .text {
+	width: 164px;
+	padding: 8px 10px 5px;
+	background-color: #f3f3f3;
+	border-left: 1px solid #eee;
+}
+.indexBox .list ul li .text h2 {
+	height: 28px;
+	line-height: 14px;
+	font-size: 12px;
+	color: #333;
+}
+.indexBox .list ul li .text h2 a {
+	color: #333;
+}
+.indexBox .list ul li .text h2 a:hover {
+	color: #f60;
+}
+.indexBox .list ul li .text p {
+	float: left;
+	margin: 0;
+	padding: 5px 0 0;
+	height: 30px;
+	line-height: 15px;
+	font-size: 14px;
+	color: #f84d00;
+}
+.indexBox .list ul li .text p em {
+	font-size: 12px;
+	color: #999;
+	text-decoration: line-through;
+	font-style: normal;
+	font-weight: normal;
+}
+.indexBox .list ul li .btns {
+	padding: 0 10px;
+	background-color: #cecece;
+	border-left: 1px solid #eee;
+}
+.indexBox .list ul li:hover {
+	position: relative;
+	z-index: 100;
+}
+.indexBox .list ul li:hover .inner {
+	position: absolute;
+	top: -10px;
+	left: -10px;
+	z-index: 1;
+	width: 206px;
+	height: 280px;
+	border: 1px solid #f60;
+	-moz-box-shadow: 0 2px 5px #f60;
+	-webkit-box-shadow: 0 2px 5px #f60;
+	box-shadow: 0 2px 5px #f60;
+}
+.indexBox .list ul li:hover .inner .pic {
+	width: 205px;
+	height: 205px;
+	overflow: hidden;
+	background-color: #fff;
+	border-left: 1px solid #eee;
+	position: relative;
+	z-index: 1;
+}
+.indexBox .list ul li:hover .inner .text {
+	width: 184px;
+	padding: 7px 10px 5px;
+	background-color: #f3f3f3;
+	border-left: 1px solid #eee;
+}
+.indexBox .list ul li:hover .btn-cart-b {
+	display: block;
+	float: right;
+}
+.adBox_03 {
+	width: 187px;
+	height: 250px;
+	overflow: hidden;
+	text-align: center;
+	line-height: 260px;
+	background-color: #fff;
+	position: relative;
+	z-index: 1;
+}
+.adBox_03 img {
+	width: 100%;
+	height: auto;
+	-moz-box-shadow: 5px 5px 1px #ccc inset;
+	-webkit-box-shadow: 5px 5px 5px #ccc inset;
+	box-shadow: 5px 5px 5px #ccc inset;
+}
+.adBox_03 .btn {
+	border-radius: 5px 0 0 5px;
+	color: #fff;
+	padding: 2px 10px 2px;
+	position: absolute;
+	right: 0;
+	bottom: 10px;
+	-moz-box-shadow: 0 2px 3px #999;
+	-webkit-box-shadow: 0 2px 3px #999;
+	box-shadow: 0 2px 3px #999;
+}
+.indexBox .adBox_03 .btn:hover {
+	color: #ff0;
+}
+.adBox_04 {
+	clear: both;
+	width: 1140px;
+	height: 60px;
+	overflow: hidden;
+	text-align: center;
+	margin-bottom: 20px;
+}
+.indexBox-01 {
+	padding: 3px;
+	background-color: #f36b18;
+}
+.indexBox-01 .title .more .btn {
+	background-color: #db5300;
+	border: none;
+}
+.indexBox-01 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-01 .adBox_03 .btn {
+	background-color: #f36b18;
+}
+.indexBox-01 .subClass a:hover {
+	color: #f36b18;
+}
+.indexBox-02 {
+	padding: 3px;
+	background-color: #8a4c8a;
+}
+.indexBox-02 .title .more .btn {
+	background-color: #762e76;
+	border: none;
+}
+.indexBox-02 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-02 .adBox_03 .btn {
+	background-color: #8a4c8a;
+}
+.indexBox-02 .subClass a:hover {
+	color: #8a4c8a;
+}
+.indexBox-03 {
+	padding: 3px;
+	background-color: #1f94cc;
+}
+.indexBox-03 .title .more .btn {
+	background-color: #0b7cb3;
+	border: none;
+}
+.indexBox-03 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-03 .adBox_03 .btn {
+	background-color: #1f94cc;
+}
+.indexBox-03 .subClass a:hover {
+	color: #1f94cc;
+}
+.indexBox-04 {
+	padding: 3px;
+	background-color: #5da321;
+}
+.indexBox-04 .title .more .btn {
+	background-color: #448a08;
+	border: none;
+}
+.indexBox-04 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-04 .adBox_03 .btn {
+	background-color: #5da321;
+}
+.indexBox-04 .subClass a:hover {
+	color: #5da321;
+}
+.indexBox-05 {
+	padding: 3px;
+	background-color: #cd1b49;
+}
+.indexBox-05 .title .more .btn {
+	background-color: #bc0837;
+	border: none;
+}
+.indexBox-05 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-05 .adBox_03 .btn {
+	background-color: #cd1b49;
+}
+.indexBox-05 .subClass a:hover {
+	color: #cd1b49;
+}
+.indexBox-06 {
+	padding: 3px;
+	background-color: #08af85;
+}
+.indexBox-06 .title .more .btn {
+	background-color: #009771;
+	border: none;
+}
+.indexBox-06 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-06 .adBox_03 .btn {
+	background-color: #08af85;
+}
+.indexBox-06 .subClass a:hover {
+	color: #08af85;
+}
+.indexBox-07 {
+	padding: 3px;
+	background-color: #bb3318;
+}
+.indexBox-07 .more .btn {
+	background-color: #a8240b;
+	border: none;
+}
+.indexBox-07 .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-07 .adBox_03 .btn {
+	background-color: #bb3318;
+}
+.indexBox-07 .subClass a:hover {
+	color: #bb3318;
+}
+.indexBox-08 {
+	padding: 3px;
+	background-color: #c62173;
+}
+.indexBox-08 .title .more .btn {
+	background-color: #a90c5a;
+	border: none;
+}
+.indexBox-08 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-08 .adBox_03 .btn {
+	background-color: #c62173;
+}
+.indexBox-08 .subClass a:hover {
+	color: #c62173;
+}
+.indexBox-09 {
+	padding: 3px;
+	background-color: #1d7b33;
+}
+.indexBox-09 .title .more .btn {
+	background-color: #0d6b23;
+	border: none;
+}
+.indexBox-09 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-09 .adBox_03 .btn {
+	background-color: #1d7b33;
+}
+.indexBox-09 .subClass a:hover {
+	color: #1d7b33;
+}
+.indexBox-10 {
+	padding: 3px;
+	background-color: #2d749d;
+}
+.indexBox-10 .title .more .btn {
+	background-color: #165f8a;
+	border: none;
+}
+.indexBox-10 .title .more .btn:hover {
+	background-color: #f40;
+}
+.indexBox-10 .adBox_03 .btn {
+	background-color: #2d749d;
+}
+.indexBox-10 .subClass a:hover {
+	color: #2d749d;
+}

@@ -1,0 +1,118 @@
+﻿@model ProductDetailsModel
+@using Nop.Web.Models.Catalog;
+@using Nop.Core.Domain.Orders;
+@* 前台页右下浮动组件 *@
+<div class="col-md-1">
+    <div class="fixedMenu">
+        <ul>
+            @if (Model.WishlistEnabled)
+            {
+                <li id="fixedWishlist"><a href="@Url.RouteUrl("Wishlist")"><span class="glyphicon glyphicon-star"></span>
+                    <br>
+                    @T("MyWishlist")</a><span class="numChat">@Model.WishlistItems</span>
+                    @Html.Action("FixedWishlist", "ShoppingCart")
+                </li>
+            }
+            @if (Model.ShoppingCartEnabled)
+            {
+                <li id="fixedShoppingCart"><a href="@Url.RouteUrl("ShoppingCart")" target="_cart"><span class="glyphicon glyphicon-shopping-cart glyphicon-target"></span>
+                    <br>
+                    @T("ViewShoppingCart")</a><span class="numChat">@Model.ShoppingCartItems</span>
+                    @Html.Action("FixedShoppingCart", "ShoppingCart")
+                </li>
+            }
+            <li><a href="#top" class="goTop">@T("GoTop")</a></li>
+        </ul>
+    </div>
+    <img alt="@Model.PictureModels[0].AlternateText" id="ctoid1" style="display: none;" src="@Model.PictureModels[0].FullSizeImageUrl" title="@Model.PictureModels[0].Title" />
+</div>
+@if (Model.WishlistEnabled)
+{
+    <script type="text/javascript">
+        $('#fixedWishlist').on('mouseenter', function () {
+            $('#fixedFlyoutWishlist').show();
+        });
+        $('#fixedWishlist').on('mouseleave', function () {
+            $('#fixedFlyoutWishlist').hide();
+        });
+    </script>
+}
+@if (Model.ShoppingCartEnabled)
+{
+    <script type="text/javascript">
+        $('#fixedShoppingCart').on('mouseenter', function () {     
+            $('#fixedFlyoutShoppingCart').show();
+        });
+        $('#fixedShoppingCart').on('mouseleave', function () {
+            $('#fixedFlyoutShoppingCart').hide();
+        });
+    </script>
+}
+<script type="text/javascript">
+    var gtPlay = {
+        begin: Array(0, 0),
+        end: Array(0, 0),
+        PicID: 0,
+        Num: 0,
+        Time: 0,
+        HandW: Array(0, 0, 0, 0),
+        stime: function () {
+            return this.Time / this.Num;
+        },
+        anmte: function (h) {
+            $("#" + this.PicID + h).animate({
+                top: this.end[0],
+                left: this.end[1],
+                width: this.HandW[2],
+                height: this.HandW[3]
+                //opacity:0.5,
+            }, 1000, "linear", function () {
+                $("#" + this.PicID + h).remove();
+                $(".playInfo").remove();
+                $('#fixedFlyoutShoppingCart').show();
+                setTimeout(function () {$('#fixedFlyoutShoppingCart').hide();}, 1500);
+                
+            });
+        },
+        Play: function () {
+            $("img[name=gtPlayname]").remove();
+            for (var i = 0; i < this.Num; i++) {
+                $("<img id='" + this.PicID + i + "' src='" + $("#" + this.PicID).attr("src") + "' class='playInfo' name='gtPlayname' style='clear:both; z-index:999; position:absolute; width:" + this.HandW[0] + "; height:" + this.HandW[1] + "; top:" + this.begin[0] + ";left:" + this.begin[1] + ";border:1px #709e00 solid;'/>").appendTo("body");
+                $("#imgUpMove").remove();
+                setTimeout("gtPlay.anmte(" + i + ")", i * parseInt(this.stime()));
+            }
+        }
+    };
+    function ShowCart(obj) {
+        alert("1");
+        AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.AddToCart.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })', '#product-details-form');
+        var top = $(obj).offset().top;
+        var left1 = $(obj).offset().left;
+        var setup1 = top - 60;
+        var stop = top - 18;
+        $("<img id='imgUpMove' src='" + $("#ctoid1").attr("src") + "' name='imgUpMove' style='clear:both; z-index:10;width:60px; height:60px; position:absolute; top:" + stop + "px;left:" + left1 + "px;border:1px #709e00 solid;display: none;'/>").appendTo("body");
+        $("#imgUpMove").fadeIn(100);
+        $("#imgUpMove").animate({ top: setup1 + "px", left: left1 + "px" }, 350, "linear", function () { });
+        gtPlay.begin = Array(setup1 + "px", left1 + "px"); //起飞开始位置 Top,Left
+        var targettop = $(".glyphicon-target").offset().top;
+        var targetleft = $(".glyphicon-target").offset().left;
+        gtPlay.end = Array(targettop + "px", targetleft + "px");//目标位置 目标位置Top,Left 带上
+        setTimeout(function () {
+            gtPlay.Play();
+        }, 350);
+    }
+
+    $(function () {
+        var targettop = $(".glyphicon-target").offset().top;
+        var targetleft = $(".glyphicon-target").offset().left;
+        gtPlay.begin = Array("0px", "0px"); //起飞开始位置 Top,Left
+        gtPlay.end = Array(targettop + "px", targetleft + "px");//目标位置 目标位置Top,Left 带上
+        gtPlay.PicID = "ctoid1"; //飞动图片ID
+        gtPlay.Num = 1; //飞动数量
+        gtPlay.Time = 500000; //飞行耗时 过短可能肉眼看不到
+        //$("#ctoid1")
+        gtPlay.HandW = Array("60px", "60px", "0px", "0px");//图像变化大小 
+        //gtPlay.Play() 开始播放
+    });
+
+</script>

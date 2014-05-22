@@ -1,0 +1,361 @@
+﻿@model IList<ProductDetailsModel.ProductVariantAttributeModel>
+@using Nop.Web.Models.Catalog;
+@using Nop.Core.Domain.Catalog;
+@using Nop.Core.Infrastructure;
+@using System.Text;
+@using System.Globalization;
+@using Nop.Services.Security;
+@{
+    var productId = 0;
+    if (Model != null && Model.Count > 0)
+    {
+        productId = Model[0].ProductId;
+    }
+
+    //dynamic price update support
+    var hidePrices = !EngineContext.Current.Resolve<IPermissionService>().Authorize(StandardPermissionProvider.DisplayPrices);
+    var dynamicPriceUpdate = EngineContext.Current.Resolve<CatalogSettings>().EnableDynamicPriceUpdate;
+    var priceAdjustmentTableScripts = new StringBuilder();
+    var priceAttributeScripts = new StringBuilder();
+    string priceAdjustmentTableName = "";
+    string priceAdjustmentFuncName = "";
+    string priceVarName = "";
+    string priceVarClass = "";
+    if (dynamicPriceUpdate && !hidePrices)
+    {
+        foreach (var attribute in Model)
+        {
+            string controlId = string.Format("product_attribute_{0}_{1}_{2}", attribute.ProductId, attribute.ProductAttributeId, attribute.Id);
+            priceAdjustmentTableName = string.Format("priceAdjustmentTable_{0}", attribute.ProductId);
+            priceAdjustmentFuncName = string.Format("adjustPrice_{0}", attribute.ProductId);
+            priceVarName = string.Format("priceValForDynUpd_{0}", attribute.ProductId);
+            priceVarClass = string.Format("price-val-for-dyn-upd-{0}", attribute.ProductId);
+
+            switch (attribute.AttributeControlType)
+            {
+                case AttributeControlType.DropdownList:
+                case AttributeControlType.RadioList:
+                case AttributeControlType.ColorSquares:
+                    {
+                        foreach (var pvaValue in attribute.Values)
+                        {
+                            priceAdjustmentTableScripts.AppendFormat(CultureInfo.InvariantCulture, "{0}['{1}_{2}'] = {3};\n", priceAdjustmentTableName, controlId, pvaValue.Id, (float)pvaValue.PriceAdjustmentValue);
+                            priceAttributeScripts.AppendFormat("$('#{0}_{1}').click(function(){{{2}();}});\n", controlId, pvaValue.Id, priceAdjustmentFuncName);
+                        }
+                    }
+                    break;
+                case AttributeControlType.Checkboxes:
+                    {
+                        foreach (var pvaValue in attribute.Values)
+                        {
+                            priceAdjustmentTableScripts.AppendFormat(CultureInfo.InvariantCulture, "{0}['{1}_{2}'] = {3};\n", priceAdjustmentTableName, controlId, pvaValue.Id, (float)pvaValue.PriceAdjustmentValue);
+                            priceAttributeScripts.AppendFormat("$('#{0}_{1}').click(function(){{{2}();}});\n", controlId, pvaValue.Id, priceAdjustmentFuncName);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    //attribute picture update
+    var pictureAdjustmentTableScripts = new StringBuilder();
+    var pictureAttributeScripts = new StringBuilder();
+    string pictureAdjustmentTableName = "";
+    string pictureAdjustmentFuncName = "";
+    foreach (var attribute in Model)
+    {
+        string controlId = string.Format("product_attribute_{0}_{1}_{2}", attribute.ProductId, attribute.ProductAttributeId, attribute.Id);
+        pictureAdjustmentTableName = string.Format("productAttributeValueAdjustmentTable_{0}", attribute.ProductId);
+        pictureAdjustmentFuncName = string.Format("adjustProductAttributeValuePicture_{0}", attribute.ProductId);
+
+        switch (attribute.AttributeControlType)
+        {
+            case AttributeControlType.DropdownList:
+            case AttributeControlType.RadioList:
+            case AttributeControlType.ColorSquares:
+                {
+                    foreach (var pvaValue in attribute.Values)
+                    {
+                        pictureAdjustmentTableScripts.AppendFormat(CultureInfo.InvariantCulture, "{0}['{1}_{2}'] = '{3}';\n", pictureAdjustmentTableName, controlId, pvaValue.Id, pvaValue.PictureUrl);
+                        pictureAttributeScripts.AppendFormat("$('#{0}_{1}').click(function(){{{2}('{3}_{4}',{5});}});\n", controlId, pvaValue.Id, pictureAdjustmentFuncName, controlId, pvaValue.Id, attribute.ProductId);
+                    }
+                }
+                break;
+            case AttributeControlType.Checkboxes:
+                {
+                    foreach (var pvaValue in attribute.Values)
+                    {
+                        pictureAdjustmentTableScripts.AppendFormat(CultureInfo.InvariantCulture, "{0}['{1}_{2}'] = '{3}';\n", pictureAdjustmentTableName, controlId, pvaValue.Id, pvaValue.PictureUrl);
+                        pictureAttributeScripts.AppendFormat("$('#{0}_{1}').click(function(){{{2}('{3}_{4}',{5});}});\n", controlId, pvaValue.Id, pictureAdjustmentFuncName, controlId, pvaValue.Id, attribute.ProductId);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    //attribute value validate 
+    var attributesValueValidateTableScripts = new StringBuilder();
+    string attributesValueValidateTableName = "";
+    foreach (var attribute in Model)
+    {
+        if (attribute.IsRequired)
+        {
+            string controlId = string.Format("product_attribute_{0}_{1}_{2}", attribute.ProductId, attribute.ProductAttributeId, attribute.Id);
+            attributesValueValidateTableName = string.Format("productAttributeValueValidateTable_{0}", attribute.ProductId);
+            string textPrompt = !string.IsNullOrEmpty(attribute.TextPrompt) ? attribute.TextPrompt : attribute.Name;
+
+            switch (attribute.AttributeControlType)
+            {
+                case AttributeControlType.DropdownList:
+                case AttributeControlType.RadioList:
+                case AttributeControlType.ColorSquares:
+                case AttributeControlType.Checkboxes:
+                    {
+                        attributesValueValidateTableScripts.AppendFormat(CultureInfo.InvariantCulture, "{0}['{1}'] =\"{2}\";\n", attributesValueValidateTableName, controlId, textPrompt);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    //dynamic price update support
+    if (dynamicPriceUpdate && !hidePrices)
+    {
+    <script type="text/javascript">
+        //Price adjustment table
+        var @(priceAdjustmentTableName) = new Array();
+        //Price adjustment table initialize
+        @Html.Raw(priceAdjustmentTableScripts.ToString())
+        //Price adjustment function
+        function @(priceAdjustmentFuncName)() {
+            var sum = 0;
+            for(var i in @(priceAdjustmentTableName)) {
+                var ctrl = $('#' + i);
+                if((ctrl.is(':radio') && ctrl.is(':checked')) || (ctrl.is(':checkbox') && ctrl.is(':checked'))) {
+                    sum += @(priceAdjustmentTableName)[i];
+                }
+                else if(ctrl.is('select')) {
+                    var idx = $('#' + i + " option").index($('#' + i + " option:selected"));
+                    if(idx != -1) {
+                        sum += @(priceAdjustmentTableName)[i][idx];
+                    }
+                }
+        }
+        var res = (@(priceVarName) + sum).toFixed(2);
+            $(".@(priceVarClass)").text(res);
+        }
+        //Price attributes handlers
+        $(document).ready(function() {
+            @(priceAdjustmentFuncName)();
+            @Html.Raw(priceAttributeScripts.ToString())
+        });
+    </script>
+    }
+
+    //attribute picture update
+    if (!String.IsNullOrEmpty(pictureAttributeScripts.ToString()))
+    {
+    <script type="text/javascript">            
+        //Picture adjustment table
+        var @(pictureAdjustmentTableName) = new Array();
+        //Picture adjustment table initialize
+        @Html.Raw(pictureAdjustmentTableScripts.ToString())
+        //Picture adjustment function
+        function @(pictureAdjustmentFuncName)(controlId, productId) {
+            var ctrl = $('#' + controlId);
+            var pictureUrl = '';
+            if((ctrl.is(':radio') && ctrl.is(':checked')) || (ctrl.is(':checkbox') && ctrl.is(':checked'))) {
+                pictureUrl = @(pictureAdjustmentTableName)[controlId];
+            } else if(ctrl.is('select')) {
+                var idx = $('#' + controlId + " option").index($('#' + controlId + " option:selected"));
+                if(idx != -1) {
+                    pictureUrl = @(pictureAdjustmentTableName)[controlId][idx];
+                }
+            }
+        if (typeof pictureUrl == 'string' && pictureUrl != '') {
+            $('#main-product-img-' + productId).attr("src", pictureUrl);
+            $('#main-product-img-' + productId).attr("data-url", pictureUrl);
+            $('#main-product-img-' + productId).attr("jqimg", pictureUrl);
+            $('#main-product-img-lightbox-anchor-' + productId).attr("href", pictureUrl);
+        }
+    }
+    // Picture attributes handlers
+    $(document).ready(function() {
+        @Html.Raw(pictureAttributeScripts.ToString())
+    });
+    </script>
+    }
+
+    //attribute value validate
+    if (!String.IsNullOrEmpty(attributesValueValidateTableScripts.ToString()))
+    {
+    <script type="text/javascript">
+        //Attribute value validate table
+        var @(attributesValueValidateTableName) = new Array();
+        //Attribute value validate table initialize
+        @Html.Raw(attributesValueValidateTableScripts.ToString())
+        function validateProductAttributes(){  
+            for(var controlName in @(attributesValueValidateTableName)){
+                var attrTextPrompt = @(attributesValueValidateTableName)[controlName];
+                var controls = $("input[name='"+controlName+"']:checked");
+                if(typeof(controls)=="undefined" || controls.length==0){
+                    alert(attrTextPrompt + " 为必选项");
+                    return false;   
+                }                     
+            }
+            return true;
+        }
+    </script>
+    }
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            //初始化属性选项的点击事件，
+            //当前只支持NOP里的下拉框、单选按钮、颜色、复选框的属性控件类型
+            $("li.proparam a,li.procolor a").each(function(){
+                $(this).click(function(){
+                    var name = $(this).attr("data-name"); 
+                    var controlId = $(this).attr("data-control");   
+
+                    if(document.getElementById(controlId).checked){
+                        $(this).removeClass("current");                      
+                        document.getElementById(controlId).checked = false;
+                    }
+                    else{
+                        if($("#"+controlId).is("input:radio")){     
+                            $(":radio[name='"+ name +"']").each(function () {           
+                                //这里使用原生JS取消radio的选中状态，因为jquery好像不支持这个功能  
+                                this.checked = false;             
+                            });
+                            $("li[data-name='"+name+"'] a").removeClass("current");                                      
+                        }                              
+                        $(this).addClass("current");     
+                        document.getElementById(controlId).checked = true; 
+                    }  
+                    
+                    //更新图片和价格                   
+                    @(priceAdjustmentFuncName)();
+                    //@(pictureAdjustmentFuncName)(controlId,@productId);   
+                }); 
+            });
+        });
+    </script>
+
+    foreach (var attribute in Model)
+    {
+        string controlId = string.Format("product_attribute_{0}_{1}_{2}", attribute.ProductId, attribute.ProductAttributeId, attribute.Id);
+        string textPrompt = !string.IsNullOrEmpty(attribute.TextPrompt) ? attribute.TextPrompt : attribute.Name;
+        switch (attribute.AttributeControlType)
+        {
+            case AttributeControlType.DropdownList:
+            case AttributeControlType.RadioList:
+                {
+    <li data-name="@controlId" class="proparam">
+        <label>@textPrompt  @if (attribute.IsRequired)
+                            {<span class="cred">*</span>}：</label>
+        @foreach (var pvaValue in attribute.Values)
+        {
+            <a href="javascript:void(0);" class="@if (pvaValue.IsPreSelected)
+                                                 {<text>current</text>}" data-control="@(controlId)_@(pvaValue.Id)" data-name="@(controlId)">@pvaValue.Name
+                @(!String.IsNullOrEmpty(pvaValue.PriceAdjustment) ? " [" + pvaValue.PriceAdjustment + "]" : null)
+            </a>
+            <input id="@(controlId)_@(pvaValue.Id)" type="radio" style="display:none;" name="@(controlId)" value="@pvaValue.Id" checked="@pvaValue.IsPreSelected" />
+        }
+    </li>
+                }
+                break;
+            case AttributeControlType.Checkboxes:
+                {
+    <li data-name="@controlId" class="proparam">
+        <label>@textPrompt  @if (attribute.IsRequired)
+                            {<span class="cred">*</span>}：</label>
+        @foreach (var pvaValue in attribute.Values)
+        {
+            <a href="javascript:void(0);" class="@if (pvaValue.IsPreSelected)
+                                                 {<text>current</text>}" data-control="@(controlId)_@(pvaValue.Id)" data-name="@(controlId)">@pvaValue.Name
+                @(!String.IsNullOrEmpty(pvaValue.PriceAdjustment) ? " [" + pvaValue.PriceAdjustment + "]" : null)
+            </a>
+            <input id="@(controlId)_@(pvaValue.Id)" type="checkbox" style="display:none;"  name="@(controlId)" value="@pvaValue.Id" checked="@pvaValue.IsPreSelected" />
+        }
+    </li>
+                }
+                break;
+            case AttributeControlType.ColorSquares:
+                {
+    <li data-name="@controlId" class="procolor">
+        <label>@textPrompt  @if (attribute.IsRequired)
+                            {<span class="cred">*</span>}：</label>
+        @foreach (var pvaValue in attribute.Values)
+        {
+            <a href="javascript:void(0);" class="@if (pvaValue.IsPreSelected)
+                                                 {<text>current</text>}" data-control="@(controlId)_@(pvaValue.Id)" data-name="@(controlId)">
+                <i style="background:@(pvaValue.ColorSquaresRgb);">
+                @pvaValue.Name
+                @(!String.IsNullOrEmpty(pvaValue.PriceAdjustment) ? " [" + pvaValue.PriceAdjustment + "]" : null)
+                </i>
+            </a>    
+            <input id="@(controlId)_@(pvaValue.Id)" type="radio" style="display:none;" name="@(controlId)" value="@pvaValue.Id" checked="@pvaValue.IsPreSelected" />
+        }
+    </li>
+                }
+                break;
+            case AttributeControlType.TextBox:
+                {
+    <input name="@(controlId)" type="text" class="textbox" id="@(controlId)" value="@attribute.TextValue" />
+                }
+                break;
+            case AttributeControlType.MultilineTextbox:
+                {
+    <textarea cols="20" id="@(controlId)" name="@(controlId)">@attribute.TextValue</textarea>
+                }
+                break;
+            case AttributeControlType.Datepicker:
+                {
+    @Html.DatePickerDropDowns(controlId + "_day", controlId + "_month", controlId + "_year", DateTime.Now.Year, DateTime.Now.Year + 1, attribute.SelectedDay, attribute.SelectedMonth, attribute.SelectedYear)
+                }
+                break;
+            case AttributeControlType.FileUpload:
+                {
+                    //register CSS and JS
+                    Html.AddCssFileParts("~/Content/fileuploader/fileuploader.css");
+                    Html.AddScriptParts("~/Scripts/fileuploader.js");
+                    //ex. ['jpg', 'jpeg', 'png', 'gif'] or []
+                    var allowedFileExtensions = string.Join(", ", attribute.AllowedFileExtensions.Select(x => "'" + x.Trim() + "'").ToList());                           
+    <input id="@(controlId)" name="@(controlId)" type="hidden" />
+    <div id="@(controlId)uploader">
+    </div>
+    <script type="text/javascript">
+        $(function () {                   
+            var @(controlId)uploader = new qq.FileUploader({
+                element: document.getElementById('@(controlId)uploader'),
+                action: '@(Url.RouteUrl("UploadFileProductAttribute", new { productId = attribute.ProductId, productAttributeId = attribute.ProductAttributeId }))',
+                onComplete: function(id, fileName, responseJSON){
+                    $("#@(controlId)").val(responseJSON.downloadGuid);
+                    if (responseJSON.message) {
+                        alert(responseJSON.message);
+                    }
+                },
+                allowedExtensions: [@Html.Raw(allowedFileExtensions)],
+                strings: {
+                    upload: "@T("Common.FileUploader.Upload")",
+                    drop: "@T("Common.FileUploader.DropFiles")",
+                    cancel: "@T("Common.FileUploader.Cancel")",
+                    failed: "@T("Common.FileUploader.Failed")"
+                }
+            });
+        });
+    </script>
+                }
+                break;
+        }
+    }
+}

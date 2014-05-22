@@ -1,0 +1,147 @@
+#spec-list ul,#spec-list li{margin:0;padding:0;}
+#spec-list li{list-style:none;}
+
+#preview {
+	position:relative;
+}
+#preview img{
+    max-width: none;
+    max-height: none;
+}
+#spec-list {
+position: relative;
+width: 390px;
+height: 74px;
+overflow: hidden;
+/*padding: 0 21px;*/
+padding:5px;
+}
+
+.spec-control
+	{
+/*background-image: url(http://misc.360buyimg.com/product/skin/2012/i/newicon201301028.png);*/
+background-repeat: no-repeat;
+}
+ a.spec-control:hover
+{
+    text-decoration: none;
+    color: #333;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+}
+
+#spec-forward {
+left: 5px;
+background-position: 0 -139px;
+
+float: left;
+width: 0;
+height: 0;
+overflow: hidden;
+margin: 30px 2px 0 0;
+vertical-align: middle;
+border-top: 10px solid transparent;
+border-right: 10px solid #666;
+border-bottom: 10px solid transparent;
+}
+#spec-backward {
+right: 5px;
+background-position: -17px -139px;
+
+float: right;
+width: 0;
+height: 0;
+overflow: hidden;
+margin: 30px 0 0 2px;
+vertical-align: middle;
+border-top: 10px solid transparent;
+border-left: 10px solid #666;
+border-bottom: 10px solid transparent;
+}
+#spec-list .spec-control {
+display: block;
+position: absolute;
+/*top: 8px;
+width: 17px;
+height: 54px;*/
+}
+#spec-forward.disabled {
+background-position: -68px -139px;
+}
+
+#spec-backward.disabled {
+background-position: -85px -139px;
+}
+#spec-list .spec-items {
+position: absolute;
+top: 5px;
+left: 21px;
+right:21px;
+}
+#spec-list .spec-items li {
+width: 82px;
+text-align: left;
+font-size: 0;
+position: relative;
+float:left;
+}
+#spec-list .spec-items img {
+width: 70px;
+height: 70px;
+border: 2px solid #eee;
+}
+
+.jqzoom {
+position: relative;
+padding: 0;
+}
+.jqZoomPup {
+z-index: 3;
+visibility: hidden;
+position: absolute;
+top: 0;
+left: 0;
+width: 50px;
+height: 50px;
+border: 1px solid #aaa;
+background: #FEDE4F 50% top no-repeat;
+opacity: .5;
+-moz-opacity: .5;
+-khtml-opacity: .5;
+filter: alpha(Opacity=50);
+cursor: move;
+}
+.zoomdiv {
+z-index: 8;
+position: absolute;
+top: 0;
+left: 400px;
+width: 200px;
+height: 200px;
+background: url(../images/loading.gif) #fff no-repeat center center;
+border: 1px solid #e4e4e4;
+display: none;
+text-align: center;
+overflow: hidden;
+}
+.zoomdiv img
+{
+    max-width: none;
+    max-height: none;
+}
+#spec-n1 {
+width: 400px;
+height: 400px;
+
+margin-bottom: 5px;
+}
+#spec-n1 img
+{
+    width: 400px;
+    height: 400px;
+}
+#spec-list .spec-items img.img-hover {
+border: 2px solid #e4393c;
+padding: 0;
+border: 2px solid #f60;
+}

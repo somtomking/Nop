@@ -1,0 +1,27 @@
+﻿@model RegisterResultModel
+@using Nop.Web.Models.Customer;
+@{
+    Layout = "~/Views/Shared/_LoginMaster.cshtml";
+    Html.AddTitleParts(T("PageTitle.Register").Text);
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_login.css");
+}
+
+<div class="reg-box">
+    <div class="reg clearfix">
+        <div class="smile">
+            <p class="text-green f16px">恭喜您，账号注册成功！</p>
+            <p class="f14px">
+                您的登录账号为：
+                <strong class="text-yellow">
+                    @Model.Result
+                </strong>
+                <br>
+                赶紧去60购选择你要的东西吧<br>
+            </p>
+            <p><a href="@Url.RouteUrl("HomePage")" class="btn btn-green btn-lg">立刻体验极速购物</a></p>
+            <p><strong>您还可以去：</strong></p>
+            <p><a href="@Url.RouteUrl("HomePage")"><u>看看今天有什么特价 &gt;&gt;</u></a></p>
+            <p><a href="@Url.RouteUrl("CustomerInfo")"><u>去完善个人资料&gt;&gt;</u></a></p>
+        </div>
+    </div>
+</div>

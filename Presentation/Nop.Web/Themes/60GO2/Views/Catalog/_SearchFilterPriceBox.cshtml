@@ -1,0 +1,217 @@
+﻿@model SearchPagingFilteringModel.PriceRangeFilterModel
+@using Nop.Web.Models.Catalog;
+@{
+    var selectedItem = Model.Items.FirstOrDefault(x => x.Selected);
+
+    var minPrice = Model.Items.Min(x => x.FromValue.HasValue ? x.FromValue.Value : 0);
+    if (Model.Items.Min(x => x.ToValue.HasValue ? x.ToValue.Value : 0) < minPrice)
+    {
+        minPrice = Model.Items.Min(x => x.ToValue.HasValue ? x.ToValue.Value : 0);
+    }
+    if (minPrice < 0)
+    {
+        minPrice = 0;
+    }
+
+    var maxPrice = Model.Items.Max(x => x.FromValue.HasValue ? x.FromValue.Value : 0);
+    if (Model.Items.Max(x => x.ToValue.HasValue ? x.ToValue.Value : 0) > maxPrice)
+    {
+        maxPrice = Model.Items.Max(x => x.ToValue.HasValue ? x.ToValue.Value : 0);
+    }
+    if (maxPrice <= 0)
+    {
+        maxPrice = 999;
+    }
+
+    var startPrice = minPrice;
+    var endPrice = maxPrice;
+
+    if (selectedItem != null)
+    {
+        if (selectedItem.FromValue.HasValue)
+        {
+            startPrice = selectedItem.FromValue.Value;
+        }
+        if (selectedItem.ToValue.HasValue)
+        {
+            endPrice =selectedItem.ToValue.Value;
+        }
+    }
+}
+@helper FormatPriceRangeText(SearchPagingFilteringModel.PriceRangeFilterItem filterItem)
+{
+    string rangeText = "";
+    if (String.IsNullOrWhiteSpace(filterItem.From))
+    {
+        rangeText = string.Format(T("Filtering.PriceRangeFilter.Under").Text, string.Format("{0}", filterItem.To.Replace("¥", "")));
+    }
+    else if (String.IsNullOrWhiteSpace(filterItem.To))
+    {
+        rangeText = string.Format(T("Filtering.PriceRangeFilter.Over").Text, string.Format("{0}", filterItem.From.Replace("¥", "")));
+    }
+    else
+    {
+        rangeText = string.Format("{0}-{1}", filterItem.From.Replace("¥", ""), filterItem.To.Replace("¥", ""));
+    }
+    <text>@Html.Raw(rangeText)</text>
+}
+@*@if (Model.Enabled && selectedItem == null)
+{
+    <div class="proCondition clearfix">
+        <div class="title">
+            @T("Filtering.PriceRangeFilter"):
+        </div>
+        <div class="con">
+            <ul class="list-03">
+                @foreach (var item in Model.Items)
+                {
+                    <li>
+                        <a href="@item.FilterUrl">@FormatPriceRangeText(item)</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}*@
+@if (Model.Enabled)
+{
+    <li class="priceArea">
+        <div class="beleft">@T("Filtering.PriceRangeFilter")</div>
+        <div id="slider-range" style="margin-right:20px;"></div>
+        <div class="beleft">           
+            ￥ 
+            <input id="startPrice" name="startPrice" type="text" class="input_num" value="@startPrice" />
+            -
+            <input id="endPrice" name="endPrice" type="text" class="input_num" value="@endPrice" />
+            @T("Filtering.PriceRangeFilter.Unit")
+            <a href="javascript:void(0)" onclick="filterPrice();return false;" class="btn btn-default btn-xs">@T("Filtering.PriceRangeFilter.Confirm")</a>
+        </div>
+        
+        @*<div class="priceRange">
+            <div class="bar" style="left: 10%; width: 50%"></div>
+            <a href="###" class="slider" style="left: 6%"></a>
+            <a href="###" class="slider" style="left: 56%"></a>
+        </div>*@
+    </li>
+    @*<style>
+.ui-slider{float:left; display:inline; margin:10px 0 0 10px; width:200px; height:10px; background-color:#f5f5f5; border:1px solid #ddd; border-radius:3px; position:relative; z-index:1;}
+.ui-slider .ui-slider-range{height:10px; background-color:#f60; position:absolute; z-index:1;}
+.ui-slider .ui-slider-handle{height:16px; width:16px; border-radius:8px; background-color:#fff; border:1px solid #ccc; position:absolute; top:-4px; z-index:2;}
+.ui-slider .ui-slider-handle:hover{background-color:#ddd}
+    </style>*@
+    <script type="text/javascript">
+        function checkNumber()
+        {
+            var startPrice=parseFloat($("#startPrice").val());
+            if(startPrice.toString().indexOf('.')>0&&startPrice.toString().indexOf('.')<startPrice.toString().length-2)
+            {
+                $("#startPrice").val(startPrice.toFixed(2)) ;
+            }
+
+            var endPrice=parseFloat($("#endPrice").val());
+            if(endPrice.toString().indexOf('.')>0&&endPrice.toString().indexOf('.')<endPrice.toString().length-2)
+            {
+                $("#endPrice").val(endPrice.toFixed(2)) ;
+            }
+        }
+
+        function filterPrice()
+        {
+            var startPrice = parseFloat($("#startPrice").val());
+            var min= parseFloat(@(minPrice));
+            var max= parseFloat(@(maxPrice));
+            if (isNaN(startPrice))
+                startPrice = 0;
+
+            var endPrice = parseFloat($("#endPrice").val());
+            if (isNaN(endPrice))
+                endPrice = 0;
+            if(startPrice>endPrice)
+            {
+                alert("@(string.Format(T("product.price.MaxLessThanMinAlert").Text,minPrice,maxPrice))");
+                $("#endPrice").focus();
+                return false;
+            }
+            if(startPrice<min)
+            {
+                alert("@(string.Format(T("product.price.boundaryAlert").Text,minPrice,maxPrice))");
+                $("#startPrice").focus();
+                return false;
+            }
+
+            if(endPrice>max)
+            {
+                alert("@(string.Format(T("product.price.boundaryAlert").Text,minPrice,maxPrice))");
+                $("#endPrice").focus();
+                return false;
+            }
+
+
+            var url = location.pathname + "?";
+            var params = location.search.substring(1).split("&");
+            for (var i = 0; i < params.length; i++)
+            {
+                var name = params[i].substring(0, params[i].indexOf("="));
+                var value = params[i].substring(params[i].indexOf("=") + 1, params[i].length);
+                if (name.toLowerCase() != "price")
+                    url += name + "=" + value + "&";
+            }
+            url += "price=" + startPrice + "-" + endPrice;
+            setLocation(url);
+        }
+        function checkIsNumberInput(keyCode)
+        {
+@*            if(keyCode==110||keyCode==190)
+            {
+                    
+                alert("@T("Filtering.PriceRangeFilter.noDecimalPoint")");
+                return false;
+            }*@
+            if(!(keyCode>=96&&keyCode<=105||keyCode>=48&&keyCode<=57||keyCode==8||keyCode==46||keyCode==13||keyCode==36||keyCode==35||keyCode==16||keyCode==39||keyCode==37||keyCode==110||keyCode==190))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        $(function () {
+            $(".priceArea input").numeric();
+            $(".priceArea input").blur(function () {
+                var value = parseFloat($(this).val());
+                if (isNaN(value) || value < 0) {
+                    $(this).val("0");
+                    return;
+                }
+            });
+            $("#slider-range").slider({
+                range: true,
+                min: @(minPrice),
+                max: @(maxPrice),
+                values: [@(startPrice), @(endPrice)],
+                slide: function (event, ui) {
+                    $("#startPrice").val(ui.values[0]);
+                    $("#endPrice").val(ui.values[1]);
+                }
+            });
+            $("#slider-range").attr("class", "priceRange");
+            $("#slider-range div").attr("class", "bar");
+            $("#slider-range a").attr("class", "slider");
+
+            
+            $("#startPrice").keydown(function(event){
+                return checkIsNumberInput(event.keyCode);
+
+            });
+            $("#endPrice").keydown(function(event){
+                return checkIsNumberInput(event.keyCode);
+            });
+
+            $("#startPrice").keyup(function(event){
+                 checkNumber();
+            });
+            $("#endPrice").keyup(function(event){
+                checkNumber();
+            });
+        });
+    </script>
+}

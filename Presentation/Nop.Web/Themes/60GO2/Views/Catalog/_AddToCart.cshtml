@@ -1,0 +1,170 @@
+﻿@model ProductDetailsModel.AddToCartModel
+@using Nop.Web.Models.Catalog;
+@using Nop.Core.Domain.Orders;
+@{
+    Html.AppendScriptParts("~/Themes/60GO2/Content/js/jquery.numeric.js");
+    Html.AppendScriptParts("~/Themes/60GO2/Content/js/jQuery-shopping.js");   
+}
+
+@if (Model.CustomerEntersPrice)
+{
+    <div class="customer-entered-price">
+        <div class="price-input">
+            @Html.LabelFor(model => model.CustomerEnteredPrice, new { @class = "enter-price-label" }, ":")
+            @*round price*@
+            @Html.TextBox("CustomerEnteredPrice", Convert.ToInt32(Math.Ceiling(Model.CustomerEnteredPrice)), new { @class = "enter-price-input" })
+        </div>
+        <div class="price-range">
+            @Model.CustomerEnteredPriceRange
+        </div>
+    </div>
+}
+@if (!Model.DisableBuyButton || !Model.DisableWishlistButton)
+{
+    if (Model.ShowQuantity&&!Model.IsSoldOut)
+    {
+    @Html.LabelFor(model => model.EnteredQuantity, new { }, ":")
+        if (!Model.ShowSelQuantity)
+        {
+    <div class="buy-num-02">
+        <a href="javascript:void(0)" class="minus" onclick="return quantityMinus()"></a>
+        <span class="num-text">
+            @Html.TextBoxFor(model => model.EnteredQuantity, new { maxlength = 2 })
+        </span>
+        <a href="javascript:void(0)" class="plus" onclick="return quantityPlus()"></a>
+    </div>}
+        else
+        {
+    <div>
+        1@*（每个ID限购1个）*@
+        @Html.TextBoxFor(model => model.EnteredQuantity, new { style = "display:none;" })
+    </div>
+        }
+    }
+    if (Model.ShowButtons)
+    {
+        if (!Model.DisableBuyButton && !Model.IsSoldOut)
+        {
+            if (Model.DisableAddToCartButton)
+            {
+    <a id="add_to_cart_btn" href="javascript:void(0)" onclick="AddProductToCart(this)" class="btn btn-green btn-lg @(Model.OutOfStock ? "disabled" : "")" data-productid="@Model.ProductId" >
+        <span class="cart-01">
+            @(Model.AvailableForPreOrder ? T("ShoppingCart.PreOrder") : T("ShoppingCart.AddToCart"))
+        </span>
+    </a>
+            }
+
+    <a id="buy_now_btn" href="javascript:void(0)" onclick="BuyProductNow(this)" class="btn btn-orange btn-lg mar_l_20 @(Model.OutOfStock ? "disabled" : "")" data-productid="@Model.ProductId" >@T("ShoppingCart.BuyNow")</a>
+        }
+        if (!Model.DisableWishlistButton)
+        {
+    <a href="javascript:void(0)" class="mar_l_20" data-productid="@Model.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.Wishlist })', '#product-details-form',addSuccessEvent);return false;">@T("ShoppingCart.AddToWishlist")</a>
+    <span id="addtocart_result" style="position: relative; display: none;">
+        <div id="result_box" class="box-ok-s" style="float: left; white-space: nowrap; position: absolute; top: -30px; left: -90px">@T("ShoppingCart.AddToWishlistSuccessful")</div>
+    </span>
+        }
+    }
+}
+@Html.Widget("productdetails_add_info")
+
+<script type="text/javascript">
+    function AddProductToCart(add_to_cart_btn) {
+        if (typeof validateProductAttributes != 'undefined' && validateProductAttributes instanceof Function) {
+            //如果商品存在属性，先验证用户是否选择了必选属性
+            if (!validateProductAttributes()) return;
+        }
+        AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart })',
+                '#product-details-form', addProductToCartSuccess, add_to_cart_btn, '@Model.PicUrl');
+    }
+
+    function BuyProductNow(buy_now_btn) {
+        if (typeof validateProductAttributes != 'undefined' && validateProductAttributes instanceof Function) {
+            //如果商品存在属性，先验证用户是否选择了必选属性
+            if (!validateProductAttributes()) return;
+        }
+        AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart, buyNow = true })',
+                '#product-details-form', buyProductNowSuccess, buy_now_btn, '@Model.PicUrl');
+    }
+
+    $(".num-text input").numeric();
+    $(".num-text input").blur(function () {
+        var quantity = parseInt($(this).val());
+        if (isNaN(quantity) || quantity < 1) {
+            $(this).val("1");
+            return;
+        }
+    });
+
+    function quantityMinus() {
+        var number = parseInt($(".num-text").find("input").val());
+        if (isNaN(number))
+            number = 1;
+        number = number - 1;
+        if (number < 1)
+            number = 1;
+        $(".num-text").find("input").val(number);
+        return false;
+    }
+
+    function quantityPlus() {
+        var number = parseInt($(".num-text").find("input").val());
+        if (isNaN(number))
+            number = 1;
+        number = number + 1;
+        if (number > 99)
+            number = 99;
+        $(".num-text").find("input").val(number);
+        return false;
+    }
+
+    function addSuccessEvent(response) {
+        AjaxCart.update_cart_info(response);
+
+        if (response.message) {
+            $("#addtocart_result").show();
+
+            if (response.success == true) {
+                $("#result_box").html("@T("ShoppingCart.AddToWishlist.Success")");
+                $("#result_box").addClass("box-ok-s");
+                $("#result_box").removeClass("box-error-s");
+            }
+            else {
+                $("#result_box").html("@T("ShoppingCart.AddToWishlist.Fail")");
+                $("#result_box").addClass("box-error-s");
+                $("#result_box").removeClass("box-ok-s");
+            }
+
+            setTimeout(function () {
+                $('#addtocart_result').hide();
+            }, 1500);
+
+            return false;
+        }
+
+        if (response.redirect) {
+            location.href = response.redirect;
+            return true;
+        }
+
+        return false;
+    }
+
+    function addProductToCartSuccess(response, obj, imgUrl) {
+        if (response.success == true) {
+            ShowCart(obj, imgUrl);
+            AjaxCart.update_cart_info(response);
+        }
+        else {
+            alert(response.message);
+        }
+    }
+
+    function buyProductNowSuccess(response) {
+        if (response.success == true) {
+            window.location.href = response.checkoutUrl;
+        }
+        else {
+            alert(response.message);
+        }
+    }
+</script>

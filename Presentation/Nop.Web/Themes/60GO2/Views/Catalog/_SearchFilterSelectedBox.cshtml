@@ -1,0 +1,63 @@
+﻿@model SearchPagingFilteringModel
+@using Nop.Web.Models.Catalog;
+@{
+    var selectedItem = Model.PriceRangeFilter.Items.FirstOrDefault(x => x.Selected);
+}
+@helper FormatPriceRangeText(SearchPagingFilteringModel.PriceRangeFilterItem filterItem)
+{
+    string rangeText = "";
+    if (String.IsNullOrWhiteSpace(filterItem.From))
+    {
+        rangeText = string.Format(T("Filtering.PriceRangeFilter.Under").Text, string.Format("{0}", filterItem.To.Replace("¥", "")));
+    }
+    else if (String.IsNullOrWhiteSpace(filterItem.To))
+    {
+        rangeText = string.Format(T("Filtering.PriceRangeFilter.Over").Text, string.Format("{0}", filterItem.From.Replace("¥", "")));
+    }
+    else
+    {
+        rangeText = string.Format("{0}-{1}", filterItem.From.Replace("¥", ""), filterItem.To.Replace("¥", ""));
+    }
+    <text>@Html.Raw(rangeText)</text>
+}
+@if (Model.SpecificationFilter.Enabled || Model.PriceRangeFilter.Enabled)
+{
+    //if (Model.SpecificationFilter.AlreadyFilteredItems.Any() || selectedItem != null)
+    if (Model.SpecificationFilter.AlreadyFilteredItems.Any())
+    {
+    <div class="proCondition clearfix">
+        <div class="title-01">@T("Filtering.SpecificationFilter.CurrentlyFilteredBy")：</div>
+        <div class="con-01">
+            <ul class="list-01">
+                @foreach (var item in Model.SpecificationFilter.AlreadyFilteredItems)
+                {
+                    <li>
+                        <div class="proSelected">
+                            @(item.SpecificationAttributeName)：
+                            <span class="corange">@item.SpecificationAttributeOptionName</span>
+                            <a class="close" href="javascript:void(0);" onclick="setLocation('@item.RemoveFilterUrl')">&times;</a>
+                        </div>
+                    </li>
+                }
+                @*@if (selectedItem != null)
+                {
+                    <li>
+                        <div class="proSelected">
+                            @T("Filtering.PriceRangeFilter"):
+                            @FormatPriceRangeText(selectedItem)
+                            <a class="close" href="javascript:void(0);" onclick="setLocation('@Model.PriceRangeFilter.RemoveFilterUrl');return false;">&times;</a>
+                        </div>
+                    </li>
+                }*@
+                <li>
+                    <div class="proSelected">
+                        <a href="@Model.SpecificationFilter.RemoveFilterUrl">@T("Filtering.SpecificationFilter.Remove")</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="other">
+        </div>
+    </div>
+    }
+}

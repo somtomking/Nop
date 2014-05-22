@@ -1,0 +1,86 @@
+﻿@model ProductOverviewModel
+@using Nop.Core.Domain.Orders
+@using Nop.Web.Models.Catalog;
+@{
+    //prepare "Add to cart" AJAX link
+    string addtocartlink = "";
+    var shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart;
+    var quantity = 1;
+    if (Model.ProductPrice.ForceRedirectionAfterAddingToCart)
+    {
+        if (Model.ProductPrice.IsShoppingCartPage)
+        {
+            addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, forceredirection = Model.ProductPrice.ForceRedirectionAfterAddingToCart, isshoppingcartpage = Model.ProductPrice.IsShoppingCartPage });
+        }
+        else
+        {
+            addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, forceredirection = Model.ProductPrice.ForceRedirectionAfterAddingToCart });
+        }
+    }
+    else
+    {
+        if (Model.ProductPrice.IsShoppingCartPage)
+        {
+            addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, isshoppingcartpage = Model.ProductPrice.IsShoppingCartPage });
+        }
+        else
+        {
+            addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, });
+        }
+    }
+
+
+}
+
+<li>
+    <div class="inner">
+        <div class="pic">
+            @if (!string.IsNullOrEmpty(Model.SaleTag))
+            {
+                <span class="sale-tag @Model.SaleTag"></span>
+            }
+           
+            <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title" target="_blank">
+                <img alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" />
+                @if (Model.IsSoldOut)
+                {
+                    <span class="sale-tag-none"></span>
+                }
+            </a>
+        </div>
+        <div class="text clearfix">
+            <h2><a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" target="_blank">@Model.Name</a></h2>
+            <p>
+                @Model.ProductPrice.Price
+                @if (Model.ProductPrice.OldPrice != null)
+                {
+                    <em>@Model.ProductPrice.OldPrice</em>
+                }
+            </p>
+            @if (!Model.ProductPrice.DisableBuyButton && !Model.IsSoldOut)
+            {
+
+                @*<a class="btn-cart-b" href="javascript:void(0);" onclick="AjaxCart.addproducttocart_catalog('@addtocartlink',$('#quantity-@Model.Id').val());ShowCart(this,'@Model.DefaultPictureModel.ImageUrl');" ></a>*@
+                <a href="javascript:void(0);" class="beright btn-cart-m" data-input="1" data-pid="@Model.Id"
+                   data-picurl="@Model.DefaultPictureModel.ImageUrl"
+                   data-addtocartlink="@addtocartlink"
+                   data-quantityid="#quantity-@Model.Id">
+                    @*onclick="AjaxCart.addproducttocart_catalog('@addtocartlink',$('#quantity-@Model.Id').val());" >*@
+                </a>
+            }
+        </div>
+        @*@if (!Model.ProductPrice.DisableBuyButton)
+            {
+                <div class="btns clearfix">
+                    <div class="buy-num-01">
+                        <a class="minus" href="javascript:void(0);" node-type="quantity-minus" data="@Model.Id"></a>
+                        <span class="num-text">
+                            <input name="quantity-@Model.Id" type="text" value="1" id="quantity-@Model.Id" maxlength="2"/></span>
+                        <a class="plus" href="javascript:void(0);" node-type="quantity-plus" data="@Model.Id"></a>
+                    </div>
+                    <a class="btn-cart-01" href="javascript:void(0);" onclick="AjaxCart.addproducttocart_catalog('@addtocartlink',$('#quantity-@Model.Id').val());ShowCart(this,'@Model.DefaultPictureModel.ImageUrl');" ></a>
+                </div>
+            }*@
+        @Html.Widget("productbox_add_info")
+    </div>
+</li>

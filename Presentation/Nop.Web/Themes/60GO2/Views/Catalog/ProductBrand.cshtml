@@ -1,0 +1,7 @@
+﻿@model ProductBrandModel
+@using Nop.Web.Models.Catalog;
+@if (!String.IsNullOrEmpty(Model.BrandName))
+{
+    <li>
+        <label>@T("Products.Brand")：</label><span>@Model.BrandName</span></li>
+}

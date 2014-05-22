@@ -1,0 +1,12 @@
+﻿<div class="selectMore">
+    <a href="javascript:void(0)" onclick="groupMoreFilter();return false;">@T("Filtering.MoreFilters")</a>
+</div>
+<script type="text/javascript">
+    function groupMoreFilter() {
+        var groups = $(".groupmore");
+        if ($(groups).is(":hidden"))
+            $(groups).show();
+        else
+            $(groups).hide();
+    }
+</script>

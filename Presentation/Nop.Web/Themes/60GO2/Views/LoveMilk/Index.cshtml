@@ -1,0 +1,394 @@
+﻿@using Nop.Core.Domain.Orders
+@model Nop.Web.Models.LoveMilk.LoveMilkModel
+@{
+    Layout = null;
+    ViewData.TemplateInfo.HtmlFieldPrefix = string.Format("addtocart_{0}", Model.ProductId);
+}
+<!DOCTYPE html>
+
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>爱心牛奶认购</title>
+    <style>
+        html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, em, strong, sub, sup, pre, form, label, input, button, select, textarea, p, th, td {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #fff;
+            overflow-x: hidden;
+            color: #666;
+            font: normal 12px/1.5em microsoft yahei,Arial;
+        }
+
+        p {
+            line-height: 150%;
+            margin-bottom: 10px;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        img {
+            border: 0;
+            vertical-align: middle;
+        }
+
+        td, th {
+            color: #666;
+            font: normal 12px/1.5em microsoft yahei,Arial;
+            padding: 5px;
+        }
+
+        a {
+            color: #666;
+            text-decoration: none;
+        }
+
+            a:hover {
+                color: #f60;
+                text-decoration: none;
+            }
+
+        .clear {
+            background: none;
+            border: 0;
+            clear: both;
+            display: block;
+            float: none;
+            font-size: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+
+        .clearfix:after {
+            clear: both;
+            content: ' ';
+            display: block;
+            font-size: 0;
+            line-height: 0;
+            visibility: hidden;
+            width: 0;
+            height: 0;
+        }
+
+        .clearfix {
+            display: inline-block;
+        }
+
+        * html .clearfix {
+            height: 1%;
+        }
+
+        .loveMilk a.home {
+            position: absolute;
+            top: 2em;
+            left: 50%;
+            margin-left: -445px;
+            color: #fff;
+            z-index: 2;
+            font-size: 18px;
+        }
+
+        .loveMilk li {
+            width: 100%;
+            height: 360px;
+            position: relative;
+        }
+
+        .loveMilk .last {
+            height: 155px;
+        }
+
+        .loveMilk li img {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            margin-left: -960px;
+            width: 1920px;
+            height: 360px;
+        }
+
+        .loveMilk .last img {
+            height: 155px;
+        }
+
+        .loveMilk .buy {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            margin-left: -53px;
+        }
+
+            .loveMilk .buy span, .loveMilk .buy a, .loveMilk .buy input {
+                float: left;
+            }
+
+            .loveMilk .buy .submit {
+                width: 457px;
+                height: 62px;
+                background: url(../Themes/60GO2/Content/images/lovemilk/btn.jpg) 0 0;
+                line-height: 62px;
+                text-align: center;
+                color: #fff;
+                font-size: 32px;
+            }
+
+            .loveMilk .buy .over {
+                background-position: 0 -62px;
+            }
+
+            .loveMilk .buy span {
+                line-height: 2em;
+                font-size: 18px;
+            }
+
+                .loveMilk .buy span em {
+                    font-style: normal;
+                    color: #0082d0;
+                    padding: 0 .2em;
+                }
+
+            .loveMilk .buy a.minus {
+                background: url(../Themes/60GO2/Content/images/lovemilk/sprites.jpg) 0 -40px;
+                width: 34px;
+                height: 34px;
+                margin-top: 2px;
+            }
+
+                .loveMilk .buy a.minus:hover, .loveMilk .buy a.minus:active {
+                    background-position: -40px -40px;
+                }
+
+            .loveMilk .buy a.add {
+                background: url(../Themes/60GO2/Content/images/lovemilk/sprites.jpg) 0 0;
+                width: 34px;
+                height: 34px;
+                margin-top: 2px;
+            }
+
+                .loveMilk .buy a.add:hover, .loveMilk .buy a.add:active {
+                    background-position: -40px 0;
+                }
+
+            .loveMilk .buy input {
+                height: 34px;
+                line-height: 34px;
+                width: 3em;
+                font-size: 18px;
+                margin: 0 .5em;
+                text-align: center;
+                padding: 0 .5em;
+            }
+
+            .loveMilk .buy .param {
+                height: 50px;
+            }
+
+        a.yellow {
+            color: #333;
+            background: #ffd303;
+        }
+
+
+        .abuyDialog {
+            width: 580px;
+            background: #fff;
+            background: rgba(255,255,255,.95);
+            text-align: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-top: -200px;
+            margin-left: -295px;
+            border-radius: 2em;
+            box-shadow: 0px 0px 5px #999;
+            z-index: 100;
+            padding-bottom: 4em;
+        }
+
+            .abuyDialog .close {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                background: url(../Themes/60GO2/Content/images/lovemilk/close.png) no-repeat;
+                width: 40px;
+                height: 40px;
+            }
+
+            .abuyDialog h3 {
+                line-height: 2em;
+                padding: 50px 1em 30px;
+                font-size: 24px;
+                color: #000;
+            }
+
+            .abuyDialog p {
+                text-align: left;
+                color: #666;
+                font-size: 18px;
+                padding: 0 2em 50px;
+            }
+
+            .abuyDialog .abuyBtn a {
+                margin: 0 20px;
+                position: relative;
+                line-height: 28px;
+                font-size: 18px;
+                padding: .8em 2em;
+            }
+
+                .abuyDialog .abuyBtn a img {
+                    position: absolute;
+                    width: 100%;
+                    height: 11px;
+                    left: 0;
+                    bottom: -9px;
+                }
+    </style>
+    <script type="text/javascript" src="~/Themes/60GO2/Content/js/jquery-1.7.min.js"></script>
+    <script type="text/javascript" src="~/Themes/60GO2/Content/js/jquery.numeric.js"></script>
+    <script type="text/javascript" src="~/Themes/60GO2/Content/js/public.ajaxcart.js"></script>
+    <script type="text/javascript" src="~/Themes/60GO2/Content/js/public.common.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#@Html.FieldIdFor(model => model.EnteredQuantity)").numeric();
+            $("#@Html.FieldIdFor(model => model.EnteredQuantity)").blur(function () {
+                var quantity = parseInt($(this).val());
+                if (isNaN(quantity) || quantity < 1) {
+                    $(this).val("1");
+                    return;
+                } else {
+                    $(this).val(quantity);
+                }
+            });
+            setInterval(getMilkStockQuantity, 10000);
+        }
+        );
+
+
+        function getMilkStockQuantity() {
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "@(Url.Action("GetMilkStockQuantity", "LoveMilk"))",
+                data: { "productId": "@Model.ProductId" },
+                success: function (data) {
+                    var stockQuantity = data.StockQuantity;
+                    $("#stockQuantity").html(stockQuantity);
+                    if (stockQuantity == "0") {
+                        $("#buyProductNow").addClass("over");
+                        $("#buyProductNow").html("已售罄");
+                    } else {
+                        $("#buyProductNow").html("确 认");
+                        $("#buyProductNow").removeClass("over");
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //alert('@Html.Raw(HttpUtility.JavaScriptStringEncode("请求失败"))');
+                }
+            });
+        }
+
+        function quantityMinus() {
+            var number = parseInt($("#@Html.FieldIdFor(model => model.EnteredQuantity)").val());
+            if (isNaN(number))
+                number = 1;
+            number = number - 1;
+            if (number < 1)
+                number = 1;
+            $("#@Html.FieldIdFor(model => model.EnteredQuantity)").val(number);
+            return false;
+        }
+
+        function quantityPlus() {
+            var number = parseInt($("#@Html.FieldIdFor(model => model.EnteredQuantity)").val());
+            if (isNaN(number))
+                number = 1;
+            number = number + 1;
+            if (number > 99)
+                number = 99;
+            $("#@Html.FieldIdFor(model => model.EnteredQuantity)").val(number);
+            return false;
+        }
+
+        function BuyProductNow(buy_now_btn) {
+            var stockQuantity = parseInt($("#stockQuantity").html());
+            if (stockQuantity != 0) {
+                $("#buyProductNow").attr("onclick", "");
+                AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new { productId = Model.ProductId, shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart, buyNow = true })',
+                    '#product-details-form', buyProductNowSuccess, buy_now_btn, '@Model.PicUrl');
+            }
+        }
+
+        function buyProductNowSuccess(response) {
+            if (response.success == true) {
+                window.location.href = response.checkoutUrl;
+            }
+            else {
+                $("#errorMessageInfo").html(response.message);
+                $(".abuyDialog").css("display", "block");
+                $("#buyProductNow").attr("onclick", "BuyProductNow(this)");
+            }
+        }
+
+        function closeErrorMessageDialog() {
+            $(".abuyDialog").css("display", "none");
+        }
+    </script>
+</head>
+<body>
+    <!--对话框-->
+    <div class="abuyDialog" style="display: none;">
+        <a href="javascript:void(0);" class="close" onclick="closeErrorMessageDialog();"></a>
+        <h3>超过数量了！</h3>
+        <p id="errorMessageInfo"></p>
+        <div class="abuyBtn">
+            <a href="javascript:void(0);" class="yellow" onclick="closeErrorMessageDialog();">
+                <img src="~/Themes/60GO2/Content/images/lovemilk/btnShadow.png" />关 闭</a>
+            <!--<a href="/" class="yellow">
+                        <img src="~/Themes/60GO2/Content/images/lovemilk/btnShadow.png" />赶紧去看看其他商品被抢了没</a>-->
+        </div>
+    </div>
+    <div>
+        @using (Html.BeginRouteForm("Product", new { SeName = Model.SeName }, FormMethod.Post, new { id = "product-details-form" }))
+        {
+            <ul class="loveMilk">
+                <a href="/" class="home">[ 返回首页 ]</a>
+                <li>
+                    <img src="~/Themes/60GO2/Content/images/lovemilk/lovemilk_01.jpg" /></li>
+                <li>
+                    <img src="~/Themes/60GO2/Content/images/lovemilk/lovemilk_02.jpg" /></li>
+                <li>
+                    <img src="~/Themes/60GO2/Content/images/lovemilk/lovemilk_03.jpg" /></li>
+                <li>
+                    <img src="~/Themes/60GO2/Content/images/lovemilk/lovemilk_04.jpg" /></li>
+                <li>
+                    <img src="~/Themes/60GO2/Content/images/lovemilk/lovemilk_05.jpg" />
+                    <div class="buy">
+                        <div class="param">
+                            <span>购买数量：</span>
+                            <a href="javascript:void(0);" class="minus" onclick=" return quantityMinus() "></a>
+                            @Html.TextBoxFor(model => model.EnteredQuantity, new { maxlength = 2 })
+                            <a href="javascript:void(0);" class="add" onclick=" return quantityPlus() "></a>
+                            <span>（剩余库存<em id="stockQuantity">@Model.StockQuantity</em>）</span>
+                        </div>
+                        <a id="buyProductNow" href="javascript:void(0);" class="submit @(Model.StockQuantity == 0 ? "over" : "")" onclick="BuyProductNow(this)">@(Model.StockQuantity == 0 ? "已售罄" : "确 认")</a>
+                    </div>
+                </li>
+                <li class="last">
+                    <img src="~/Themes/60GO2/Content/images/lovemilk/lovemilk_06.jpg" />
+                </li>
+            </ul>
+        }
+    </div>
+</body>
+</html>
+

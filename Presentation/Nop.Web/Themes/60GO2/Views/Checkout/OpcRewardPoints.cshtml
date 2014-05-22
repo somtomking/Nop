@@ -1,0 +1,20 @@
+﻿@model CheckoutRewardPointsModel
+@using Nop.Web.Models.Checkout;
+<div class="title clearfix">
+    <a href="#">
+        <h2>@T("ShoppingCart.UseRewardPoints")</h2>
+    </a>
+</div>
+<div class="couponCon">
+    <form class="form-inline" id="co-reward-points-form">
+        @T("ShoppingCart.UseRewardPointsText1")
+        <div class="form-group">
+            <input type="text" id="rewardpointsused" name="rewardpointsused" class="form-control input-sm integral" value="@Model.RewardPointsUsed" maxlength="7" />
+        </div>
+        @T("ShoppingCart.UseRewardPointsText2") @T("ShoppingCart.MyRewardPoints", Model.RewardPointsBalance, Model.RewardPointsBalanceCanBeUsed)
+        <button type="button" class="btn btn-green btn-sm mar_l_20" onclick="RewardPoints.save()">@T("ShoppingCart.ApplyRewardPoints") </button>
+    </form>
+</div>
+<script type="text/javascript">
+    $("#rewardpointsused").numeric();
+</script>

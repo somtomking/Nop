@@ -1,0 +1,79 @@
+﻿@charset "utf-8";
+/*
+for 购物车 layout---------------------------*/
+.cartStep{margin:20px 0; height:40px;}
+.cartStep-01{background:url(../images/cart_step_01.jpg) no-repeat;}
+.cartStep-02{background:url(../images/cart_step_02.jpg) no-repeat;}
+.cartStep-03{background:url(../images/cart_step_03.jpg) no-repeat;}
+.cartStep a{float:left; width:300px; height:40px; margin-left:85px; display:inline;}
+
+.gwcTitle{padding:10px 15px; background-color:#fff; margin-bottom:10px;}
+.gwcTitle h2{margin:0; float:left; font-size:18px; color:#333;}
+
+.gwcCon{padding:10px 15px; background-color:#fff; margin-bottom:10px; border:1px solid #ddd; clear:both;}
+.gwcCon .title{padding:5px 0;}
+.gwcCon .title h2{margin:0 5px 0 0; float:left; font-size:16px; color:#333; display:inline;}
+.gwcCon .title a{color:#2e9206;}
+.gwcCon .con{clear:both;}
+.gwcCon .shrInfo{padding:10px;}
+.gwcCon .shrInfoList li{margin:5px; float:left; display:inline; width:250px; height:auto!important; height:90px; min-height:90px; border:2px solid #eee; position:relative; z-index:1;}
+.gwcCon .shrInfoBox{padding:10px;}
+.gwcCon .shrInfoList li .btn{position:absolute; bottom:5px; right:5px;}
+.gwcCon .shrInfoList li:hover,.gwcCon .shrInfoList .on{border:2px solid #f90;}
+.gwcCon .shrInfoList .edit{display:block; width:16px; height:16px; background:url(../images/icon_edit.png) no-repeat 0 0; position:absolute; left:5px; bottom:5px;}
+.gwcCon .shrInfoList .ok{display:block; width:32px; height:32px; background:url(../images/icon_right.png) no-repeat 0 0; position:absolute; right:5px; bottom:5px;}
+.gwcCon .shrInfoList .default{ float:left; padding:2px 5px; border-radius:3px; background-color:#c0deb4; color:#fff; position:absolute; right:3px; top:3px;}
+.gwcCon .shrInfoBox .name{margin-right:50px;}
+.gwcCon .shrInfoList .add{display:block; width:250px; height:30px; padding-top:60px; text-align:center; color:#999; background:url(../images/zh_add.jpg) no-repeat center 20px;}
+.gwcCon .btnArea{padding:10px; clear:both;}
+
+.notinaddList{}
+.notinaddList li{float:left; display:inline; margin:0 10px; width:230px;}
+.notinaddList .innerBox{padding:15px; height:80px; margin-bottom:10px; border:1px solid #ddd; border-radius:4px; cursor:pointer;}
+.notinaddList p{color:#999;}
+
+.invoiceInfo{border:2px solid #f90; padding:10px;}
+.invoiceInfo .title{font-size:16px; margin-bottom:10px;}
+.invoiceInfo .row{padding:0 10px;}
+.invoiceInfo .row li{margin-bottom:5px;}
+.invoiceInfo .form-group{margin:0 10px;}
+
+.gwcCon .psList li{margin-bottom:10px;}
+
+.paymentList{padding:10px;}
+.paymentList li{margin-bottom:10px;}
+.paymentList li span{color:#999; margin-left:10px;}
+.paymentList dl dt {float:left; width:100px; padding-top:20px;}
+.paymentList-btn.btnArea {padding-left:110px;}
+.paymentList-btn.btnArea .btn-lg {padding:10px 50px !important;}
+.paymentList dl dd {margin-left:100px;}
+.box-orange {border:3px solid #f60; overflow:hidden; margin-top:15px;}
+.paymentList .other {padding-top:22px;}
+.onlinePayment{padding-top:5px;}
+.onlinePayment li{float:left; width:175px; margin:0 5px 10px; position:relative; z-index:100; border:1px solid #ddd; overflow:hidden;}
+.onlinePayment li img {width:150px; height:50px;}
+.onlinePayment li input[type="radio"] {float:left; margin-top:18px; margin-left:5px;}
+.onlinePayment li.on {border:1px solid #f60;}
+.onlinePayment li a{float:left; width:150px; height:50px; border:1px solid #ddd;}
+.onlinePayment li a:hover,.onlinePayment li a.on{border:1px solid #f60;}
+.onlinePayment li .selected{display:block; width:32px; height:32px; background:url(../images/icon_right.png) no-repeat; position:absolute; bottom:0; right:0; z-index:100;}
+
+.couponCon{clear:both; border:3px solid #b7d56f; background-color:#f3fae1; padding:10px; margin-bottom:5px;}
+.couponCon ul{border-bottom:1px dashed #b7d56f; padding:5px 0; line-height:30px;}
+.couponCon .integral{width:80px; margin:0 3px;}
+
+.successArea{width:500px; margin:0 auto; background-color:#fff; padding:10px;}
+.successArea .border_orange{border:1px solid #f90;}
+.successArea .btnArea{padding:10px 0; clear:both;}
+.successArea .box-tips{font-size:16px; line-height:24px;}
+
+.box-ok .ddInfo{float:left; width:450px; padding:10px; border:1px solid #ddd; background-color:#fff; position:relative;}
+.box-ok .ddInfo .btn{position:absolute; left:480px; bottom:0;}
+
+.ddokBox{border-bottom:1px solid #ddd; margin-bottom:10px;}
+
+.ddBox{padding:10px; border:3px solid #2e9206; background-color:#f6fee4; position:relative; z-index:1; margin-bottom:10px;}
+.ddTitle{width:30px; text-align:center; font-size:16px; padding:10px 5px; color:#fff; background-color:#2e9206; position:absolute; left:-30px; top:-3px;}
+
+.tags_01{border:1px solid #f60; border-radius:3px; padding:0 5px; color:#ff0; background-color:#f84d00;}
+.tags_02{border:1px solid #ddd; border-radius:3px; padding:0 5px; color:#f00; background-color:#fff;}

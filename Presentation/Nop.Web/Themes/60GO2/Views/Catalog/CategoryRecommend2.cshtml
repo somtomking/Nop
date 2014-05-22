@@ -1,0 +1,15 @@
+﻿@model CategoryRecommendModel
+@using Nop.Web.Models.Catalog;
+@if (Model.Products.Count > 0)
+{
+        
+    <div class="normalTitle clearfix">
+		<h2>@T("Category.Recommend")</h2>
+	</div>    
+    <ul class="row proList">
+			 @foreach (var product in Model.Products)
+            {
+                @Html.Partial("_ProductBox4", product)
+            }
+	</ul>
+}

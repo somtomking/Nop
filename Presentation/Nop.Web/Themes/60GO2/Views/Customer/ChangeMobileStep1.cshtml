@@ -1,0 +1,57 @@
+﻿@model ChangeMobileStepModel
+@using Nop.Web.Models.Customer;
+@using Nop.Core.Infrastructure;
+@using Nop.Core.Domain.Common;
+@{
+    Layout = "~/Views/Shared/_ColumnsTwo.cshtml";
+    Html.AddTitleParts(T("PageTitle.Mobile").Text);
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.authenticode.js");
+    var breadcrumbDelimiter = EngineContext.Current.Resolve<CommonSettings>().BreadcrumbDelimiter;
+}
+@section _left
+{
+    @Html.Partial("MyAccountNavigation", Model.NavigationModel, new ViewDataDictionary())
+}
+<div class="breadcrumbs clearfix">
+    <ul>
+        <li><a href="@Url.RouteUrl("CustomerAccountSecurity")">账户安全</a><span>@breadcrumbDelimiter</span></li>
+        <li>手机验证</li>
+    </ul>
+</div>
+<div class="mycneterCon">
+    @using (Html.BeginForm("ChangeMobileStep1", null, FormMethod.Post, new { @class = "form-center" }))
+    {
+        @Html.AntiForgeryToken()
+        if (!string.IsNullOrEmpty(Model.Message))
+        {  
+        <div class="box-error-s">
+            @Model.Message
+        </div>
+        }    
+        <div class="formList">
+            <dl class="clearfix">
+                <dt>手机号码：</dt>
+                <dd>@Model.OldMobile</dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>请输入当前密码：</dt>
+                <dd>
+                    @Html.PasswordFor(model => model.Password, new { @class = "input-style input-sm", maxlength = 16 })
+                    <br />@Html.ValidationMessageFor(model => model.Password)
+                </dd>
+            </dl>
+            <dl class="clearfix">
+                <dt>&nbsp;</dt>
+                <dd>
+                    <input type="submit" class="btn btn-green btn-md" value="下一步（设置新手机号码）" />
+                </dd>
+            </dl>
+        </div> 
+        @Html.HiddenFor(model => model.ChangeMobileStep)   
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#@Html.FieldIdFor(model => model.Password)").rules("add", { required: true, messages: { required: "请输入当前密码" } });
+    });
+</script>

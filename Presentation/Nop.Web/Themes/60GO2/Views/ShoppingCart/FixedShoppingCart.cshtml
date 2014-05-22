@@ -1,0 +1,23 @@
+﻿@model MiniShoppingCartModel
+@using Nop.Web.Models.ShoppingCart;
+@* 前台页右下购物车 *@
+<div class="popBox" style="display:none;" id="fixedFlyoutShoppingCart">
+    <span class="arrow"></span>
+    <ul>
+        @for (int i = 0; i < Model.Items.Count; i++)
+        {
+            var item = Model.Items[i];
+            <li class="clearfix">
+                <p class="pic">
+                    <img alt="@item.Picture.AlternateText" src="@item.Picture.ImageUrl" title="@item.Picture.Title" />
+                </p>
+                <p class="text">
+                    <a href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })" target="_blank">@item.ProductName</a>
+                    <span class="corange">@item.UnitPrice</span><span class="beright">×@item.Quantity</span>
+                </p>
+            </li>
+        }
+    </ul>
+    <a class="btn btn-orange btn-sm beright" href="@Url.RouteUrl("ShoppingCart")" target="_cart">@T("ShoppingCart.View")</a>
+</div>
+

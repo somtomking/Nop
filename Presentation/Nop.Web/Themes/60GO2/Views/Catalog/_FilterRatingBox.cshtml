@@ -1,0 +1,27 @@
+﻿@model ReviewPagingFilteringModel.RatingFilterModel
+@using Nop.Web.Models.Catalog;
+
+@helper RatingText(ReviewPagingFilteringModel.RatingFilterItem filterItem)
+{
+    string ratingTextReturn = string.Empty;
+    string ratingTextFormat = "<input type=\"radio\" id=\"{0}\" name=\"{1}\" onclick=\"getCurrentPageReviews('{2}', '{3}');\" {4} /><label for=\"{5}\">{6}<label> ({7})";
+    string ratingName = "ratingGroup";
+    string isSelected = filterItem.Selected ? "checked=checked" : "";
+
+    string urlStr = filterItem.FilterUrl.Substring(0, filterItem.FilterUrl.IndexOf("&"));
+    string dataStr = filterItem.FilterUrl.Substring(filterItem.FilterUrl.IndexOf("&") + 1) + "&random=" + new Random().Next();
+    ratingTextReturn = string.Format(ratingTextFormat, filterItem.Key.ToString(), ratingName, urlStr, dataStr, isSelected, filterItem.Key.ToString(), T("ProductReviews." + filterItem.Key.ToString()), filterItem.Value);
+    <text>@Html.Raw(ratingTextReturn)</text>
+}
+@if (Model.Enabled)
+{
+    <ul class="commentSelect clearfix">
+        @foreach (var item in Model.Items)
+        {
+            <li>@RatingText(item)</li>
+        }
+    </ul>
+}
+
+
+

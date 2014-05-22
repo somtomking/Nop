@@ -1,0 +1,199 @@
+﻿@model CategoryModel
+@{
+    Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+    Html.AddTitleParts(!String.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    Html.AddMetaDescriptionParts(Model.MetaDescription);
+    Html.AddMetaKeywordParts(Model.MetaKeywords);
+
+    Html.AppendCssFileParts("~/Themes/60GO2/Content/css/include_pro.css");
+    Html.AppendScriptParts("~/Themes/60GO2/Content/js/jquery.numeric.js");
+
+    var canonicalUrlsEnabled = EngineContext.Current.Resolve<SeoSettings>().CanonicalUrlsEnabled;
+    if (canonicalUrlsEnabled)
+    {
+        var categoryUrl = Url.RouteUrl("Category", new { SeName = Model.SeName }, this.Request.Url.Scheme);
+        Html.AddCanonicalUrlParts(categoryUrl);
+    }
+
+    var breadcrumbDelimiter = EngineContext.Current.Resolve<CommonSettings>().BreadcrumbDelimiter;
+
+    //current category ID
+    int currentCategoryId = 0;
+    if (Url.RequestContext.RouteData.Values["controller"].ToString().Equals("catalog", StringComparison.InvariantCultureIgnoreCase) &&
+        Url.RequestContext.RouteData.Values["action"].ToString().Equals("category", StringComparison.InvariantCultureIgnoreCase))
+    {
+        currentCategoryId = Convert.ToInt32(Url.RequestContext.RouteData.Values["categoryId"].ToString());
+    }
+
+
+    //current manufacturer ID
+    int currentManufacturerId = 0;
+    if (Url.RequestContext.RouteData.Values["controller"].ToString().Equals("catalog", StringComparison.InvariantCultureIgnoreCase) &&
+        Url.RequestContext.RouteData.Values["action"].ToString().Equals("manufacturer", StringComparison.InvariantCultureIgnoreCase))
+    {
+        currentManufacturerId = Convert.ToInt32(Url.RequestContext.RouteData.Values["manufacturerId"].ToString());
+    }
+
+
+    //current product ID
+    int currentProductId = 0;
+    if (Url.RequestContext.RouteData.Values["controller"].ToString().Equals("catalog", StringComparison.InvariantCultureIgnoreCase) &&
+        Url.RequestContext.RouteData.Values["action"].ToString().Equals("product", StringComparison.InvariantCultureIgnoreCase))
+    {
+        currentProductId = Convert.ToInt32(Url.RequestContext.RouteData.Values["productId"].ToString());
+    }
+}
+@using Nop.Core.Domain.Common;
+@using Nop.Core.Domain.Seo;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Catalog;
+@using Nop.Web.Extensions;
+@section _floatarea
+{
+    @Html.Action("FloatArea", "Common", new { pageTurningEnabled = true,backToHomeEnabled=true,wishlistEnabled=true,shoppingCartEnabled = true })
+}
+<div class="container pad_t_10 mar_b_20 clearfix">
+    <div class="leftSide">
+        @Html.Action("CategoryNavigation2", "Catalog", new { currentCategoryId = currentCategoryId, currentProductId = currentProductId })
+        @Html.Action("CategoryRecommend", "Catalog", new { currentCategoryId = Model.Id, left = true })
+    </div>
+    <div class="rightSide">
+        @*category breadcrumb*@
+        @if (Model.DisplayCategoryBreadcrumb)
+        {
+            <div class="breadcrumbs clearfix">
+                <ul>
+                    @*<li class="home"><a href="@Url.RouteUrl("HomePage")" title="@T("Categories.Breadcrumb.Top")">@T("Categories.Breadcrumb.Top")</a>
+                <span class="delimiter">@breadcrumbDelimiter</span> </li>*@
+                    @foreach (var cat in Model.CategoryBreadcrumb)
+                    {
+                        var isLastCategory = cat.Id == Model.Id;
+                        <li>
+                            @if (isLastCategory)
+                            {
+                                @cat.Name
+                            }
+                            else
+                            {
+                                <a href="@Url.RouteUrl("Category", new { SeName = cat.SeName })" title="@cat.Name">@cat.Name</a>
+                                <span>@breadcrumbDelimiter</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+            @Html.Widget("categorydetails_after_breadcrumb")
+        }
+        @Html.Widget("categorydetails_top")
+        @Html.Widget("categorydetails_before_filters")
+        @*@if (Model.PagingFilteringContext.SpecificationFilter.Enabled || Model.PagingFilteringContext.PriceRangeFilter.Enabled)*@
+        @if (Model.PagingFilteringContext.SpecificationFilter.Enabled)
+        {
+            <div class="proSelect">
+                @Html.Partial("_FilterSelectedBox", Model.PagingFilteringContext, new ViewDataDictionary())
+                @if (Model.PagingFilteringContext.SpecificationFilter.Enabled)
+                {
+                    @Html.Partial("_FilterSpecsBox", Model.PagingFilteringContext.SpecificationFilter, new ViewDataDictionary())
+                }
+            </div>
+        }
+
+@*product list*@
+        @if (Model.Products.Count > 0)
+        {    
+            <div class="sortBar">
+                <ul class="sortList">
+                    @if (Model.PagingFilteringContext.AllowProductSorting && Model.Products.Count > 0)
+                    {
+                        foreach (var sortOption in Model.PagingFilteringContext.AvailableSortOptions)
+                        {
+                            var sText = sortOption.Text.Split('|')[0]; var ascFlag = sortOption.Text.Split('|')[1];
+                            var className = "";
+                            if (sText != "默认")
+                            {
+                                if (sortOption.Selected && ascFlag == "0")
+                                { className = "sort-down-active"; }
+                                else if (sortOption.Selected && ascFlag != "0")
+                                { className = "sort-up-active"; }
+                                else
+                                { className = "sort-down"; }
+                            }
+                        <li><a href="@sortOption.Value" class="@className" title="@sortOption.Value">@(sText)</a></li>                    
+                        }
+                    }
+                    @if (Model.PagingFilteringContext.PriceRangeFilter.Enabled)
+                    {
+                        @Html.Partial("_FilterPriceBox", Model.PagingFilteringContext.PriceRangeFilter, new ViewDataDictionary())
+                    }
+                </ul>
+                @*    <ul class="pagesList">
+        <li>@T("Category.TotalProducts", Model.PagingFilteringContext.TotalItems)</li>
+        <li>
+            <button class="btn btn-default btn-xs" type="button"><span class="caret-left"></span>上一页</button></li>
+        <li>
+            <button class="btn btn-default btn-xs" type="button">上一页<span class="caret-right"></span></button></li>
+    </ul>*@
+                @Html.Pager(Model.PagingFilteringContext).QueryParam("pagenumber").SimpleMode(true).ShowTotalSummary(true)
+            </div>
+            @Html.Widget("categorydetails_before_product_list")
+                    if (Model.PagingFilteringContext.ViewMode == "list")
+                    {
+@*list mode*@
+            <div class="normalList-03 clearfix">
+                <ul>
+                    @foreach (var product in Model.Products)
+                    {
+                        @Html.Partial("CategoryProductBox", product)
+                    }
+                </ul>
+            </div>
+                    }
+                    else
+                    {
+@*grid mode*@
+            <div class="normalList-03 clearfix">
+                <ul>
+                    @foreach (var product in Model.Products)
+                    {
+                        @Html.Partial("CategoryProductBox", product)
+                    }
+                </ul>
+            </div>
+                    }
+            <div class="paginationArea clearfix">
+                @Html.Pager(Model.PagingFilteringContext).QueryParam("pagenumber").ShowTotalSummary(true)
+            </div> 
+        }
+        else
+        {    
+            <div class="pad_20">
+                <div class="box-tips">@T("Search.NoResultsText")</div>
+            </div>
+            @Html.Action("CategoryRecommend", "Catalog", new { currentCategoryId = Model.Id, left = false })
+        }
+
+        @Html.Widget("categorydetails_bottom")
+        <script type="text/javascript">
+            $(".num-text input").numeric();
+
+            $(function () {
+                $("[node-type='quantity-minus']").click(function () {
+                    var pid = $(this).attr("data");
+                    var o = $("[name='quantity-" + pid + "']");
+                    var newValue = parseInt(o.val()) - 1;
+                    if (newValue < 1)
+                        newValue = 1;
+                    o.val(newValue)
+                });
+                $("[node-type='quantity-plus']").click(function () {
+                    var pid = $(this).attr("data");
+                    var o = $("[name='quantity-" + pid + "']");
+                    var newValue = parseInt(o.val()) + 1;
+                    if (newValue > 99)
+                        return;
+                    o.val(newValue)
+                });
+            });
+        </script>
+    </div>
+</div>

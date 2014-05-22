@@ -1,0 +1,64 @@
+﻿@model ProductOverviewModel
+@using Nop.Web.Models.Catalog;
+
+@if (@Model != null)
+{
+    if (Model.DisplayPosition == DisplayPosition.Standard)
+    {
+        <text></text>
+    }
+    else if (Model.DisplayPosition == DisplayPosition.CustomProductGroupFirstItem)
+    {
+        <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title" target="_blank" class="btn">抢购</a><a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title" target="_blank"><img src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" alt="@Model.DefaultPictureModel.AlternateText"></a>
+    }
+    else if (Model.DisplayPosition == DisplayPosition.CustomProductGroupItem)
+    {
+        <div class="inner">
+            <div class="pic">
+                @if (!string.IsNullOrEmpty(Model.SaleTag))
+                {
+                    <span class="sale-tag @Model.SaleTag"></span>
+                }
+                <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title" target="_blank">
+                    <img src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" alt="@Model.DefaultPictureModel.AlternateText" />
+                    @if (Model.IsSoldOut)
+                    {
+                        <span class="sale-tag-none"></span>
+
+                    }
+
+                </a>
+            </div>
+            <div class="text clearfix">
+                @if (Model.IsSoldOut)
+                {
+                    @*<a href="###" class="btn-cart-n"></a>*@
+                }
+                else
+                {
+                    <a href="javascript:void(0);" data-input="1" data-pid="@Model.Id" data-picurl="@Model.DefaultPictureModel.ImageUrl" class="btn-cart-b add-to-cart"></a>
+                }
+
+                <h2><a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" target="_blank">@Model.Name</a></h2>
+                <p>
+                    @Model.ProductPrice.Price
+                    @if (Model.ProductPrice.OldPrice != null)
+                    {
+                        <em>@Model.ProductPrice.OldPrice</em>
+                    }
+                </p>
+                @*<a href="javascript:void(0);" data-input="1" data-pid="@Model.Id" data-picurl="@Model.DefaultPictureModel.ImageUrl" class="btn-cart-b add-to-cart"></a>*@
+            </div>
+            @*<div class="btns clearfix">
+                    <div class="buy-num-01">
+                        @{var quantityInputId = string.Format("quantity_{0}", Model.Id); }
+                        <a href="javascript:void(0);" class="minus" data-input="@quantityInputId"></a>
+                        <span class="num-text">
+                            <input id="@quantityInputId"  type="text" value="1" onkeyup="value=value.replace(/[^\d]/g,'')"  maxlength="2"></span>
+                        <a href="javascript:void(0);" class="plus" data-input="@quantityInputId"></a>
+                    </div>
+                    <a href="javascript:void(0);" data-input="@quantityInputId" data-pid="@Model.Id" data-picurl="@Model.DefaultPictureModel.ImageUrl" class="btn-cart-01 add-to-cart"></a>
+                </div>*@
+        </div>
+    }
+}

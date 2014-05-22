@@ -1,0 +1,12 @@
+﻿<div class="topBar">
+    @Html.Widget("header")
+
+    <div class="container">
+        <ul class="topLink">
+            @Html.Action("HeaderLinks", "Common")
+            @Html.Widget("header_links_after")
+        </ul>
+        @*@Html.Action("FlyoutShoppingCart", "ShoppingCart")*@
+        @Html.Widget("header_selectors")
+    </div>
+</div>

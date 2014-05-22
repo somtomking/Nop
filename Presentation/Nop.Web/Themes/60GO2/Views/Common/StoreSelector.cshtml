@@ -1,0 +1,28 @@
+﻿@model StoreSelectorModel
+@using Nop.Core;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Models.Common;
+@if (Model.Enabled)
+{
+    var stores = Model.AvailableStores.Where(n => n.Id != Model.CurrentStoreId).OrderBy(store => store.DisplayOrder).Select(store => new SelectListItem
+    {
+        Text = store.Name,
+        Value = store.Url,
+        Selected = store.Id.Equals(Model.CurrentStoreId)
+    }).ToList();
+
+    var currentStore = Model.AvailableStores.FirstOrDefault(n => n.Id == Model.CurrentStoreId);
+
+    <div class="addressChoose">
+        <div class="btn-group">
+            <button type="button" class="btn btn-orange btn-xs dropdown-toggle" data-toggle="dropdown">
+                @currentStore.Name<span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+                @foreach (var store in stores)
+                {
+                    <li><a href="@store.Value">@store.Text</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+}

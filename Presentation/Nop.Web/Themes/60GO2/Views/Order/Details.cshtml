@@ -1,0 +1,476 @@
+﻿@model OrderDetailsModel
+@using Nop.Core.Domain.Orders;
+@using Nop.Web.Models.Order;
+@using Nop.Core.Domain.Shipping;
+@using Nop.Core.Domain.Payments;
+@using Nop.Core.Infrastructure;
+@using Nop.Core.Domain.Common;
+@{
+    if (!Model.PrintMode)
+    {
+        //Layout = "~/Views/Shared/_ColumnsOne.cshtml";
+        Layout = null;
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Print.cshtml";
+    }
+    //title
+    Html.AddTitleParts(T("PageTitle.OrderDetails").Text);
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/jquery.lightbox_me.js");
+    var breadcrumbDelimiter = EngineContext.Current.Resolve<CommonSettings>().BreadcrumbDelimiter;
+}
+@{
+    var url = Request.Url.ToString().Replace("#", "");
+    var returnOrChangeRequestUrl = "http://chat10.live800.com/live800/chatClient/chatbox.jsp?companyID=349187&jid=1957872490&enterurl=" + url;
+}
+@if (Model.PrintMode)
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            window.print();
+        });
+    </script>
+}
+@Html.Widget("orderdetails_page_top")
+
+<div class="breadcrumbs clearfix">
+    <ul>
+        <li><a href="@Url.RouteUrl("CustomerOrders")">@T("Account.CustomerOrders")</a><span>@breadcrumbDelimiter</span></li>
+        <li>@T("Account.CustomerOrders.Details")</li>
+    </ul>
+</div>
+
+<div class="ddStep">
+    <div class="step01 clearfix">
+        @if (Model.Shipments.Count > 0)
+        {
+            var shipment = Model.Shipments.FirstOrDefault();
+            <div class="pic">
+                <div class="@((Model.PaymentStatus == PaymentStatus.Paid || Model.PaymentMethodSystemName == "Payments.CashOnDelivery") || Model.ShippingStatus == ShippingStatus.Shipped || Model.ShippingStatus == ShippingStatus.Delivered ? "node_ready" : "node_unready")">1</div>
+                <div class="@(Model.ShippingStatus == ShippingStatus.Shipped || Model.ShippingStatus == ShippingStatus.Delivered ? "strip_ready" : "strip_unready")">
+                    @if (!(Model.ShippingStatus == ShippingStatus.Shipped || Model.ShippingStatus == ShippingStatus.Delivered))
+                    {<span class="bar"></span>}
+                    @if ((Model.PaymentStatus == PaymentStatus.Paid || Model.PaymentMethodSystemName == "Payments.CashOnDelivery") && Model.ShippingStatus == ShippingStatus.NotYetShipped)
+                    {<em>@(Model.OrderViewStatusEnum == OrderViewStatusEnum.Cancelled && Model.LogisticsStatusEnum == LogisticsStatusEnum.Processing ? string.Format(T("account.customerorders.details.cancelled").Text, Model.CancelType) : T("Account.CustomerOrders.Details.ShippingStep1Des").Text)</em>}
+                </div>
+                <div class="@(Model.ShippingStatus == ShippingStatus.Shipped || Model.ShippingStatus == ShippingStatus.Delivered ? "node_ready" : "node_unready")">2</div>
+                <div class="@(Model.ShippingStatus == ShippingStatus.Shipped || Model.ShippingStatus == ShippingStatus.Delivered ? "strip_ready" : "strip_unready")">
+                    @if (!(Model.ShippingStatus == ShippingStatus.Delivered))
+                    {<span class="bar"></span>}
+                    @if (Model.ShippingStatus == ShippingStatus.Shipped)
+                    {<em>@(Model.OrderViewStatusEnum == OrderViewStatusEnum.Cancelled && Model.LogisticsStatusEnum == LogisticsStatusEnum.Shipped ? string.Format(T("account.customerorders.details.cancelled").Text, Model.CancelType) : T("Account.CustomerOrders.Details.ShippingStep2Des").Text)</em>}
+
+                </div>
+                <div class="@(Model.ShippingStatus == ShippingStatus.Delivered ? "node_ready" : "node_unready")">3</div>
+            </div>                        
+            <ul class="text">
+                <li>@(Model.OrderViewStatusEnum == OrderViewStatusEnum.Cancelled && Model.LogisticsStatusEnum == LogisticsStatusEnum.Pending ? string.Format(T("account.customerorders.details.cancelled").Text, Model.CancelType) : (Model.LogisticsStatusEnum == LogisticsStatusEnum.Pending ? T("Account.CustomerOrders.Details.OrderStep1Status0").Text : T("Account.CustomerOrders.Details.OrderStep1Status").Text))<span>@(Model.PaidDate != null ? Convert.ToDateTime(Model.PaidDate).ToString("MM-dd HH:mm") : "") </span></li>
+                @if (Model.LogisticsStatusEnum == LogisticsStatusEnum.Shipped || Model.LogisticsStatusEnum == LogisticsStatusEnum.Complete)
+                {
+                    <li>@T("Account.CustomerOrders.Details.OrderStep2Status").Text<span>@(shipment.ShippedDate != null ? Convert.ToDateTime(shipment.ShippedDate).ToString("MM-dd HH:mm") : "")</span></li>
+                }
+                @if (Model.LogisticsStatusEnum == LogisticsStatusEnum.Complete)
+                {
+                    <li>@(Model.OrderViewStatusEnum == OrderViewStatusEnum.Cancelled && Model.LogisticsStatusEnum == LogisticsStatusEnum.Complete ? string.Format(T("account.customerorders.details.cancelled").Text, Model.CancelType) : T("Account.CustomerOrders.Details.OrderStep3Status").Text)<span>@(shipment.DeliveryDate != null ? Convert.ToDateTime(shipment.DeliveryDate).ToString("MM-dd HH:mm") : "")</span></li>
+                }
+            </ul>                        
+        }
+        @if (Model.Shipments.Count == 0)
+        {
+            <div class="pic">
+                <div class="@(Model.PaymentStatus == PaymentStatus.Pending || Model.PaymentStatus == PaymentStatus.Paid || Model.PaymentMethodSystemName == "Payments.CashOnDelivery" ? "node_ready" : "node_unready")">1</div>
+                <div class="@(Model.PaymentStatus == PaymentStatus.Paid || Model.PaymentMethodSystemName == "Payments.CashOnDelivery" ? "strip_ready" : "strip_unready")">
+                    <span class="bar"></span>
+                    @if ((Model.PaymentStatus == PaymentStatus.Paid || Model.PaymentMethodSystemName == "Payments.CashOnDelivery") && Model.ShippingStatus == ShippingStatus.NotYetShipped)
+                    {<em>@(Model.OrderViewStatusEnum == OrderViewStatusEnum.Cancelled && Model.LogisticsStatusEnum == LogisticsStatusEnum.Processing ? string.Format(T("account.customerorders.details.cancelled").Text, Model.CancelType) : T("Account.CustomerOrders.Details.ShippingStep1Des").Text)</em>}
+                </div>
+                <div class="node_unready">2</div>
+                <div class="strip_unready"></div>
+                <div class="node_unready">3</div>
+            </div>
+            <ul class="text">
+                <li>@(Model.OrderViewStatusEnum == OrderViewStatusEnum.Cancelled && Model.LogisticsStatusEnum == LogisticsStatusEnum.Pending ? string.Format(T("account.customerorders.details.cancelled").Text, Model.CancelType) : (Model.LogisticsStatusEnum == LogisticsStatusEnum.Pending ? T("Account.CustomerOrders.Details.OrderStep1Status0").Text : T("Account.CustomerOrders.Details.OrderStep1Status").Text))<span>@(Model.PaidDate != null ? Convert.ToDateTime(Model.PaidDate).ToString("MM-dd HH:mm") : "") </span></li>
+
+            </ul>   
+        }
+    </div>
+    <div class="text-center">
+        @using (Html.BeginForm("OrderDetail", "Customer", FormMethod.Post, new { target = "_blank", style = "display:inline-block;" }))
+        {
+            if (Model.CanRePostProcessPayment)
+            {
+            <a href="@Url.RouteUrl("CheckoutCompleted", new { orderId = Model.Id })"  class="btn btn-orange btn-sm mar_b_10">@T("Order.CompletePayment")</a>
+@*<input type="submit" name="repost-payment" value="@T("Order.CompletePayment")" class="btn btn-orange btn-sm mar_b_10" />*@
+            }
+        }
+        @if ((Model.PaymentStatus == PaymentStatus.Pending || Model.PaymentStatus == PaymentStatus.Authorized) && (Model.OrderStatus != OrderStatus.Complete && Model.OrderStatus != OrderStatus.Cancelled))
+        {
+@*<a href="@Url.RouteUrl("CustomerCancelOrder",new{orderId=order.Id})" class="link_green" name="cancelorder">@T("Order.Cancel")</a><br />*@
+            <a href="javascript:void(0);" class="btn btn-orange btn-sm mar_b_10" onclick="ShowAddCancelPurchaseRemark(@Model.Id);">@T("Order.Cancel")</a>
+        }
+        else if (Model.PaymentStatus == PaymentStatus.Paid && Model.OrderStatus != OrderStatus.Complete && Model.OrderStatus != OrderStatus.Cancelled)
+        {
+            <a href="javascript:void(0);" id="returnorchange" class="btn btn-orange btn-sm mar_b_10">@T("Order.Cancel")</a>
+        }
+        @if (Model.IsReOrderAllowed && (Model.OrderStatus == OrderStatus.Complete || Model.OrderStatus == OrderStatus.Cancelled))
+        {
+            <input type="button" value="@T("Order.Rebuy")" class="btn btn-green btn-sm mar_b_10" onclick="setLocation('@Url.RouteUrl("ReOrder", new { orderId = Model.Id })    ')" />
+        }
+        @if (Model.OrderStatus == OrderStatus.Complete && !Model.IsCommented)
+        {
+            <a href ="@Url.RouteUrl("OrderReviews", new { orderId = Model.Id })" class="btn btn-default btn-sm mar_r_10" target="_blank">@T("Order.Comment")</a>
+        }
+    </div>
+</div>
+
+<div class="mycenterCon">
+    <div class="ddInfo clearfix">
+        <h5>@T("Account.CustomerOrders.Details.BasicInfo")</h5>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+                <tr>
+                    <td>@T("Account.CustomerOrders.Details.BasicInfo.OrderId")：@Model.OrderNumber</td>
+                    <td>@T("Account.CustomerOrders.Details.BasicInfo.OrderStatus")：@T("orderviewstatusenum." + Model.OrderViewStatusEnum.ToString())</td>
+                    <td>@T("Account.CustomerOrders.Details.BasicInfo.CreateOn")：@Model.CreatedOn.ToString("f")</td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    @*
+    <div class="ddInfo clearfix">
+        <h5>@T("Account.CustomerOrders.Details.RedeemedRewardPoint")</h5>
+        @if (Model.RedeemedRewardPoints > 0)
+        {
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td>@T("Account.CustomerOrders.Details.RedeemedRewardPoints")：@Model.RedeemedRewardPoints</td>
+                        <td>@T("Account.CustomerOrders.Details.RedeemedRewardPointsAmount")：@Model.RedeemedRewardPointsAmount.Replace("-", "")</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>           
+        }
+        else
+        {
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td>@T("Account.CustomerOrders.Details.PreferentialInfo.Non")</td>
+                    </tr>
+                </tbody>
+            </table>    
+        }
+    </div>*@
+    <div class="ddInfo clearfix">
+        <h5>@T("Account.CustomerOrders.Details.PreferentialInfo")</h5>
+        @if (Model.OrderDiscounts.Count > 0)
+        {
+            foreach (var d in Model.OrderDiscounts)
+            {
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td>@T("Account.CustomerOrders.Details.PreferentialInfo.No")：@d.DicountCode</td>
+                        <td>@T("Account.CustomerOrders.Details.PreferentialInfo.Money")：¥@d.PriceAmount</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+            }
+        }
+        else
+        {   
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td>@T("Account.CustomerOrders.Details.PreferentialInfo.Non")</td>
+                    </tr>
+                </tbody>
+            </table>       
+        }
+    </div>
+    @if (Model.IsShippable)
+    {
+        <div class="ddInfo clearfix">
+            <h5>@T("Account.CustomerOrders.Details.ConsigneeInfo")</h5>
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td>@Model.ShippingAddress.FirstName @Model.ShippingAddress.LastName</td>
+                        <td>
+                            @if (Model.ShippingAddress.PhoneEnabled)
+                            {
+                                @Model.ShippingAddress.PhoneNumber}</td>
+                        @if (Model.ShippingAddress.CityEnabled ||
+                                     Model.ShippingAddress.StateProvinceEnabled ||
+                                     Model.ShippingAddress.ZipPostalCodeEnabled)
+                        {
+                            <td>
+                                @{var ShippingAddressStr = "";}
+                                @if (Model.ShippingAddress.StateProvinceEnabled)
+                                {
+                                    ShippingAddressStr += Model.ShippingAddress.StateProvinceName;
+                                }
+                                @if (Model.ShippingAddress.CityEnabled)
+                                {
+                                    ShippingAddressStr += Model.ShippingAddress.CityName;
+                                }
+                                @if (Model.ShippingAddress.DistrictEnabled)
+                                {
+                                    ShippingAddressStr += Model.ShippingAddress.DistrictName;
+                                }
+                                @if (Model.ShippingAddress.StreetAddressEnabled)
+                                {
+                                    ShippingAddressStr += Model.ShippingAddress.Address1 + " ";
+                                }
+                                @if (Model.ShippingAddress.StreetAddress2Enabled && !String.IsNullOrEmpty(Model.ShippingAddress.Address2))
+                                {
+                                    ShippingAddressStr += Model.ShippingAddress.Address2 + " ";
+                                }
+
+@* @if (Model.ShippingAddress.ZipPostalCodeEnabled)
+                                {
+                                    ShippingAddressStr += T("Account.CustomerOrders.Details.ConsigneeInfo.Postcode") + Model.ShippingAddress.ZipPostalCode + " ";
+                                }
+
+                                @if (Model.ShippingAddress.PhoneEnabled)
+                                {
+                                    ShippingAddressStr += T("Account.CustomerOrders.Details.ConsigneeInfo.Phone") + Model.ShippingAddress.PhoneNumber;
+                                }
+                                *@
+                                @ShippingAddressStr
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+    <div class="ddInfo clearfix">
+        <h5>@T("Account.CustomerOrders.Details.PaymentInfo")</h5>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+                <tr>
+                    <td>@(Model.PaymentStatus == PaymentStatus.Paid ? T("Account.CustomerOrders.Details.PaymentInfo.Paid").Text + Model.OrderTotal : T("Account.CustomerOrders.Details.PaymentInfo.Non-payment").Text)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    @if (Model.Invoice != null)
+    {
+        <div class="ddInfo clearfix">
+            <h5>@T("Account.CustomerOrders.Details.InvoiceInfo")</h5>
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody>
+                    @if (!Model.Invoice.NeedInvoice)
+                    {
+                        <tr>
+                            <td>@T("Account.CustomerOrders.Details.InvoiceInfo.YesOrNo")：@T("Order.Invoice.Needless")</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@T("Account.CustomerOrders.Details.InvoiceInfo.YesOrNo")：@T("Order.Invoice.Needful")</td>
+                            <td>@T("Account.CustomerOrders.Details.InvoiceInfo.Type")：@(Model.Invoice.Type == (int)InvoiceType.Normal ? T("Account.CustomerOrders.Details.InvoiceInfo.Type.Common").Text : T("Account.CustomerOrders.Details.InvoiceInfo.Type.Other").Text)</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">@T("Account.CustomerOrders.Details.InvoiceInfo.TitleType")：@(Model.Invoice.TitleType == (int)InvoiceTitleType.Personal ? T("Account.CustomerOrders.Details.InvoiceInfo.TitleType.Personal").Text : Model.Invoice.Title + T("Account.CustomerOrders.Details.InvoiceInfo.TitleType.Institutional").Text)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    <div class="clear"></div>
+    @Html.Widget("orderdetails_page_beforeproducts")
+    @*    <div class="inventoryTitle">
+        <span>订单号：@Model.OrderNumber</span>
+        <span>下单时间：@Model.CreatedOn</span>
+    </div>*@
+    <div class="clear"></div>
+    <div class="ddCon">
+        @if (Model.Items.Count > 0)
+        {
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="inventoryTable">
+                <tr>
+                    <th width="50%">@T("Account.CustomerOrders.Details.OrderItem.ProductName")</th>
+                    <th width="10%">@T("Account.CustomerOrders.Details.OrderItem.ProductUnitPrice")</th>
+                    <th width="10%">@T("Account.CustomerOrders.Details.OrderItem.ProductQuantity")</th>
+                    <th width="15%">@T("Account.CustomerOrders.Details.OrderItem.Total")</th>
+                </tr>
+                @{int i = 0; int rowspan = Model.Items.Count;}
+                @foreach (var item in Model.Items)
+                {
+                    i++;
+                    <tr>
+                        <td>
+                            <div class="td-inner-s">
+                                <div class="pic">
+                                    <a href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })"  target="_blank" data-point="tbcart.8.12">
+                                        <img src="@item.Picture.ImageUrl"></a>
+                                </div>
+                                <div class="text">
+                                    <a class="item-title J_MakePoint" href="@Url.RouteUrl("Product", new { SeName = item.ProductSeName })"  target="_blank" data-point="tbcart.8.11">@item.ProductName</a>                                    @if (!String.IsNullOrEmpty(item.AttributeInfo))
+                                                                                                                                                                                                                                              {
+                                        <div class="attributes">
+                                            @Html.Raw(item.AttributeInfo)
+                                        </div>
+                                                                                                                                                                                                                                              }
+                                </div>
+                            </div>
+                        </td>
+                        <td align="center">@item.UnitPrice</td>
+                        <td align="center">@item.Quantity</td>
+                        @if (i == 1)
+                        {
+                            <td rowspan="@rowspan" align="center">
+                                <strong class="f18px corange">@Model.OrderSubtotal</strong>
+                            </td>                            
+                        }
+                    </tr>
+                }
+            </table>
+        }
+        @Html.Widget("orderdetails_page_afterproducts")
+    </div>
+    <div class="totalArea">
+        <div class="row clearfix">
+            <dl class="count-list">
+                <dt>@T("Account.CustomerOrders.Details.ShippingFee")@Html.Raw("（<a href=\"/help/ShippingInfo\" class=\"link_green\" target=\"_blank\">")@T("Checkout.Totals.ShippingFee.Description")@Html.Raw("</a>）")：</dt>
+                <dd>@(Model.IsShippable ? Model.OrderShipping : "") (@Model.Weight)</dd>
+                @*           <dt>@T("Account.CustomerOrders.Details.Weight")</dt>
+                <dd>@(Model.Weight)</dd>*@
+                <dt>@T("Checkout.Totals.CouponDiscount")：</dt>
+                <dd>@(string.IsNullOrEmpty(Model.OrderTotalDiscount) ? "¥0.00" : Model.OrderTotalDiscount)</dd>
+                @*            <dt>@T("Checkout.Totals.BonusPointsDiscount")：</dt>
+                <dd>@(string.IsNullOrEmpty(Model.RedeemedRewardPointsAmount) ? "¥0" : Model.RedeemedRewardPointsAmount)</dd>*@
+            </dl>
+        </div>
+        <div class="text-right f18px">@T("Account.CustomerOrders.Details.Total")： <strong class="corange">@Model.OrderTotal</strong></div>
+    </div>
+</div>
+<div id="calcelPurchasedialog" style="display: none; border: 5px solid #666; border-radius: 10px; background-color: #fff; padding: 10px 20px;">
+    <div class="modal">
+        <a href="###" class="close closeBtn"></a>
+        <div class="modal-body clearfix">
+            <div class="formList">
+                <dl class="clearfix">
+                    <dt>@T("Order.Cancel.CancelRemark")：</dt>
+                    <dd>
+                        <textarea id="cancelPurchaseRemark" class="textarea-style con" rows="5" cols="80" maxlength="500"></textarea>
+                        @T("enter")<label id="lblRemainingRemarkNumber">500</label>@T("fontnumber")
+                        <br />
+                </dl>
+            </div>
+            <input id="hidCurrentEditId" type="hidden" value="-1" />
+        </div>
+        <div class="modal-footer text-center">
+            <a id="save_button" class="btn btn-green btn-sm mar_r_20">保 存</a>
+            <a class="btn btn-default btn-sm close">取 消</a>
+        </div>
+    </div>
+</div>
+<div id="contactSupportDialog" style="display: none; border: 5px solid #666; border-radius: 10px; background-color: #fff; padding: 10px 20px;">
+    <div class="modal">
+        <a href="###" class="close closeBtn"></a>
+        <div class="modal-body clearfix">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <p>
+                            <strong>亲爱的60购用户，请选择以下方式完成退换货申请。60购客服将竭诚为您服务！</strong>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>电话客服</strong><br />
+                        400-996-6060
+                    </td>
+                    <td>
+                        <strong>在线客服</strong><br />
+                        <a href="@returnOrChangeRequestUrl" target="_blank">点击联系LIVE800</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#returnorchange").each(function () {
+            $(this).click(function () {
+                $("#contactSupportDialog").lightbox_me({
+                    centered: true
+                });
+            });
+        });
+
+        $("#save_button").click(function () {
+            AddCancelPurchaseRemark();
+        });
+    });
+
+    function ShowAddCancelPurchaseRemark(orderId) {
+        $("#hidCurrentEditId").val(orderId);
+        $("#calcelPurchasedialog").lightbox_me({
+            centered: true
+        });
+    }
+    $("textarea").keyup(function (obj) {
+        var maxleng = 500;
+        var reviewlen = this.value.length;
+        if (reviewlen > maxleng) {
+            alert("备注内容不能大于500");
+            this.value = this.value.substring(0, maxleng);
+        }
+        var len = maxleng - reviewlen;
+        if (len < 0) {
+            $("#lblRemainingRemarkNumber").text("0");
+        }
+        else {
+            $("#lblRemainingRemarkNumber").text(len);
+        }
+
+    });
+    function AddCancelPurchaseRemark() {
+        var id = $("#hidCurrentEditId").val();
+        var remark = $("#cancelPurchaseRemark").val();
+        var data = {
+            "id": id,
+            "cancelRemark": remark
+        };
+
+        $.ajax({
+            cache: false,
+            type: "POST",
+            url: "@(Url.RouteUrl("CustomerCancelOrderWithRemark"))",
+            data: data,
+            success: function (d) {
+                if (d.Data.Success) {
+                    alert("放弃购买成功");
+                    location.href = '@Url.RouteUrl("CustomerOrders")';
+                }
+                else {
+                    var result = "";
+                    for (var i in d.Data.Errors) {
+                        result = result + d.Data.Errors[i] + "\r\n";
+                    }
+                    alert(result);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Failed to retrieve states.');
+            }
+        });
+    }
+</script>
+@Html.Widget("orderdetails_page_bottom")
+
+
