@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "";
+}
+@model Nop.Plugin.Widgets.HotSearchKeyword.Models.ConfigurationModel
+@using Nop.Web.Framework;
+@Html.Action("StoreScopeConfiguration", "Setting", new { area = "Admin" })
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend><strong>热门关键字</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Keywords_OverrideForStore, model => model.Keywords, Model.ActiveStoreScopeConfiguration)
+                    关键字:
+                </td>
+                <td class="adminData">
+                    @Html.TextAreaFor(model => model.Keywords, new { style = "Width: 300px; Height: 100px;", maxlength = 1500 }) &nbsp;多个关键字以英文逗号 (,) 隔开
+                    @Html.ValidationMessageFor(model => model.Keywords)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    <table class="adminContent">
+        <tr>
+            <td colspan="2" width="100%">
+                <input type="submit" name="save" class="t-button" value="@T("Admin.Common.Save")" />
+            </td>
+        </tr>
+    </table>
+}

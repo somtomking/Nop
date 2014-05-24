@@ -1,0 +1,358 @@
+﻿@{
+    Layout = "";
+}
+@model Nop.Plugin.Widgets.PrimaryCategory.Models.ConfigurationModel
+@using Nop.Web.Framework;
+@Html.Action("StoreScopeConfiguration", "Setting", new { area = "Admin" })
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture1")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order1_OverrideForStore, model => model.Order1, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order1):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order1)
+                    @Html.ValidationMessageFor(model => model.Order1)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture1Id_OverrideForStore, model => model.Picture1Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture1Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture1Id)
+                    @Html.ValidationMessageFor(model => model.Picture1Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link1_OverrideForStore, model => model.Link1, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link1):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link1)
+                    @Html.ValidationMessageFor(model => model.Link1)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    
+    <fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture2")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order2_OverrideForStore, model => model.Order2, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order2):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order2)
+                    @Html.ValidationMessageFor(model => model.Order2)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture2Id_OverrideForStore, model => model.Picture2Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture2Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture2Id)
+                    @Html.ValidationMessageFor(model => model.Picture2Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link2_OverrideForStore, model => model.Link2, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link2):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link2)
+                    @Html.ValidationMessageFor(model => model.Link2)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    
+    <fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture3")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order3_OverrideForStore, model => model.Order3, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order3):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order3)
+                    @Html.ValidationMessageFor(model => model.Order3)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture3Id_OverrideForStore, model => model.Picture3Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture3Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture3Id)
+                    @Html.ValidationMessageFor(model => model.Picture3Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link3_OverrideForStore, model => model.Link3, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link3):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link3)
+                    @Html.ValidationMessageFor(model => model.Link3)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    <fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture4")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order4_OverrideForStore, model => model.Order4, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order4):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order4)
+                    @Html.ValidationMessageFor(model => model.Order4)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture4Id_OverrideForStore, model => model.Picture4Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture4Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture4Id)
+                    @Html.ValidationMessageFor(model => model.Picture4Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link4_OverrideForStore, model => model.Link4, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link4):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link4)
+                    @Html.ValidationMessageFor(model => model.Link4)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    <fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture5")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order5_OverrideForStore, model => model.Order5, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order5)
+                    @Html.ValidationMessageFor(model => model.Order5)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture5Id_OverrideForStore, model => model.Picture5Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture5Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture5Id)
+                    @Html.ValidationMessageFor(model => model.Picture5Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link5_OverrideForStore, model => model.Link5, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link5):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link5)
+                    @Html.ValidationMessageFor(model => model.Link5)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    <fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture6")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order6_OverrideForStore, model => model.Order6, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order6):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order6)
+                    @Html.ValidationMessageFor(model => model.Order6)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture6Id_OverrideForStore, model => model.Picture6Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture6Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture6Id)
+                    @Html.ValidationMessageFor(model => model.Picture6Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link6_OverrideForStore, model => model.Link6, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link6):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link6)
+                    @Html.ValidationMessageFor(model => model.Link6)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+	<fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture7")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order7_OverrideForStore, model => model.Order7, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order7):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order7)
+                    @Html.ValidationMessageFor(model => model.Order7)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture7Id_OverrideForStore, model => model.Picture7Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture7Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture7Id)
+                    @Html.ValidationMessageFor(model => model.Picture7Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link7_OverrideForStore, model => model.Link7, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link7):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link7)
+                    @Html.ValidationMessageFor(model => model.Link7)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+	<fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture8")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order8_OverrideForStore, model => model.Order8, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order8):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order8)
+                    @Html.ValidationMessageFor(model => model.Order8)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture8Id_OverrideForStore, model => model.Picture8Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture8Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture8Id)
+                    @Html.ValidationMessageFor(model => model.Picture8Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link8_OverrideForStore, model => model.Link8, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link8):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link8)
+                    @Html.ValidationMessageFor(model => model.Link8)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+	<fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.Picture9")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Order9_OverrideForStore, model => model.Order9, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Order9):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Order9)
+                    @Html.ValidationMessageFor(model => model.Order9)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Picture9Id_OverrideForStore, model => model.Picture9Id, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Picture9Id):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Picture9Id)
+                    @Html.ValidationMessageFor(model => model.Picture9Id)
+                </td>
+            </tr>
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.Link9_OverrideForStore, model => model.Link9, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.Link9):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.Link9)
+                    @Html.ValidationMessageFor(model => model.Link9)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+	@*<fieldset>
+        <legend><strong>@T("Plugins.Widgets.PrimaryCategory.ProductsToKill")</strong></legend>
+        <table class="adminContent">
+            <tr>
+                <td class="adminTitle">
+                    @Html.OverrideStoreCheckboxFor(model => model.ProductIdsToKill_OverrideForStore, model => model.ProductIdsToKill, Model.ActiveStoreScopeConfiguration)
+                    @Html.NopLabelFor(model => model.ProductIdsToKill):
+                </td>
+                <td class="adminData">
+                    @Html.EditorFor(model => model.ProductIdsToKill)
+                    @Html.ValidationMessageFor(model => model.ProductIdsToKill)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />*@
+    <table class="adminContent">
+        <tr>
+            <td colspan="2" width="100%">
+                <input type="submit" name="save" class="t-button" value="@T("Admin.Common.Save")" />
+            </td>
+        </tr>
+    </table>
+}

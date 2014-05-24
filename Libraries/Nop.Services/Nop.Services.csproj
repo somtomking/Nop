@@ -393,6 +393,10 @@
     <Compile Include="Catalog\SpecificationAttributeService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Ex\NopEx.Common\NopEx.Common.csproj">
+      <Project>{d0e5b1fb-27ff-49aa-a409-63fe33e1f10c}</Project>
+      <Name>NopEx.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nop.Core\Nop.Core.csproj">
       <Project>{6BDA8332-939F-45B7-A25E-7A797260AE59}</Project>
       <Name>Nop.Core</Name>

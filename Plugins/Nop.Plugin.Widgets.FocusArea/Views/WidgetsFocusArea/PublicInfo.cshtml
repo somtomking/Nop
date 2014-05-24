@@ -1,0 +1,62 @@
+﻿@model Nop.Plugin.Widgets.FocusArea.Models.PublicInfoModel
+@{
+    Layout = "";
+
+    Html.AddScriptParts("~/Plugins/Widgets.FocusArea/Scripts/focus.js");
+        //Html.AddCssFileParts("~/Plugins/Widgets.FocusArea/Content/style.css");
+}
+@using System
+@using Nop.Web.Framework.UI
+
+@helper RenderSliderLine(string pictureUrl, string text, string link)
+{
+    if (!string.IsNullOrEmpty(pictureUrl))
+    {
+    <li style="background:url('@pictureUrl') no-repeat center top;">
+        <a href="@link" title="@text" target="_blank"></a>
+    </li>
+@*
+        if (!string.IsNullOrEmpty(link))
+        {
+    <li>
+        <a href="@link">
+            <img src="@pictureUrl" data-thumb="@pictureUrl" alt="" title="@text" />
+        </a>
+    </li>
+        }
+        else
+        {
+    <li>
+        <img src="@pictureUrl" data-thumb="@pictureUrl" alt="" title="@text" />
+    </li>
+        }*@
+    }
+}
+<div class="focusArea" id="full-screen-slider">
+    @if (!string.IsNullOrEmpty(Model.BoxPicture))
+    {
+        <div class="container berelative">
+            <div class="adBox_01">
+                <div class="title"></div>
+                <div class="con">
+                    @if (string.IsNullOrEmpty(Model.BoxLink))
+                    {
+                        <img src="@Model.BoxPicture" />
+                    }
+                    else
+                    {
+                        <a href="@Model.BoxLink" target="_blank">
+                            <img src="@Model.BoxPicture" />
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    <ul id="slides">
+        @RenderSliderLine(Model.Picture1Url, Model.Text1, Model.Link1)
+        @RenderSliderLine(Model.Picture2Url, Model.Text2, Model.Link2)
+        @RenderSliderLine(Model.Picture3Url, Model.Text3, Model.Link3)
+        @RenderSliderLine(Model.Picture4Url, Model.Text4, Model.Link4)
+    </ul>
+</div>

@@ -1,0 +1,175 @@
+﻿@model Nop.Plugin.Widgets.PrimaryCategory.Models.PublicInfoModel
+@{
+    Layout = "";
+
+    Html.AddCssFileParts("~/Plugins/Widgets.PrimaryCategory/Content/style.css");
+    Html.AddScriptParts("~/Plugins/Widgets.PrimaryCategory/Scripts/primarycategory.js");
+    //Html.AddScriptParts("~/Themes/60GO2/Content/js/primarycategory.js");
+}
+@using System
+@using Nop.Web.Framework.UI
+
+@helper RenderLine(string pictureUrl, string link)
+{
+    if (!string.IsNullOrEmpty(pictureUrl))
+    {
+        if (!string.IsNullOrEmpty(link))
+        {
+    <li>
+        <a href="@link" target="_blank">
+            <img src="@pictureUrl" data-thumb="@pictureUrl" alt="" />
+        </a>
+    </li>
+        }
+        else
+        {
+    <li>
+        <img src="@pictureUrl" data-thumb="@pictureUrl" alt="" />
+    </li>
+        }
+    }
+}
+@if (Model.listSettings.Count <= 6)
+{
+    <ul class="row classList">
+        @foreach (var item in Model.listSettings)
+        {
+            @RenderLine(item.PictureUrl, item.Link)
+        }
+    </ul>
+}
+else
+{
+    <div class="containleft">
+            <div class="classList">
+                <ul>
+                    @for (var i = 0; i < 6; i++)
+                    {
+                        var item = Model.listSettings[i];
+                        @RenderLine(item.PictureUrl, item.Link)
+                    }
+                </ul>
+            </div>
+            @*<div class="adBox_02">
+                <a href="@Model.listSettings[6].Link" target="_blank">
+                    <img src="@Model.listSettings[6].PictureUrl" /></a>
+                </div>*@
+            <div class="mrysBox">
+                <div class="title">
+                    <h2>每日优选</h2>
+                </div>
+                @for (var i = 6; i < Model.listSettings.Count; i++)
+                {
+                    var setting = Model.listSettings[i];
+                <div class="adBox_02" style="display: @(i == 6 ? "" : "none")">
+                    <a href="@setting.Link" target="_blank"><img src="@setting.PictureUrl"/></a>
+                </div>
+                }
+                <div class="slideNum">
+                    @for (var i = 6; i < Model.listSettings.Count; i++)
+                    {
+                        if (i == 6)
+                        {
+                            <a href="###" class="on"></a>
+                        }
+                        else
+                        {
+                            <a href="###"></a>
+                        }
+                    }
+                </div>
+            </div>
+            @* @if (Model.Products.Any())
+            {
+                <div class="flashSale clearfix" style="display: none">
+                    <div class="title">
+                        <h2>限时疯抢</h2>
+                    </div>
+                    @for (var i = 0; i < Model.Products.Count; i++)
+                    {
+                        var product = Model.Products[i];
+                        var now = DateTime.Now;
+                        var totalSeconds = (24 - i) * 60 * 60 - now.Hour * 60 * 60 - now.Minute * 60 - now.Second;
+                        var hour = (int)(totalSeconds / 60 / 60);
+                        var minute = (int)((totalSeconds - hour * 60 * 60) / 60);
+                        var second = (int)(totalSeconds - hour * 60 * 60 - minute * 60);
+                        <div class="con clearfix" style="display: @(i > 0 ? "none" : "")">
+                            <div class="time clearfix">
+                                <b id="hour_@(i)_1">@hour.ToString("00").Substring(0, 1)</b>
+                                <b id="hour_@(i)_2">@hour.ToString("00").Substring(1, 1)</b><em>:</em>
+                                <b id="minute_@(i)_1">@minute.ToString("00").Substring(0, 1)</b>
+                                <b id="minute_@(i)_2">@minute.ToString("00").Substring(1, 1)</b><em>:</em>
+                                <b id="second_@(i)_1">@second.ToString("00").Substring(0, 1)</b>
+                                <b id="second_@(i)_2">@second.ToString("00").Substring(1, 1)</b>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="pic">
+                                <img src="@product.ImageUrl" width="110" height="110" />
+                            </div>
+                            <div class="text">
+                                <h2>@product.Name</h2>
+                                <p><strong>@product.Price</strong><span>@product.OldPrice</span></p>
+                                <div class="mar_b_5 clearfix">
+                                    <span class="beleft">剩余20%</span>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                                <a href="@Url.RouteUrl("Product", new { SeName = product.SeName })" class="btn btn-xs btn-orange" target="_blank">
+                                    <span class="clock">立即抢购</span>
+                                </a>
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                            setTimeout("countdown(@totalSeconds -1, @(i))", 1000);
+                        </script>
+                    }
+                    <div class="slideNum">
+                        @for (var i = 0; i < Model.Products.Count; i++)
+                        {
+                            if (i == 0)
+                            {
+                            <a href="###" class="on"></a>
+                            }
+                            else
+                            {
+                            <a href="###"></a>
+                            }
+                        }
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    function countdown(totalsecond, i) {
+                        var hour = parseInt(totalsecond / 60 / 60);
+                        if (isNaN(hour))
+                            hour = 0;
+                        var minute = parseInt((totalsecond - hour * 60 * 60) / 60);
+                        if (isNaN(minute))
+                            minute = 0;
+                        var second = parseInt(totalsecond - hour * 60 * 60 - minute * 60);
+                        if (isNaN(second))
+                            second = 0;
+
+                        hour = hour.toString();
+                        if (hour.length == 1)
+                            hour = "0" + hour;
+                        minute = minute.toString();
+                        if (minute.length == 1)
+                            minute = "0" + minute;
+                        second = second.toString();
+                        if (second.length == 1)
+                            second = "0" + second;
+
+                        $("#hour_" + i + "_1").html(hour.substring(0, 1));
+                        $("#hour_" + i + "_2").html(hour.substring(1, 2));
+                        $("#minute_" + i + "_1").html(minute.substring(0, 1));
+                        $("#minute_" + i + "_2").html(minute.substring(1, 2));
+                        $("#second_" + i + "_1").html(second.substring(0, 1));
+                        $("#second_" + i + "_2").html(second.substring(1, 2));
+                        if (totalsecond > 0)
+                            setTimeout("countdown(" + (totalsecond - 1) + ", " + i + ")", 1000);
+                    }
+                </script>
+            }*@
+        </div>
+}

@@ -1,0 +1,115 @@
+﻿@{
+    Layout = "";
+}
+@model Nop.Plugin.Widgets.CustomProductGroup.Models.ConfigurationFormModel
+@using Nop.Plugin.Widgets.CustomProductGroup.Models;
+@using Nop.Core.Domain.Common;
+@using Nop.Web.Framework;
+@using Nop.Core.Infrastructure;
+@using Telerik.Web.Mvc.UI;
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "customproductgroup-list-form" }))
+{
+    <table>
+        <tr>
+            <td class="title">
+                <strong>应用平台：</strong>
+                <input type="radio" title="PC" value="@((int)PlantformType.Default)" checked="checked" name="plantform" />所有平台
+                <input type="radio" title="PC" value="@((int)PlantformType.PC)" name="plantform" />PC
+                <input type="radio" title="APP" value="@((int)PlantformType.APP)" name="plantform" />APP
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;<strong>只显示启用：</strong>
+                <input id="ckbShowEnable" type="checkbox" title="PC" />
+            </td>
+        </tr>
+    </table>
+    <br />
+    <hr />
+    <br />
+    <table class="adminContent">
+        <tr>
+            <td>
+                @(Html.Telerik().Grid<CustomProductGroupModel>()
+                      .Name("customproductgroup-grid")
+                      .DataKeys(keys => keys.Add(x => x.Id).RouteKey("Id"))
+                      .Columns(columns =>
+                      {
+                          columns.Bound(x => x.Title).ReadOnly();
+                          columns.Bound(x => x.PlantformName).ReadOnly();
+                          columns.Bound(x => x.ProductsCount).ReadOnly();
+                          columns.Bound(x => x.StyleName).ReadOnly();
+                          columns.Bound(x => x.DisplayOrder).ReadOnly().Encoded(false);
+                          columns.Bound(x => x.ShowAd)
+                            .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= ShowAd #>.gif' />")
+                            .Centered()
+                            .Width(100);
+                          columns.Bound(x => x.IsRecommended)
+                            .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= IsRecommended #>.gif' />")
+                            .Centered()
+                            .Width(100);
+                          columns.Bound(x => x.IsEnable)
+                            .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= IsEnable #>.gif' />")
+                            .Centered()
+                            .Width(100);
+                          columns.Bound(x => x.Id)
+                              .Width(50)
+                              .Centered()
+                              .ClientTemplate("<input type='submit' value='" + @T("Admin.Common.Edit").Text + "' onclick=\"" + "javascript:OpenWindow('" + @Url.RouteUrl("Plugin.Widgets.CustomProductGroup.EditPopup") + "?id=<#= Id #>', 1000, 600, true); return false;\" class='t-button' />")
+                              .Title(T("Admin.Common.Edit").Text);
+                          columns.Command(commands =>
+                          {
+                              commands.Delete().Text(T("Admin.Common.Delete").Text);
+                          }).Title(T("Admin.Common.Delete").Text).Width(180);
+                      })
+                      .DataBinding(dataBinding =>
+                      {
+                          dataBinding.Ajax()
+                              .Select("CustomProductGroupList", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" } })
+                              .Delete("CustomProductGroupDelete", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" } });
+                      })
+                      .ClientEvents(events => events.OnDataBinding("onDataBinding"))
+                      .EnableCustomBinding(true))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @{
+    var addNewUrl = Url.RouteUrl("Plugin.Widgets.CustomProductGroup.EditPopup");
+                }
+                <br />
+                <input type="submit" id="btnAddNewOption" name="btnAddNewOption" value="@T("Plugins.Shipping.ByWeight.AddRecord")" onclick="javascript:OpenWindow('@(addNewUrl)    ', 1000, 600, true); return false;" class="t-button" />
+                <input type="submit" id="btnRefresh" name="btnRefresh" style="display: none" />
+            </td>
+        </tr>
+    </table>
+    <br />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btnRefresh').click(function(){
+                refreshData(); 
+                //return false to don't reload a page
+                return false;
+            });   
+            $('#ckbShowEnable').click(refreshData);                 
+            $('input[name="plantform"]').each(function(){
+                $(this).click(refreshData);  
+            });
+        });
+
+        function refreshData(){
+            //refresh grid
+            var optionsGrid = $("#customproductgroup-grid");
+            optionsGrid.data('tGrid').ajaxRequest();       
+        }
+
+        function onDataBinding(e) {
+            var onlyShowEnable = document.getElementById("ckbShowEnable").checked;
+            var plantform=$('input[name="plantform"]:checked').val();
+            var searchModel = {
+                Plantform:plantform,
+                OnlyShowEnable: onlyShowEnable
+            };
+            e.data = searchModel;
+        }
+    </script>
+}

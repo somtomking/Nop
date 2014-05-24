@@ -1,0 +1,8 @@
+﻿Group: Widgets
+FriendlyName: 首页分类推荐模块
+SystemName: Widgets.PrimaryCategory
+Version: 1.0
+SupportedVersions: 3.10
+Author: zhang-shang team
+DisplayOrder: 1
+FileName: Nop.Plugin.Widgets.PrimaryCategory.dll

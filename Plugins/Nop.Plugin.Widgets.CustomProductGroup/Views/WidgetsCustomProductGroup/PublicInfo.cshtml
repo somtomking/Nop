@@ -1,0 +1,81 @@
+﻿@using System
+@using System.Text.RegularExpressions;
+@using Nop.Web.Framework.UI
+@using Nop.Web.Models.Catalog;
+
+@model Nop.Plugin.Widgets.CustomProductGroup.Models.PublicInfoModel
+
+@{
+    Html.AddScriptParts("~/Themes/60GO2/Content/js/public.addtocarttools.js");
+}
+
+@foreach (var customProductGroupModel in Model.CustomProductGroupModels)
+{
+    <div class="indexBox @customProductGroupModel.Style clearfix" id="group_@(customProductGroupModel.Id)">
+        <a name="@customProductGroupModel.Title"></a>
+        <div class="title">
+            <h2>@customProductGroupModel.Title</h2>
+            <div class="subClass">
+                @foreach (var categoryLink in customProductGroupModel.CategoryLinks)
+                {
+                    @Html.Raw(string.Format("<a href=\"{0}\" target=\"_blank\">{1}</a>", categoryLink.Link, categoryLink.Title));
+                }
+            </div>
+            <div class="more">
+                @if (!string.IsNullOrEmpty(customProductGroupModel.MoreLink))
+                {
+@*<a href="@customProductGroupModel.MoreLink" class="btn btn-sm btn-default"  target="_blank">更多</a>*@
+                }
+            </div>
+            <div class="adBox_03">
+                @if (customProductGroupModel.FirstProduct != null)
+                {
+                    <a href="@Url.RouteUrl("Product", new { SeName = customProductGroupModel.FirstProduct.SeName })" title="@customProductGroupModel.FirstProduct.SeName" target="_blank" class="btn">抢购</a>
+                    <a href="@Url.RouteUrl("Product", new { SeName = customProductGroupModel.FirstProduct.SeName })" title="@customProductGroupModel.FirstProduct.SeName" target="_blank">
+                        <img src="@customProductGroupModel.FirstProduct.PictureUrl" title="@customProductGroupModel.FirstProduct.SeName" alt="@customProductGroupModel.FirstProduct.SeName">
+                     @if (customProductGroupModel.FirstProduct.IsSoldOut)
+                     {
+                                 <span class="sale-tag-none"></span>
+                     }
+                
+                    </a>
+                   
+                }
+            </div>
+        </div>
+        <div class="list clearfix">
+            @if (customProductGroupModel.ProductIds.Count > 1)
+            {
+                <ul>
+                    @for (var i = 1; i < customProductGroupModel.ProductIds.Count; i++)
+                    {
+                        <li>
+                            @Html.Action("ProductOverview", "Catalog", new { productId = customProductGroupModel.ProductIds[i], displayPosition = DisplayPosition.CustomProductGroupItem })
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+            if (customProductGroupModel.ShowAd)
+            {
+    <div class="adBox_04">
+        @if (!string.IsNullOrEmpty(customProductGroupModel.AdLink))
+        {
+            @Html.Raw("<a href=\"" + customProductGroupModel.AdLink + "\" target=\"_blank\">")
+        }
+        <img src="@customProductGroupModel.AdLinkPictureUrl" height="60" width="1140"/>
+        @if (!string.IsNullOrEmpty(customProductGroupModel.AdLink))
+        {                    
+            @Html.Raw("</a>")
+        }
+    </div>
+            }
+}
+@if (Model.CustomProductGroupModels.Count > 0)
+{ 
+    <script type="text/javascript">
+        AddToCartTools.init({ QuantityRequired: "@T("Plugins.CustomProductGroup.Quantity.Required")", QuantityGreaterThanZero: "@T("Plugins.CustomProductGroup.Quantity.GreaterThanZero")" });
+    </script>
+}
+

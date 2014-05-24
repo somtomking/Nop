@@ -1,0 +1,8 @@
+﻿Group: Widgets
+FriendlyName: 热门搜索关键字
+SystemName: Widgets.HotSearchKeyword
+Version: 1.0
+SupportedVersions: 3.10
+Author: 60购
+DisplayOrder: 1
+FileName: Nop.Plugin.Widgets.HotSearchKeyword.dll

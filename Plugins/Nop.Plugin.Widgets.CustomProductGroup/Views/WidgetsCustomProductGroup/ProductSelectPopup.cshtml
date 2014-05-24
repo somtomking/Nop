@@ -1,0 +1,177 @@
+﻿@{
+    Layout = "~/Administration/Views/Shared/_AdminPopupLayout.cshtml";
+}
+@using Nop.Admin.Models.Catalog;
+@using Nop.Core.Infrastructure;
+@using Nop.Web.Framework;
+@using Telerik.Web.Mvc.UI;
+@model ProductModel.AddRelatedProductModel
+@{
+    var gridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().GridPageSize;
+    ViewBag.Title = "选择商品";
+}
+@using (Html.BeginForm())
+{
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-catalog.png")" alt="" />
+            选择商品
+        </div>
+    </div> 
+    <table width="100%">
+        <tr>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.SearchProductName):
+            </td>
+            <td class="adminData">
+                @Html.EditorFor(model => Model.SearchProductName)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.SearchCategoryId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownList("SearchCategoryId", Model.AvailableCategories)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.SearchManufacturerId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownList("SearchManufacturerId", Model.AvailableManufacturers)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.SearchStoreId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownList("SearchStoreId", Model.AvailableStores)
+            </td>
+        </tr>
+        <tr @(Model.IsLoggedInAsVendor ? Html.Raw("style='display: none;'") : null)>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.SearchVendorId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownList("SearchVendorId", Model.AvailableVendors)
+            </td>
+        </tr>
+        <tr>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.SearchProductTypeId):
+            </td>
+            <td class="adminData">
+                @Html.DropDownList("SearchProductTypeId", Model.AvailableProductTypes)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="button" id="search-products" class="t-button" value="@T("Admin.Common.Search")" />
+            </td>
+        </tr>
+    </table>
+    <p>
+    </p>
+    <table class="adminContent">
+        <tr>
+            <td>
+                @(Html.Telerik().Grid<ProductModel>()
+                    .Name("products-grid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(x => x.Id)
+                        .Template(
+                                @<text>
+                <input name="SelectedProductId" type="radio" value="@item.Id " />
+                </text>
+                        )
+                        .ClientTemplate("<input type='radio' name='SelectedProductId' value='<#= Id #>' />")
+                        .Title(T("Admin.Common.Check").Text)
+                        .Width(50);
+                        columns.Bound(x => x.Name);
+                        columns.Bound(x => x.Sku);
+                        columns.Bound(x => x.Price);
+                        columns.Bound(x => x.Published)
+                            .Template(
+                                @<img alt="" src="@Url.Content("~/Administration/Content/images/active-" + item.Published.ToString().ToLowerInvariant() + ".gif")" />
+                            )
+                            .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= Published #>.gif' />")
+                            .Centered()
+                            .Width(100);
+                    })
+                    .Pageable(settings => settings.PageSize(gridPageSize).Position(GridPagerPosition.Both))
+                    .DataBinding(dataBinding => dataBinding.Ajax().Select("AssociatedProductAddPopupList", "Product"))
+                    .ClientEvents(events => events.OnDataBinding("onDataBinding"))
+                    .EnableCustomBinding(true))
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input id="btnSelect" type="button" class="t-button" value="确定" />
+            </td>
+        </tr>
+    </table>
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#search-products').click(function () {
+                var grid = $('#products-grid').data('tGrid');
+                grid.currentPage = 1; //new search. Set page size to 1
+                grid.ajaxRequest();
+                return false;
+            });
+
+            $("#btnSelect").click(function () {
+                try {
+                    var productId = $('input:radio[name="SelectedProductId"]:checked').val();
+                    if (productId == null) {
+                        alert("请选择商品!");
+                        return false;
+                    }
+                    else {
+                        window.opener.document.forms[0].ProductId.value = productId;
+                        window.opener.document.forms[0].ProductId.focus();
+                    }
+                }
+                catch (e) { }
+                window.close();
+            });
+        });
+
+        $("#@Html.FieldIdFor(model => model.SearchProductName)").keydown(function (event) {
+            if (event.keyCode == 13) {
+                $("#search-products").click();
+                return false;
+            }
+        });
+
+        function onDataBinding(e) {
+            var searchModel = {
+                SearchProductName: $('#@Html.FieldIdFor(model => model.SearchProductName)').val(),
+                SearchCategoryId: $('#SearchCategoryId').val(),
+                SearchManufacturerId: $('#SearchManufacturerId').val(),
+                SearchStoreId: $('#SearchStoreId').val(),
+                SearchVendorId: $('#SearchVendorId').val(),
+                SearchProductTypeId: $('#SearchProductTypeId').val()
+            };
+            e.data = searchModel;
+        }
+
+        function SelectedProductId() {
+            try {
+                var productId = $('input:radio[name="SelectedProductId"]:checked').val();
+                if (productId == null) {
+                    alert("请选择商品!");
+                    return false;
+                }
+                else {
+                    window.opener.document.forms[0].ProductId.value = productId;
+                }
+            } catch (e) { }
+            window.close();
+        }
+    </script>
+}

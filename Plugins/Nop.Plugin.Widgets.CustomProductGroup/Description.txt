@@ -1,0 +1,8 @@
+﻿Group: Widgets
+FriendlyName: 首页商品主题
+SystemName: Widgets.CustomProductGroup
+Version: 1.0
+SupportedVersions: 3.10
+Author: 60购
+DisplayOrder: 1
+FileName: Nop.Plugin.Widgets.CustomProductGroup.dll
