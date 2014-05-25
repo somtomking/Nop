@@ -119,7 +119,8 @@
                                                 read: {
                                                     url: "@Html.Raw(Url.Action("AssociatedProductAddPopupList", "Product"))",
                                                     type: "POST",
-                                                    dataType: "json"
+                                                    dataType: "json",
+                                                    data: additionalData
                                                 }
                                             },
                                             schema: {
@@ -162,6 +163,7 @@
                                             confirmation: false,
                                             mode: "inline"
                                         },
+                                        dataBound:onDataBound,
                                         scrollable: false,
                                         columns: [
                                             {
@@ -170,7 +172,7 @@
                                                 //width: "",
                                                 //headerAttributes: "",
                                                 //attributes: "",
-                                                template: '<input name="SelectedProductIds" type="checkbox" value="#:Id#" />',
+                                                template: '<input type="checkbox" name="SelectedProductIds" class="singleCheckBox" value="#:Id#" />',
                                                 headerTemplate:'<input id="allCheckBox" type="checkbox"/>',
                                                 //format:"",
 
@@ -236,110 +238,110 @@
     
      
     <script type="text/javascript">
-        var selectedIds = [];
+    var selectedIds = [];
 
-        function updateAllCheckbox() {
-            var chkBoxes = $('#products-grid input[type=checkbox][class=singleCheckBox]');
-            var numChkBoxes = chkBoxes.length;
-            var numChkBoxesChecked = 0;
-            for (var i = 0; i < numChkBoxes; i++) {
-                if (chkBoxes[i].checked == true) {
-                    numChkBoxesChecked++;
-                }
+    function updateAllCheckbox() {
+        var chkBoxes = $('#products-grid input[type=checkbox][class=singleCheckBox]');
+        var numChkBoxes = chkBoxes.length;
+        var numChkBoxesChecked = 0;
+        for (var i = 0; i < numChkBoxes; i++) {
+            if (chkBoxes[i].checked == true) {
+                numChkBoxesChecked++;
             }
-            $('#allCheckBox').attr('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
         }
+        $('#allCheckBox').attr('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
+    }
 
-        function AddProductsToGroup() {
+    function AddProductsToGroup() {
 
-            if (selectedIds.length==0) {
-                alert('请选择商品!');
-                return;
-            }
-            $.ajax({
-                cache: false,
-                type: "POST",
-                traditional: true,
-                url: "@(Url.RouteUrl("Plugin.Widgets.CustomProductGroup.EditProductPopup2"))",
-                data: {
-                    "plantform": $('#@Html.FieldIdFor(s=>s.Plantform)').val(),
-                    "customProductGroupId": "@ViewBag.CustomProductGroupId",
-                    "selectedProductIds":selectedIds
-                },
-            success: function(result) {
+        if (selectedIds.length == 0) {
+            alert('请选择商品!');
+            return;
+        }
+        $.ajax({
+            cache: false,
+            type: "POST",
+            traditional: true,
+            url: "@(Url.RouteUrl("Plugin.Widgets.CustomProductGroup.EditProductPopup2"))",
+            data: {
+                "plantform": $('#@Html.FieldIdFor(s=>s.Plantform)').val(),
+                "customProductGroupId": "@ViewBag.CustomProductGroupId",
+                "selectedProductIds": selectedIds
+            },
+            success: function (result) {
                 if (result.Success == true) {
                     try {
                         try {
                             window.opener.document.getElementById("btnRefresh").click();
                             window.opener.opener.document.getElementById("btnRefresh").click();
                         } catch (e) { }
-                      
+
                     }
-                    catch (e){}
+                    catch (e) { }
                     window.close();
-                }else{
+                } else {
                     alert(result.Msg);
-                } 
+                }
             },
-            error: function(xhr, ajaxOptions, thrownError) {
+            error: function (xhr, ajaxOptions, thrownError) {
                 alert('添加商品失败！');
-            }  
+            }
         });
-        }
+    }
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            $('#allCheckBox').click(function () {
-                $('.singleCheckBox').attr('checked', $(this).is(':checked')).change();
-            });
-
-            $('#search-products').click(function () {
-                
-                var grid = $("#products-grid").data("kendoGrid");
-                grid.currentPage = 1; //new search. Set page size to 1
-                grid.dataSource.read();
-              
-                
-                //clear selected checkboxes
-                $('.singleCheckBox').attr('checked', false).change();
-                selectedIds = [];
-                return false;
-            });
-
-           
-
-
-            $('#products-grid').on('change', 'input[type=checkbox][class=singleCheckBox]', function (e) {
-                var $check = $(this);
-                if ($check.is(":checked") == true) {
-                    var checked = jQuery.inArray($check.val(), selectedIds);
-                    if (checked == -1) {
-                        //add id to selectedIds.  
-                        selectedIds.push($check.val());
-                    }
-                }
-                else {
-                    var checked = jQuery.inArray($check.val(), selectedIds);
-                    if (checked > -1) {
-                        //remove id from selectedIds.  
-                        selectedIds = $.grep(selectedIds, function (item, index) {
-                            return item != $check.val();
-                        });
-                    }
-                }
-                updateAllCheckbox();
-            });
+        $('#allCheckBox').click(function () {
+            $('.singleCheckBox').attr('checked', $(this).is(':checked')).change();
         });
 
-        $("#@Html.FieldIdFor(model => model.SearchProductName)").keydown(function (event) {
+        $('#search-products').click(function () {
+
+            var grid = $("#products-grid").data("kendoGrid");
+            grid.dataSource.page(1); //new search. Set page size to 1
+            grid.dataSource.read();
+
+
+            //clear selected checkboxes
+            $('.singleCheckBox').attr('checked', false).change();
+            selectedIds = [];
+            return false;
+        });
+
+
+
+
+        $('#products-grid').on('change', 'input[type=checkbox][class=singleCheckBox]', function (e) {
+            var $check = $(this);
+            if ($check.is(":checked") == true) {
+                var checked = jQuery.inArray($check.val(), selectedIds);
+                if (checked == -1) {
+                    //add id to selectedIds.
+                    selectedIds.push($check.val());
+                }
+            }
+            else {
+                var checked = jQuery.inArray($check.val(), selectedIds);
+                if (checked > -1) {
+                    //remove id from selectedIds.
+                    selectedIds = $.grep(selectedIds, function (item, index) {
+                        return item != $check.val();
+                    });
+                }
+            }
+            updateAllCheckbox();
+        });
+    });
+
+    $("#@Html.FieldIdFor(model => model.SearchProductName)").keydown(function (event) {
             if (event.keyCode == 13) {
                 $("#search-products").click();
                 return false;
             }
         });
 
-        function onDataBinding(e) {
-            var searchModel = {
+        function additionalData() {
+            return  {
                 SearchProductName: $('#@Html.FieldIdFor(model => model.SearchProductName)').val(),
                 SearchCategoryId: $('#SearchCategoryId').val(),
                 SearchManufacturerId: $('#SearchManufacturerId').val(),
@@ -347,14 +349,13 @@
                 SearchVendorId: $('#SearchVendorId').val(),
                 SearchProductTypeId: $('#SearchProductTypeId').val()
             };
-            e.data = searchModel;
         }
 
         function onDataBound(e) {
             $('#products-grid input[type=checkbox][class=singleCheckBox]').each(function () {
                 var currentId = $(this).val();
                 var checked = jQuery.inArray(currentId, selectedIds);
-                //set checked based on if current checkbox's value is in selectedIds.  
+                //set checked based on if current checkbox's value is in selectedIds.
                 $(this).attr('checked', checked > -1);
             });
 
@@ -362,6 +363,6 @@
         }
 
 
-      
+
     </script>
 }
