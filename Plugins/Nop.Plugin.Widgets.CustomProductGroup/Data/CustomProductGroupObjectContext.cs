@@ -6,7 +6,7 @@ using Nop.Core;
 using Nop.Data;
 using Nop.Plugin.Widgets.CustomProductGroup.Data;
 
-namespace Nop.Plugin.Feed.Froogle.Data
+namespace Nop.Plugin.Widgets.CustomProductGroup.Data
 {
     /// <summary>
     /// Object context
@@ -24,6 +24,7 @@ namespace Nop.Plugin.Feed.Froogle.Data
         {
             modelBuilder.Configurations.Add(new CustomProductGroupMap());
             modelBuilder.Configurations.Add(new CustomProductGroupItemMap());
+            modelBuilder.Configurations.Add(new CustomerCustomProductGroupMap());
 
             //disable EdmMetadata generation
             //modelBuilder.Conventions.Remove<IncludeMetadataConvention>();
@@ -59,6 +60,7 @@ namespace Nop.Plugin.Feed.Froogle.Data
             //drop the table
             this.DropPluginTable("CustomProductGroupItem");
             this.DropPluginTable("CustomProductGroup");
+            this.DropPluginTable("Customer_CustomProductGroup");
         }
 
 

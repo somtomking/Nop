@@ -6,7 +6,7 @@
 
 @using Nop.Core.Domain.Common
 @using Nop.Core.Infrastructure
- 
+ @using Nop.Plugin.Widgets.CustomProductGroup.Domain;
 @using Nop.Web.Framework
 @using (Html.BeginForm())
 {
@@ -76,7 +76,7 @@
     <table class="adminContent">
         <tr>
             <td>
-                @(Html.Telerik().Grid<Nop.Admin.Models.Catalog.ProductModel>()
+                @*@(Html.Telerik().Grid<Nop.Admin.Models.Catalog.ProductModel>()
                       .Name("products-grid")
                       .Columns(columns =>
                       {
@@ -104,8 +104,124 @@
                       .DataBinding(dataBinding => dataBinding.Ajax().Select("AssociatedProductAddPopupList", "Product"))
                       .ClientEvents(events => events.OnDataBinding("onDataBinding"))
                       .ClientEvents(events => events.OnDataBound("onDataBound"))
-                      .EnableCustomBinding(true))
-            </td>
+                      .EnableCustomBinding(true))*@
+                <div>
+                    <div id="products-grid"></div>
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(
+                            function () {
+                                $("#products-grid").kendoGrid(
+                                    {
+                                        dataSource: {
+                                            type: "json",
+                                            transport: {
+                                                read: {
+                                                    url: "@Html.Raw(Url.Action("AssociatedProductAddPopupList", "Product"))",
+                                                    type: "POST",
+                                                    dataType: "json"
+                                                }
+                                            },
+                                            schema: {
+                                                data: "Data",
+                                                total: "Total",
+                                                errors: "Errors",
+                                                model: {
+                                                    id: "Id",
+                                                    fields: {
+
+                                                        Name: { editable: false, type: "string" },
+                                                        Sku: { editable: false, type: "string" },
+                                                        Price: { editable: false, type: "number" },
+                                                        Published: { editable: false, type: "boolean" },
+
+                                                    }
+                                                },
+                                                requestEnd: function (e) {
+                                                    if (e.type == "update") {
+                                                        this.read();
+                                                    }
+                                                },
+                                                error: function (e) {
+                                                    display_kendoui_grid_error(e);
+                                                    // Cancel the changes
+                                                    this.cancelChanges();
+                                                },
+                                                serverPaging: true,
+                                                serverFiltering: true,
+                                                serverSorting: true
+                                            }
+                                        },
+                                        pageable: {
+                                            refresh: true,
+                                            numeric: false,
+                                            previousNext: false,
+                                            info: false
+                                        },
+                                        editable: {
+                                            confirmation: false,
+                                            mode: "inline"
+                                        },
+                                        scrollable: false,
+                                        columns: [
+                                            {
+                                                field: "Id",
+                                                title: "产品名称",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                template: '<input name="SelectedProductIds" type="checkbox" value="#:Id#" />',
+                                                headerTemplate:'<input id="allCheckBox" type="checkbox"/>',
+                                                //format:"",
+
+                                            },
+                                            {
+                                                field: "Name",
+                                                title: "产品名称",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format:"",
+
+                                            },
+                                            {
+                                                field: "Sku",
+                                                title: "Sku",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                            {
+                                                field: "Price",
+                                                title: "价格",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                            {
+                                                field: "Published",
+                                                title: "发布",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            }
+                                        ],
+                                    }
+                                    );
+                            }
+                            );
+                    </script>
+</td>
         </tr>
         <tr>
             
@@ -178,9 +294,12 @@
             });
 
             $('#search-products').click(function () {
-                var grid = $('#products-grid').data('tGrid');
+                
+                var grid = $("#products-grid").data("kendoGrid");
                 grid.currentPage = 1; //new search. Set page size to 1
-                grid.ajaxRequest();
+                grid.dataSource.read();
+              
+                
                 //clear selected checkboxes
                 $('.singleCheckBox').attr('checked', false).change();
                 selectedIds = [];

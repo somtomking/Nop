@@ -1,22 +1,18 @@
 ﻿@model CustomProductGroupModel
 @using Nop.Plugin.Widgets.CustomProductGroup.Models;
 @using Nop.Core.Domain.Common;
-@using Telerik.Web.Mvc.UI;
+@using Nop.Plugin.Widgets.CustomProductGroup.Domain;
 @using Nop.Web.Framework;
 @using Nop.Core.Infrastructure;
 
 @Html.HiddenFor(model => model.Id)
-@Html.Telerik().TabStrip().Name("customproductgorup-edit").Items(x =>
-{
-    x.Add().Text("基本信息").Content(TabInfo().ToHtmlString()).Selected(true);
-    x.Add().Text("商品列表").Content(TabProducts().ToHtmlString());
-})
+ 
 
 @if (ViewBag.RefreshPage == true)
 {
     <script type="text/javascript">
-        try {window.opener.document.forms['customproductgroup-list-form'].btnRefresh.click();}
-        catch (e){} 
+        try { window.opener.document.forms['customproductgroup-list-form'].btnRefresh.click(); }
+        catch (e) { }
     </script>
 }
 @if (ViewBag.CloseWindow == true)
@@ -27,12 +23,27 @@
 }
 
 <style type="text/css">
-    .input-validation-error
-    {
+    .input-validation-error {
         border: 1px solid #ACACAC !important;
     }
 </style>
 
+<div id="customproductgorup-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>
+            基本信息
+        </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>
+            商品列表
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+    <div>
+        @TabProducts()
+    </div>
+</div>
 @helper TabInfo()
 {
     <table class="adminContent">
@@ -84,8 +95,10 @@
         <tr>
             <td class="adminTitle">
                 @Html.NopLabelFor(model => model.SubCategoryLinks):<br />
-                <span style="color: gray; line-height: 18px;">链接名跟链接URL用竖线符号&nbsp;<strong>|</strong>&nbsp;隔开，<br />
-                    一行代表一个链接&nbsp;<a href="javascript:void(0);" class="" onclick="AddSubCategoryLinks()">添加链接</a></span>
+                <span style="color: gray; line-height: 18px;">
+                    链接名跟链接URL用竖线符号&nbsp;<strong>|</strong>&nbsp;隔开，<br />
+                    一行代表一个链接&nbsp;<a href="javascript:void(0);" class="" onclick="AddSubCategoryLinks()">添加链接</a>
+                </span>
             </td>
             <td class="adminData">
                 @Html.TextAreaFor(model => model.SubCategoryLinks, new { style = "Width: 500px; Height: 150px;" })
@@ -152,177 +165,189 @@
 {
     if (Model.Id > 0)
     {
-    <table class="adminContent">
-        <tr>
-            <td>
-               
-                <div>
-                    <div id="customproductgroup-productlist"></div>
+        <table class="adminContent">
+            <tr>
+                <td>
 
-                    <script>
-                $(document).ready(function() {
-                    $("#customproductgroup-productlist").kendoGrid({
-                        dataSource: {
-                            type: "json",
-                            transport: {
-                                read: {
-                                    url: "@Html.Raw(Url.Action("ProductsList", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" },{ "productId" , Model.Id }} ))",
-                                    type: "POST",
-                                    dataType: "json"
-                                },
-                                update: {
-                                    url: "@Html.Raw(Url.Action("ProductUpdate", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" }}))",
-                                    type: "POST",
-                                    dataType: "json"
-                                },
-                                destroy: {
-                                    url: "@Html.Raw(Url.Action("ProductDelete", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" }}))",
-                                    type: "POST",
-                                    dataType: "json"
-                                }
-                            },
-                            schema: {
-                                data: "Data",
-                                total: "Total",
-                                errors: "Errors",
-                                model: {
-                                    id: "Id",
-                                    fields: {
-                                        ProductId: { editable: false, type: "number" },
-                                        ProductName: { editable: false, type: "string" },
-                                        Sku: { editable: false, type: "string" },
-                                        DisplayOrderVal: { editable: true, type: "string" },
-                                        Published: { editable: true, type: "boolean" },
-                                        Deleted: { editable: true, type: "boolean" },
-                                       
-                                    }
-                                }
-                            },
-                            requestEnd: function(e) {
-                                if (e.type == "update") {
-                                    this.read();
-                                }
-                            },
-                            error: function(e) {
-                                display_kendoui_grid_error(e);
-                                // Cancel the changes
-                                this.cancelChanges();
-                            },
-                            serverPaging: true,
-                            serverFiltering: true,
-                            serverSorting: true
-                        },
-                        pageable: {
-                            refresh: true,
-                            numeric: false,
-                            previousNext: false,
-                            info: false
-                        },
-                        editable: {
-                            confirmation: false,
-                            mode: "inline"
-                        },
-                        scrollable: false,
-                        columns: [{
-                            field: "ProductId",
-                                title: "@T("Plugin.Widgets.CustomProductGroup.Product.ProductId")",
-                                width: 200
-                            }, {
-                                field: "ProductName",
-                                title: "@T("Plugin.Widgets.CustomProductGroup.Product.ProductName")",
-                                width: 200
-                            }, {
-                                field: "Sku",
-                                title: "@T("Plugin.Widgets.CustomProductGroup.Product.Sku")",
-                                width: 200
-                            },{
-                                field: "DisplayOrderVal",
-                                title: "@T("Plugin.Widgets.CustomProductGroup.Product.Plantform")",
-                            width: 200
-                            },
-                            {
-                                field: "Published",
-                                title: "@T("Plugin.Widgets.CustomProductGroup.Product.Published")",
-                            width: 200
-                            },
-                               {
-                                   field: "Deleted",
-                                   title: "@T("Plugin.Widgets.CustomProductGroup.Product.Deleted")",
-                            width: 200
-                             },
-                             {
-                                command: [
-                                    {
-                                        name: "edit",
-                                        text: "@T("Admin.Common.Edit")"
+                    <div>
+                        <div id="customproductgroup-productlist"></div>
+
+                        <script>
+                            $(document).ready(function () {
+                                $("#customproductgroup-productlist").kendoGrid({
+                                    dataSource: {
+                                        type: "json",
+                                        transport: {
+                                            read: {
+                                                url: "@Html.Raw(Url.Action("ProductsList", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" }, { "CustomProductGroupId", Model.Id } }))",
+                                                type: "POST",
+                                                dataType: "json"
+                                            },
+                                            update: {
+                                                url: "@Html.Raw(Url.Action("ProductUpdate", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" }}))",
+                                                type: "POST",
+                                                dataType: "json"
+                                            },
+                                            destroy: {
+                                                url: "@Html.Raw(Url.Action("ProductDelete", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" }}))",
+                                                type: "POST",
+                                                dataType: "json"
+                                            }
+                                        },
+                                        schema: {
+                                            data: "Data",
+                                            total: "Total",
+                                            errors: "Errors",
+                                            model: {
+                                                id: "Id",
+                                                fields: {
+                                                    ProductId: { editable: false, type: "number" },
+                                                    ProductName: { editable: false, type: "string" },
+                                                    Sku: { editable: false, type: "string" },
+                                                    DisplayOrderVal: { editable: true, type: "string" },
+                                                    Published: { editable: true, type: "boolean" },
+                                                    Deleted: { editable: true, type: "boolean" },
+
+                                                }
+                                            }
+                                        },
+                                        requestEnd: function (e) {
+                                            if (e.type == "update") {
+                                                this.read();
+                                            }
+                                        },
+                                        error: function (e) {
+                                            display_kendoui_grid_error(e);
+                                            // Cancel the changes
+                                            this.cancelChanges();
+                                        },
+                                        serverPaging: true,
+                                        serverFiltering: true,
+                                        serverSorting: true
+                                    },
+                                    pageable: {
+                                        refresh: true,
+                                        numeric: false,
+                                        previousNext: false,
+                                        info: false
+                                    },
+                                    editable: {
+                                        confirmation: false,
+                                        mode: "inline"
+                                    },
+                                    scrollable: false,
+                                    columns: [{
+                                        field: "ProductId",
+                                        title: "@T("Plugin.Widgets.CustomProductGroup.Product.ProductId")",
+                                        width: 200
                                     }, {
-                                        name: "destroy",
-                                        text: "@T("Admin.Common.Delete")"
-                                    }
-                                ],
-                                width: 200
-                            }
-                        ]
-                    });
-                });
-                    </script>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                @{
+                                        field: "ProductName",
+                                        title: "@T("Plugin.Widgets.CustomProductGroup.Product.ProductName")",
+                                        width: 200
+                                    }, {
+                                        field: "Sku",
+                                        title: "@T("Plugin.Widgets.CustomProductGroup.Product.Sku")",
+                                        width: 200
+                                    }, {
+                                        field: "DisplayOrderVal",
+                                        title: "@T("Plugin.Widgets.CustomProductGroup.Product.Plantform")",
+                                        width: 200
+                                    },
+                                        {
+                                            field: "Published",
+                                            title: "@T("Plugin.Widgets.CustomProductGroup.Product.Published")",
+                                            width: 200
+                                        },
+                                           {
+                                               field: "Deleted",
+                                               title: "@T("Plugin.Widgets.CustomProductGroup.Product.Deleted")",
+                                               width: 200
+                                           },
+                                         {
+                                             command: [
+                                                 {
+                                                     name: "edit",
+                                                     text: "@T("Admin.Common.Edit")"
+                                                 }, {
+                                                     name: "destroy",
+                                                     text: "@T("Admin.Common.Delete")"
+                                                 }
+                                             ],
+                                             width: 200
+                                         }
+                                    ]
+                                });
+                            });
+                        </script>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @{
         var addNewUrl = Url.RouteUrl("Plugin.Widgets.CustomProductGroup.EditProductPopup2") + "?customProductGroupId=" + Model.Id;
-                }
-                <br />
-                <input type="submit" id="btnAddNewOption" name="btnAddNewOption" value="@T("Plugins.Shipping.ByWeight.AddRecord")" onclick="javascript:OpenWindow('@(addNewUrl)    ', 816, 868, true); return false;" class="t-button" />
-                <input type="submit" id="btnRefresh" name="btnRefresh" style="display: none" />
-                <script type="text/javascript">
-                    $(document).ready(function () {
-                        $('#btnRefresh').click(function () {
-                            var optionsGrid = $("#customproductgroup-productlist");
-                            optionsGrid.data('tGrid').ajaxRequest();           
-                            return false;
-                        });                                
-                    });
-                </script>
-            </td>
-        </tr>
-    </table>
-    <script type="text/javascript">
-        function onDataBinding(e) {
-            var customProductGroupId=$("#@Html.FieldIdFor(m => m.Id)").val();
-            var searchModel = {
-                CustomProductGroupId:customProductGroupId
-            };
-            e.data = searchModel;
-        }
-    </script>
+                    }
+                    <br />
+                    <input type="submit" id="btnAddNewOption" name="btnAddNewOption" value="@T("Plugins.Shipping.ByWeight.AddRecord")" onclick="javascript:OpenWindow('@(addNewUrl)    ', 816, 868, true); return false;" class="t-button" />
+                    <input type="submit" id="btnRefresh" name="btnRefresh" style="display: none" />
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $('#btnRefresh').click(function () {
+                                var optionsGrid = $("#customproductgroup-productlist");
+                                optionsGrid.data('tGrid').ajaxRequest();
+                                return false;
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        </table>
+        <script type="text/javascript">
+            function onDataBinding(e) {
+                var customProductGroupId = $("#@Html.FieldIdFor(m => m.Id)").val();
+                var searchModel = {
+                    CustomProductGroupId: customProductGroupId
+                };
+                e.data = searchModel;
+            }
+        </script>
     }
     else
     {
-    @T("Admin.Promotions.Discounts.Requirements.SaveBeforeEdit")
+        @T("Admin.Promotions.Discounts.Requirements.SaveBeforeEdit")
     }
 }
 <script type="text/javascript">
-    $(document).ready(function(){
+    
+    $(document).ready(function () {
+        $("#customproductgorup-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+  
+    $(document).ready(function () {
         togglePicture();
-        $("#@Html.FieldIdFor(m => m.Plantform)").change(togglePicture);            
+        $("#@Html.FieldIdFor(m => m.Plantform)").change(togglePicture);
     });
 
-    function togglePicture(){
-        var plantform=$("#@Html.FieldIdFor(m => m.Plantform)").val();    
-        if(plantform!="@((int)PlantformType.PC)")
-            $("#pnlPicture").show();                  
+    function togglePicture() {
+        var plantform = $("#@Html.FieldIdFor(m => m.Plantform)").val();
+        if (plantform != "@((int)PlantformType.PC)")
+            $("#pnlPicture").show();
         else
-            $("#pnlPicture").hide();  
+            $("#pnlPicture").hide();
     }
 
     function AddSubCategoryLinks() {
-        var html=$("#@Html.FieldIdFor(m => m.SubCategoryLinks)").val();
-        if(html.length>0)
-            html=html+"\r\n";
-        html =html+ "链接名称|http://链接URL.com";
+        var html = $("#@Html.FieldIdFor(m => m.SubCategoryLinks)").val();
+        if (html.length > 0)
+            html = html + "\r\n";
+        html = html + "链接名称|http://链接URL.com";
         $("#@Html.FieldIdFor(m => m.SubCategoryLinks)").val(html);
     }
 </script>
@@ -332,8 +357,8 @@
     //http://www.telerik.com/help/aspnet-mvc/telerik-ui-components-grid-client-api-and-events.html
     function onComplete(e) {
         if (e.name == "delete") {
-            try {window.opener.document.forms['customproductgroup-list-form'].btnRefresh.click();}
-            catch (e){} 
+            try { window.opener.document.forms['customproductgroup-list-form'].btnRefresh.click(); }
+            catch (e) { }
         }
     }
 </script>

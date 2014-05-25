@@ -35,6 +35,11 @@ using Nop.Core.Caching;
 using Nop.Core.Domain.Customers;
 
 using Nop.Plugin.Widgets.CustomProductGroup.Models;
+using Nop.Plugin.Widgets.CustomProductGroup.Domain;
+using G = Nop.Plugin.Widgets.CustomProductGroup.Domain;
+using Nop.Plugin.Widgets.CustomProductGroup.Services;
+using Nop.Web.Framework.Kendoui;
+using Nop.Web.Framework.Mvc;
 
 namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
 {
@@ -67,7 +72,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
         private readonly ICacheManager _cacheManager;
         private readonly MediaSettings _mediaSettings;
         private readonly IWebHelper _webHelper;
-        //private readonly ICustomProductGroupService _customProductGroupService;
+        private readonly ICustomProductGroupService _customProductGroupService;
         #endregion
 
         #region Ctor
@@ -81,7 +86,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
             CatalogSettings catalogSettings, ITaxService taxService,
             IPriceCalculationService priceCalculationService, ICurrencyService currencyService,
             IPriceFormatter priceFormatter
-           // , ICustomProductGroupService customProductGroupService
+            , ICustomProductGroupService customProductGroupService
             ,
             ICacheManager cacheManager, MediaSettings mediaSettings,
             IWebHelper webHelper)
@@ -102,7 +107,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
             this._priceCalculationService = priceCalculationService;
             this._currencyService = currencyService;
             this._priceFormatter = priceFormatter;
-           // this._customProductGroupService = customProductGroupService;
+            this._customProductGroupService = customProductGroupService;
             this._cacheManager = cacheManager;
             this._mediaSettings = mediaSettings;
             this._webHelper = webHelper;
@@ -113,7 +118,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
         #region CustomProductGroup
 
         [HttpPost]
-        public ActionResult CustomProductGroupList( CustomProductGroupListModel model)
+        public ActionResult CustomProductGroupList(DataSourceRequest command,CustomProductGroupListModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManagePlugins))
                 return Content("Access denied");
@@ -151,20 +156,17 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
 
             }).ToList();
 
-            var data = new GridModel<Models.CustomProductGroupModel>
+
+            var gridModel = new DataSourceResult
             {
                 Data = sbwModel,
                 Total = records.Count
             };
-
-            return new JsonResult
-            {
-                Data = data
-            };
+            return Json(gridModel);
         }
 
-        [GridAction(EnableCustomBinding = true)]
-        public ActionResult CustomProductGroupDelete(int id, GridCommand command, CustomProductGroupListModel model)
+        [HttpPost]
+        public ActionResult CustomProductGroupDelete(int id, CustomProductGroupListModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManagePlugins))
                 return Content("Access denied");
@@ -176,11 +178,11 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
                 _customProductGroupService.DeleteCustomProductGroup(cpg);
             }
 
-            return CustomProductGroupList(command, model);
+            return new NullJsonResult();
         }
 
-        [HttpPost, GridAction(EnableCustomBinding = true)]
-        public ActionResult ProductsList(GridCommand command, int CustomProductGroupId)
+        [HttpPost]
+        public ActionResult ProductsList(int CustomProductGroupId)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManagePlugins))
                 return Content("Access denied");
@@ -188,8 +190,8 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
             return PrepareProductListResult(CustomProductGroupId);
         }
 
-        [GridAction(EnableCustomBinding = true)]
-        public ActionResult ProductUpdate(ProductSimpleModel model, GridCommand command)
+
+        public ActionResult ProductUpdate(ProductSimpleModel model)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManagePlugins))
                 return Content("Access denied");
@@ -239,21 +241,17 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
 
                 products.Add(m);
             }
-
-            var data = new GridModel<Models.ProductSimpleModel>
+      
+            var data = new DataSourceResult
             {
                 Data = products,
                 Total = products.Count
             };
-
-            return new JsonResult
-            {
-                Data = data
-            };
+            return Json(data);
         }
 
-        [GridAction(EnableCustomBinding = true)]
-        public ActionResult ProductDelete(int customProductGroupItemId, GridCommand command)
+
+        public ActionResult ProductDelete(int customProductGroupItemId)
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.ManagePlugins))
                 return Content("Access denied");
@@ -297,7 +295,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
             {
                 if (model.Id == 0)
                 {
-                    var cpg = new Nop.Core.Domain.CustomProductGroups.CustomProductGroup()
+                    var cpg = new G.CustomProductGroup()
                     {
                         Title = model.Title,
                         Style = model.Style,
@@ -435,7 +433,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
             {
                 if (model.CustomProductGroupItemId == 0)
                 {
-                    var customProductGroupItem = new Nop.Core.Domain.CustomProductGroups.CustomProductGroupItem()
+                    var customProductGroupItem = new G.CustomProductGroupItem()
                     {
                         CustomProductGroupId = customProductGroupId.Value,
                         ProductId = model.ProductId,
@@ -498,7 +496,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
                 var productList = _productService.GetProductsByIds(model.SelectedProductIds);
 
                 var customProductGroup = _customProductGroupService.GetCustomProductGroupById(customProductGroupId.Value);
-                var customProductGropItems =_customProductGroupService.GetCustomProductGroupItems(customProductGroupId.Value, 10000, PlantformType.Default).ToList();
+                var customProductGropItems = _customProductGroupService.GetCustomProductGroupItems(customProductGroupId.Value, 10000, PlantformType.Default).ToList();
                 var customProductGroupItemProductIdList = customProductGropItems.Select(s => s.ProductId);
                 foreach (var p in productList)
                 {
@@ -510,7 +508,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
                     }
                     else//添加
                     {
-                        var customProductGroupItem = new Nop.Core.Domain.CustomProductGroups.CustomProductGroupItem()
+                        var customProductGroupItem = new CustomProductGroupItem()
                         {
                             CustomProductGroupId = customProductGroupId.Value,
                             ProductId = p.Id,
@@ -671,7 +669,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Controllers
                     {
                         customProductGroupModel.FirstProduct = new ProductModel();
                         customProductGroupModel.FirstProduct.SeName = product.GetSeName();
-                        customProductGroupModel.FirstProduct.IsSoldOut = product.IsSoldOut();
+                        // customProductGroupModel.FirstProduct.IsSoldOut = product.IsSoldOut();
                         if (customProductGroup.FirstProductPictureId.HasValue)
                             customProductGroupModel.FirstProduct.PictureUrl = _pictureService.GetPictureUrl(customProductGroup.FirstProductPictureId.Value);
                     }

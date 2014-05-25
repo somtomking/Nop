@@ -35,6 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\packages\Autofac.3.3.1\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc">
+      <HintPath>..\..\packages\Autofac.Mvc5.3.2.1\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -75,21 +81,20 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.Web.Mvc">
-      <HintPath>..\..\packages\TelerikMvcExtensions.2013.2.611\lib\net40\Telerik.Web.Mvc.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\WidgetsCustomProductGroupController.cs" />
     <Compile Include="CustomProductGroupPlugin.cs" />
+    <Compile Include="Data\CustomerCustomProductGroupMap.cs" />
     <Compile Include="Data\CustomProductGroupObjectContext.cs" />
+    <Compile Include="Domain\CustomerCustomProductGroup.cs" />
     <Compile Include="Domain\CustomProductGroup.cs" />
     <Compile Include="Domain\CustomProductGroupItem.cs" />
     <Compile Include="Data\CustomProductGroupItemMap.cs" />
     <Compile Include="Data\CustomProductGroupMap.cs" />
     <Compile Include="Data\EfStartUpTask.cs" />
     <Compile Include="Domain\PlantformType.cs" />
+    <Compile Include="Infrastructure\DependencyRegistrar.cs" />
     <Compile Include="Models\ConfigurationFormModel.cs" />
     <Compile Include="Models\CustomProductGroupListModel.cs" />
     <Compile Include="Models\CustomProductGroupModel.cs" />
@@ -113,7 +118,6 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="Views\WidgetsCustomProductGroup\_CreateOrUpdate.cshtml" />
     <EmbeddedResource Include="Views\WidgetsCustomProductGroup\_CreateOrUpdateProduct.cshtml" />
-    <EmbeddedResource Include="Views\WidgetsCustomProductGroup\EditProductPopup.cshtml" />
     <EmbeddedResource Include="Views\WidgetsCustomProductGroup\ProductSelectPopup.cshtml" />
     <EmbeddedResource Include="Views\WidgetsCustomProductGroup\EditPopup.cshtml" />
     <EmbeddedResource Include="Views\WidgetsCustomProductGroup\EditProductPopup2.cshtml" />

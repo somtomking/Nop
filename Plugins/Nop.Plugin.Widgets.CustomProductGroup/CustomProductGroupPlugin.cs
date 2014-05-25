@@ -7,6 +7,7 @@ using Nop.Services.Cms;
 using Nop.Services.Configuration;
 using Nop.Services.Localization;
 using Nop.Services.Media;
+using Nop.Plugin.Widgets.CustomProductGroup.Data;
 
 namespace Nop.Plugin.Widgets.HotProductSummary
 {
@@ -18,13 +19,14 @@ namespace Nop.Plugin.Widgets.HotProductSummary
         private readonly IPictureService _pictureService;
         private readonly ISettingService _settingService;
         private readonly IWebHelper _webHelper;
-
-        public HotProductSummaryPlugin(IPictureService pictureService, 
-            ISettingService settingService, IWebHelper webHelper)
+        private readonly CustomProductGroupObjectContext _objectContext;
+        public HotProductSummaryPlugin(IPictureService pictureService,
+            ISettingService settingService, IWebHelper webHelper, CustomProductGroupObjectContext objectContext)
         {
             this._pictureService = pictureService;
             this._settingService = settingService;
             this._webHelper = webHelper;
+            this._objectContext = objectContext;
         }
 
         /// <summary>
@@ -72,7 +74,8 @@ namespace Nop.Plugin.Widgets.HotProductSummary
         /// Install plugin
         /// </summary>
         public override void Install()
-        {        
+        {
+            _objectContext.Install();
             base.Install();
         }
 
@@ -80,7 +83,8 @@ namespace Nop.Plugin.Widgets.HotProductSummary
         /// Uninstall plugin
         /// </summary>
         public override void Uninstall()
-        {              
+        {
+            _objectContext.Uninstall();
             base.Uninstall();
         }
     }

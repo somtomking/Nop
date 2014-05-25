@@ -25,9 +25,9 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Data
             .WithMany(c => c.CustomProductGroupItems)
             .HasForeignKey(item => item.CustomProductGroupId);
 
-            this.HasRequired(cpg => cpg.Product)
-                .WithMany()
-                .HasForeignKey(cpg => cpg.ProductId);
+            //this.HasRequired(cpg => cpg.Product)
+            //    .WithMany()
+            //    .HasForeignKey(cpg => cpg.ProductId);
         }
     }
 }

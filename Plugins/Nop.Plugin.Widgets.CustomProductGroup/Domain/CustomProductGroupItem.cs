@@ -37,6 +37,6 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Domain
 
         public CustomProductGroup CustomProductGroup { get; set; }
 
-        public Product Product { get; set; }
+       // public Product Product { get; set; }
     }
 }

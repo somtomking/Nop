@@ -19,3 +19,4 @@ Shipping.ByWeight
 Tax.FixedRate
 Tax.CountryStateZip
 Widgets.NivoSlider
+Widgets.CustomProductGroup

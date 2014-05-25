@@ -6,7 +6,8 @@
 @using Nop.Core.Domain.Common;
 @using Nop.Web.Framework;
 @using Nop.Core.Infrastructure;
-@using Telerik.Web.Mvc.UI;
+@using Nop.Plugin.Widgets.CustomProductGroup.Domain;
+
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "customproductgroup-list-form" }))
 {
@@ -18,7 +19,8 @@
                 <input type="radio" title="PC" value="@((int)PlantformType.PC)" name="plantform" />PC
                 <input type="radio" title="APP" value="@((int)PlantformType.APP)" name="plantform" />APP
             </td>
-            <td>&nbsp;&nbsp;&nbsp;<strong>只显示启用：</strong>
+            <td>
+                &nbsp;&nbsp;&nbsp;<strong>只显示启用：</strong>
                 <input id="ckbShowEnable" type="checkbox" title="PC" />
             </td>
         </tr>
@@ -29,46 +31,201 @@
     <table class="adminContent">
         <tr>
             <td>
-                @(Html.Telerik().Grid<CustomProductGroupModel>()
-                      .Name("customproductgroup-grid")
-                      .DataKeys(keys => keys.Add(x => x.Id).RouteKey("Id"))
-                      .Columns(columns =>
-                      {
-                          columns.Bound(x => x.Title).ReadOnly();
-                          columns.Bound(x => x.PlantformName).ReadOnly();
-                          columns.Bound(x => x.ProductsCount).ReadOnly();
-                          columns.Bound(x => x.StyleName).ReadOnly();
-                          columns.Bound(x => x.DisplayOrder).ReadOnly().Encoded(false);
-                          columns.Bound(x => x.ShowAd)
-                            .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= ShowAd #>.gif' />")
-                            .Centered()
-                            .Width(100);
-                          columns.Bound(x => x.IsRecommended)
-                            .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= IsRecommended #>.gif' />")
-                            .Centered()
-                            .Width(100);
-                          columns.Bound(x => x.IsEnable)
-                            .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= IsEnable #>.gif' />")
-                            .Centered()
-                            .Width(100);
-                          columns.Bound(x => x.Id)
-                              .Width(50)
+                <div>
+                    <div id="customproductgroup-grid"></div>
+
+                    @*@(Html.Telerik().Grid<CustomProductGroupModel>()
+                        .Name("customproductgroup-grid")
+                        .DataKeys(keys => keys.Add(x => x.Id).RouteKey("Id"))
+                        .Columns(columns =>
+                        {
+                            columns.Bound(x => x.Title).ReadOnly();
+                            columns.Bound(x => x.PlantformName).ReadOnly();
+                            columns.Bound(x => x.ProductsCount).ReadOnly();
+                            columns.Bound(x => x.StyleName).ReadOnly();
+                            columns.Bound(x => x.DisplayOrder).ReadOnly().Encoded(false);
+                            columns.Bound(x => x.ShowAd)
+                              .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= ShowAd #>.gif' />")
                               .Centered()
-                              .ClientTemplate("<input type='submit' value='" + @T("Admin.Common.Edit").Text + "' onclick=\"" + "javascript:OpenWindow('" + @Url.RouteUrl("Plugin.Widgets.CustomProductGroup.EditPopup") + "?id=<#= Id #>', 1000, 600, true); return false;\" class='t-button' />")
-                              .Title(T("Admin.Common.Edit").Text);
-                          columns.Command(commands =>
-                          {
-                              commands.Delete().Text(T("Admin.Common.Delete").Text);
-                          }).Title(T("Admin.Common.Delete").Text).Width(180);
-                      })
-                      .DataBinding(dataBinding =>
-                      {
-                          dataBinding.Ajax()
-                              .Select("CustomProductGroupList", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" } })
-                              .Delete("CustomProductGroupDelete", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" } });
-                      })
-                      .ClientEvents(events => events.OnDataBinding("onDataBinding"))
-                      .EnableCustomBinding(true))
+                              .Width(100);
+                            columns.Bound(x => x.IsRecommended)
+                              .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= IsRecommended #>.gif' />")
+                              .Centered()
+                              .Width(100);
+                            columns.Bound(x => x.IsEnable)
+                              .ClientTemplate("<img alt='' src='" + Url.Content("~/Administration/Content/images/") + "active-<#= IsEnable #>.gif' />")
+                              .Centered()
+                              .Width(100);
+                            columns.Bound(x => x.Id)
+                                .Width(50)
+                                .Centered()
+                                .ClientTemplate("<input type='submit' value='" + @T("Admin.Common.Edit").Text + "' onclick=\"" + "javascript:OpenWindow('" + @Url.RouteUrl("Plugin.Widgets.CustomProductGroup.EditPopup") + "?id=<#= Id #>', 1000, 600, true); return false;\" class='t-button' />")
+                                .Title(T("Admin.Common.Edit").Text);
+                            columns.Command(commands =>
+                            {
+                                commands.Delete().Text(T("Admin.Common.Delete").Text);
+                            }).Title(T("Admin.Common.Delete").Text).Width(180);
+                        })
+                        .DataBinding(dataBinding =>
+                        {
+                            dataBinding.Ajax()
+                                .Select("CustomProductGroupList", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" } })
+                                .Delete("CustomProductGroupDelete", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" } });
+                        })
+                        .ClientEvents(events => events.OnDataBinding("onDataBinding"))
+                        .EnableCustomBinding(true))*@
+                    <script type="text/javascript">
+                        $(document).ready(
+                            function () {
+                                $("#customproductgroup-grid").kendoGrid(
+                                    {
+                                        dataSource: {
+                                            type: "json",
+                                            transport: {
+                                                read: {
+                                                    url: "@Html.Raw(Url.Action("CustomProductGroupList", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" } }))",
+                                                    type: "POST",
+                                                    dataType: "json"
+                                                },
+                                                destroy: {
+                                                    url: "@Html.Raw(Url.Action("CustomProductGroupDelete", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" } }))",
+                                                    type: "POST",
+                                                    dataType: "json"
+                                                }
+                                            },
+                                            schema: {
+                                                data: "Data",
+                                                total: "Total",
+                                                errors: "Errors",
+                                                model: {
+                                                    id: "Id",
+                                                    fields: {
+                                                        Title: { editable: false, type: "string" },
+                                                        PlantformName: { editable: false, type: "string" },
+                                                        ProductsCount: { editable: false, type: "number" },
+                                                        StyleName: { editable: false, type: "string" },
+                                                        DisplayOrder: { editable: false, type: "number" },
+                                                        ShowAd: { editable: false, type: "boolean" },
+                                                        IsRecommended: { editable: false, type: "boolean" },
+                                                        IsEnable: { editable: false, type: "boolean" },
+                                                    }
+                                                },
+                                                requestEnd: function (e) {
+                                                    if (e.type == "update") {
+                                                        this.read();
+                                                    }
+                                                },
+                                                error: function (e) {
+                                                    display_kendoui_grid_error(e);
+                                                    // Cancel the changes
+                                                    this.cancelChanges();
+                                                },
+                                                serverPaging: true,
+                                                serverFiltering: true,
+                                                serverSorting: true
+                                            }
+                                        },
+                                        pageable: {
+                                            refresh: true,
+                                            numeric: false,
+                                            previousNext: false,
+                                            info: false
+                                        },
+                                        editable: {
+                                            confirmation: false,
+                                            mode: "inline"
+                                        },
+                                        scrollable: false,
+                                        columns: [
+                                            {
+                                                field: "Title",
+                                                title: "名称",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format:"",
+
+                                            },
+                                            {
+                                                field: "PlantformName",
+                                                title: "平台",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                            {
+                                                field: "ProductsCount",
+                                                title: "商品数",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                            {
+                                                field: "StyleName",
+                                                title: "风格",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                            {
+                                                field: "DisplayOrder",
+                                                title: "排序",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                            {
+                                                field: "ShowAd",
+                                                title: "显示广告条",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                            {
+                                                field: "IsRecommended",
+                                                title: "强制显示",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                            {
+                                                field: "IsEnable",
+                                                title: "启用",
+                                                //width: "",
+                                                //headerAttributes: "",
+                                                //attributes: "",
+                                                //template: "",
+                                                //format: "",
+
+                                            },
+                                        ],
+                                    }
+                                    );
+                            }
+                            );
+                    </script>
+
+                </div>
+
             </td>
         </tr>
         <tr>
@@ -85,31 +242,22 @@
     <br />
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#btnRefresh').click(function(){
-                refreshData(); 
+            $('#btnRefresh').click(function () {
+                refreshData();
                 //return false to don't reload a page
                 return false;
-            });   
-            $('#ckbShowEnable').click(refreshData);                 
-            $('input[name="plantform"]').each(function(){
-                $(this).click(refreshData);  
+            });
+            $('#ckbShowEnable').click(refreshData);
+            $('input[name="plantform"]').each(function () {
+                $(this).click(refreshData);
             });
         });
 
-        function refreshData(){
+        function refreshData() {
             //refresh grid
-            var optionsGrid = $("#customproductgroup-grid");
-            optionsGrid.data('tGrid').ajaxRequest();       
+            var optionsGrid = $("#customproductgroup-grid").data("kendoGrid");
+            optionsGrid.dataSource.read();
         }
-
-        function onDataBinding(e) {
-            var onlyShowEnable = document.getElementById("ckbShowEnable").checked;
-            var plantform=$('input[name="plantform"]:checked').val();
-            var searchModel = {
-                Plantform:plantform,
-                OnlyShowEnable: onlyShowEnable
-            };
-            e.data = searchModel;
-        }
+ 
     </script>
 }

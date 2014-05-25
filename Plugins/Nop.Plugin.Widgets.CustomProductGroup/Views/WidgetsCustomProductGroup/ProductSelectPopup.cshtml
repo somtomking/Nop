@@ -78,7 +78,7 @@
     <table class="adminContent">
         <tr>
             <td>
-                @(Html.Telerik().Grid<ProductModel>()
+                @*@(Html.Telerik().Grid<ProductModel>()
                     .Name("products-grid")
                     .Columns(columns =>
                     {
@@ -105,7 +105,7 @@
                     .Pageable(settings => settings.PageSize(gridPageSize).Position(GridPagerPosition.Both))
                     .DataBinding(dataBinding => dataBinding.Ajax().Select("AssociatedProductAddPopupList", "Product"))
                     .ClientEvents(events => events.OnDataBinding("onDataBinding"))
-                    .EnableCustomBinding(true))
+                    .EnableCustomBinding(true))*@
             </td>
         </tr>
         <tr>

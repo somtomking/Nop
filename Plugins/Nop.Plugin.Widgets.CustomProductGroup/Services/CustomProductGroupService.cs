@@ -41,7 +41,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Services
 
         private readonly ICacheManager _cacheManager;
         private readonly IRepository<G .CustomProductGroup> _customProductGroupRepository;
-        //private readonly IRepository<CustomerCustomProductGroup> _customerCustomProductGroupRepository;
+        private readonly IRepository<CustomerCustomProductGroup> _customerCustomProductGroupRepository;
         private readonly IRepository<G .CustomProductGroupItem> _customProductGroupItemRepository;
         private readonly IRepository<OrderItem> _orderItemRepository;
         private readonly IRepository<Product> _productRepository;
@@ -52,7 +52,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Services
         public CustomProductGroupService(ICacheManager cacheManager, IRepository<G .CustomProductGroup> customProductGroupRepository,
             IRepository<G .CustomProductGroupItem> customProductGroupItemRepository
             , 
-            //IRepository<CustomerCustomProductGroup> customerCustomProductGroupRepository,
+            IRepository<CustomerCustomProductGroup> customerCustomProductGroupRepository,
             IRepository<OrderItem> orderItemRepository, IRepository<Product> productRepository)
         {
             this._cacheManager = cacheManager;
@@ -129,7 +129,7 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Services
                 query = query.Where(cpg => cpg.IsEnable);
 
             var customProductGroups = query.OrderBy(cpg => cpg.DisplayOrder).ToList();
-            var sortedCustomProductGroups = new List<CustomProductGroup>();//根据 CustomProductGroupIds 排序 CustomProductGroup 列表
+            var sortedCustomProductGroups = new List<G.CustomProductGroup>();//根据 CustomProductGroupIds 排序 CustomProductGroup 列表
             if (customer != null)
             {
                 var customerCustomProductGroup = _customerCustomProductGroupRepository.Table.FirstOrDefault(c => c.CustomerId == customer.Id);
@@ -269,11 +269,13 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Services
             int count,
             PlantformType plantform = PlantformType.Default)
         {
-            var query = from n in _customProductGroupItemRepository.Table
+            var queryBase = (from m in _customProductGroupItemRepository.Table where m.CustomProductGroupId == customProductGroupId select m).ToList();
+            var query = from n in queryBase
                         join m in _productRepository.Table on n.ProductId equals m.Id
                         where n.CustomProductGroupId == customProductGroupId
                         && m.Published
                         select n;
+            
 
             if (plantform != PlantformType.Default)
                 query = query.Where(n => n.Plantform == (int)plantform || n.Plantform == (int)PlantformType.Default);
@@ -291,12 +293,21 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Services
             var queryCustomProductGroupItems = from n in _customProductGroupItemRepository.Table
                                                where n.CustomProductGroupId == customProductGroupId
                                                select n;
+            //60go
+            //if (plantform != PlantformType.Default)
+            //    queryCustomProductGroupItems = queryCustomProductGroupItems.Where(n => (n.Plantform == (int)plantform || n.Plantform == (int)PlantformType.Default)
+            //        && n.Product.Published && !n.Product.Deleted && ((!n.Product.AvailableEndDateTimeUtc.HasValue) 
+            //        || (n.Product.AvailableEndDateTimeUtc.HasValue && n.Product.AvailableEndDateTimeUtc.Value > DateTime.UtcNow)));
+             //var queryProducts = queryCustomProductGroupItems.Select(n=>n.Product);
 
+            //self
             if (plantform != PlantformType.Default)
-                queryCustomProductGroupItems = queryCustomProductGroupItems.Where(n => (n.Plantform == (int)plantform || n.Plantform == (int)PlantformType.Default)
-                    && n.Product.Published && !n.Product.Deleted && ((!n.Product.AvailableEndDateTimeUtc.HasValue) || (n.Product.AvailableEndDateTimeUtc.HasValue && n.Product.AvailableEndDateTimeUtc.Value > DateTime.UtcNow)));
+                queryCustomProductGroupItems = queryCustomProductGroupItems.Where(n => (n.Plantform == (int)plantform || n.Plantform == (int)PlantformType.Default));
 
-            var queryProducts = queryCustomProductGroupItems.Select(n => n.Product);
+            var queryProducts = _productRepository.Table.Where(p=> queryCustomProductGroupItems.Select(n => n.ProductId).Contains(p.Id)
+                && p.Published && !p.Deleted && ((!p.AvailableEndDateTimeUtc.HasValue) 
+                    || (p.AvailableEndDateTimeUtc.HasValue && p.AvailableEndDateTimeUtc.Value > DateTime.UtcNow))
+                );
 
             //if (orderBy == ProductSortingEnum.Position)
             //    query = query.OrderBy(n => n.DisplayOrder);
@@ -310,45 +321,48 @@ namespace Nop.Plugin.Widgets.CustomProductGroup.Services
                 queryProducts = queryProducts.OrderByDescending(n => n.Price);
             else if (orderBy == ProductSortingEnum.CreatedOn)
                 queryProducts = queryProducts.OrderByDescending(n => n.CreatedOnUtc);
-            else if (orderBy == ProductSortingEnum.CommentAsc)
-            {
-                //ProductRate ASC
-                queryProducts = queryProducts.OrderBy(p => p.ApprovedRatingSum);
-            }
-            else if (orderBy == ProductSortingEnum.CommentDesc)
-            {
-                //ProductRate Desc
-                queryProducts = queryProducts.OrderByDescending(p => p.ApprovedRatingSum);
-            }
-            else if (orderBy == ProductSortingEnum.SellingAsc || orderBy == ProductSortingEnum.SellingDesc)
-            {
-                var oitemtable = _orderItemRepository.Table;
-                var orderinfo = oitemtable.GroupBy(p => p.ProductId).Select(x => new { Id = x.Key, SellingCount = x.Sum(t => t.Quantity) });
-                if (orderBy == ProductSortingEnum.SellingDesc)
-                {
-                    // orderinfo = orderinfo.OrderByDescending(p => p.SellingCount);
-                    queryProducts = from a in queryProducts
-                                    join b in orderinfo on a.Id equals b.Id into ab
-                                    from b in ab.DefaultIfEmpty()
-                                    orderby b.SellingCount descending
-                                    select a;
+            //else if (orderBy == ProductSortingEnum.CommentAsc)
+            //{
+            //    //ProductRate ASC
+            //    queryProducts = queryProducts.OrderBy(p => p.ApprovedRatingSum);
+            //}
+            //else if (orderBy == ProductSortingEnum.CommentDesc)
+            //{
+            //    //ProductRate Desc
+            //    queryProducts = queryProducts.OrderByDescending(p => p.ApprovedRatingSum);
+            //}
+            //else if (orderBy == ProductSortingEnum.SellingAsc || orderBy == ProductSortingEnum.SellingDesc)
+            //{
+            //    var oitemtable = _orderItemRepository.Table;
+            //    var orderinfo = oitemtable.GroupBy(p => p.ProductId).Select(x => new { Id = x.Key, SellingCount = x.Sum(t => t.Quantity) });
+            //    if (orderBy == ProductSortingEnum.SellingDesc)
+            //    {
+            //        // orderinfo = orderinfo.OrderByDescending(p => p.SellingCount);
+            //        queryProducts = from a in queryProducts
+            //                        join b in orderinfo on a.Id equals b.Id into ab
+            //                        from b in ab.DefaultIfEmpty()
+            //                        orderby b.SellingCount descending
+            //                        select a;
 
 
-                }
-                else
-                {
-                    queryProducts = from a in queryProducts
-                                    join b in orderinfo on a.Id equals b.Id into ab
-                                    from b in ab.DefaultIfEmpty()
-                                    orderby b.SellingCount ascending
-                                    select a;
-                }
+            //    }
+            //    else
+            //    {
+            //        queryProducts = from a in queryProducts
+            //                        join b in orderinfo on a.Id equals b.Id into ab
+            //                        from b in ab.DefaultIfEmpty()
+            //                        orderby b.SellingCount ascending
+            //                        select a;
+            //    }
 
-            }
+            //}
             else
             {
                 //queryProducts = queryCustomProductGroupItems.OrderBy(n => n.DisplayOrder).Select(n => n.Product);
-                queryProducts = queryCustomProductGroupItems.OrderByDescending(n => n.Product.UpdatedOnUtc).Select(n => n.Product);
+                //60go
+                //queryProducts = queryCustomProductGroupItems.OrderByDescending(n => n.Product.UpdatedOnUtc).Select(n => n.Product);
+                //self
+                queryProducts = _productRepository.Table.Where(p => queryCustomProductGroupItems.Select(g=>g.ProductId).Contains(p.Id)).OrderByDescending(p => p.UpdatedOnUtc);
             }
 
             var products = queryProducts.Skip(pageIndex * pageSize).Take(pageSize).ToList();
