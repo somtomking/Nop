@@ -181,7 +181,8 @@
                                             read: {
                                                 url: "@Html.Raw(Url.Action("ProductsList", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" }, { "CustomProductGroupId", Model.Id } }))",
                                                 type: "POST",
-                                                dataType: "json"
+                                                dataType: "json",
+                                                data: additionalData
                                             },
                                             update: {
                                                 url: "@Html.Raw(Url.Action("ProductUpdate", "WidgetsCustomProductGroup", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.CustomProductGroup.Controllers" }, { "area", "" }}))",
@@ -293,8 +294,10 @@
                     <script type="text/javascript">
                         $(document).ready(function () {
                             $('#btnRefresh').click(function () {
-                                var optionsGrid = $("#customproductgroup-productlist");
-                                optionsGrid.data('tGrid').ajaxRequest();
+                                var grid = $("#customproductgroup-productlist").data("kendoGrid");
+                               
+                                grid.dataSource.read();
+                               
                                 return false;
                             });
                         });
@@ -303,12 +306,13 @@
             </tr>
         </table>
         <script type="text/javascript">
-            function onDataBinding(e) {
-                var customProductGroupId = $("#@Html.FieldIdFor(m => m.Id)").val();
-                var searchModel = {
-                    CustomProductGroupId: customProductGroupId
+    
+    function additionalData() {
+        var customProductGroupId = $("#@Html.FieldIdFor(m => m.Id)").val();
+                return {
+                     CustomProductGroupId: customProductGroupId
+                    
                 };
-                e.data = searchModel;
             }
         </script>
     }
