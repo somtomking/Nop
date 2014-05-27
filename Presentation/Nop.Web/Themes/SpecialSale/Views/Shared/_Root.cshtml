@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/_Root.Head.cshtml";
+}
+@Html.Widget("body_start_html_tag_after")
+ 
+
+<div class="master-wrapper-page">
+    @Html.Action("JavaScriptDisabledWarning", "Common")
+    <div class="master-wrapper-content">
+        <script type="text/javascript">
+         
+        </script>
+        @Html.Partial("Header")
+        <div class="header-menu">
+          
+        </div>
+        @Html.Widget("content_before")
+   
+       
+        <div class="master-wrapper-main">
+            @RenderBody()
+        </div>
+        @Html.Widget("content_after")
+    </div>
+    @Html.Action("Footer", "Common")
+</div>
+ 
+@Html.Widget("body_end_html_tag_before")

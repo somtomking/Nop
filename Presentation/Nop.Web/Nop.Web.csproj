@@ -2156,6 +2156,7 @@
     <Content Include="Themes\PowerHub\Content\styles.rtl.css" />
     <Content Include="Themes\PowerHub\preview.jpg" />
     <Content Include="Themes\print.css" />
+    <Content Include="Themes\SpecialSale\preview.jpg" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2985,6 +2986,17 @@
     <Content Include="Themes\o2o\theme.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Themes\SpecialSale\theme.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Themes\SpecialSale\Views\Home\Index.cshtml" />
+    <Content Include="Themes\SpecialSale\Views\Shared\_Root.Head.cshtml" />
+    <Content Include="Themes\SpecialSale\Views\Shared\_Root.cshtml" />
+    <Content Include="Themes\SpecialSale\Views\Shared\_ColumnsOne.cshtml" />
+    <Content Include="Themes\SpecialSale\Views\Web.config" />
+    <Content Include="Themes\SpecialSale\Views\Common\Favicon.cshtml" />
+    <Content Include="Themes\SpecialSale\Views\Common\Footer.cshtml" />
+    <Content Include="Themes\SpecialSale\Views\Shared\Header.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Plugins\bin\" />
@@ -2992,6 +3004,8 @@
     <Folder Include="Themes\o2o\Scripts\" />
     <Folder Include="Themes\o2o\Views\Home\" />
     <Folder Include="Themes\o2o\Views\Shared\" />
+    <Folder Include="Themes\SpecialSale\Content\" />
+    <Folder Include="Themes\SpecialSale\Scripts\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Nop.Core\Nop.Core.csproj">
