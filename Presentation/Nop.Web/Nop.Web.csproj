@@ -373,6 +373,7 @@
     <Content Include="App_Data\InstalledPlugins.txt" />
     <Content Include="App_Data\Install\create_required_data.sql" />
     <Content Include="App_Data\Install\create_sample_data.sql" />
+    <Content Include="App_Data\language_pack3.3zhs.xml" />
     <Content Include="App_Data\Localization\Installation\installation.ar.xml" />
     <Content Include="App_Data\Localization\Installation\installation.bg.xml" />
     <Content Include="App_Data\Localization\Installation\installation.bs-Latn-BA.xml" />
@@ -406,8 +407,8 @@
     <Content Include="App_Data\Localization\Installation\installation.ur.xml" />
     <Content Include="App_Data\Localization\Installation\installation.vi.xml" />
     <Content Include="App_Data\Localization\Installation\installation.zhs.xml" />
-    <Content Include="App_Data\Settings.bak2.txt" />
     <Content Include="App_Data\Settings.txt" />
+    <Content Include="App_Data\Settings.bak.txt" />
     <Content Include="App_Data\SqlServer.StoredProcedures.sql" />
     <Content Include="App_Data\Localization\defaultResources.nopres.xml">
       <SubType>Designer</SubType>

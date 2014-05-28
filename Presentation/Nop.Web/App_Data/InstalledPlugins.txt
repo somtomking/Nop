@@ -3,6 +3,10 @@ DiscountRequirement.HasAllProducts
 DiscountRequirement.HasOneProduct
 DiscountRequirement.MustBeAssignedToCustomerRole
 CurrencyExchange.MoneyConverter
+ExternalAuth.OpenId
+ExternalAuth.Facebook
+Misc.FacebookShop
+Misc.WebServices
 Payments.CashOnDelivery
 Payments.CheckMoneyOrder
 Payments.AuthorizeNet
@@ -16,7 +20,10 @@ Shipping.CanadaPost
 Shipping.FedEx
 Shipping.FixedRate
 Shipping.ByWeight
+Shipping.UPS
+Shipping.USPS
+Mobile.SMS.Verizon
 Tax.FixedRate
 Tax.CountryStateZip
+Widgets.GoogleAnalytics
 Widgets.NivoSlider
-Widgets.CustomProductGroup
