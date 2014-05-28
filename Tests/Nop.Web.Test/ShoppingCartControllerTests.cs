@@ -7,6 +7,7 @@ using Nop.Web.Controllers;
 using Nop.Tests;
 using NUnit.Framework;
 using Nop.Core.Infrastructure;
+using Nop.Tests.Common;
 namespace Nop.Web.Test
 {
     [TestFixture]
@@ -35,6 +36,8 @@ namespace Nop.Web.Test
         {
             var controller = EngineContext.Current.Resolve<ShoppingCartController>();
             
+            
+             
         }
     }
 }
