@@ -8,12 +8,14 @@ using System.Web.Mvc;
 
 namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
 {
-    public class WidgetsProductSpecialSaleController : Controller
+    public class WidgetsProductSpecialSaleController : BasePluginController
     {
+        private readonly static string _Widget_Path_Format = "~/Plugins/Widgets.ProductSpecialSale/Views/WidgetsProductSpecialSale/{0}.cshtml";
         [AdminAuthorize]
         [ChildActionOnly]
-        public ActionResult Configure() {
-            return View("~/Plugins/Widgets.ProductSpecialSale/Views/WidgetsProductSpecialSale/Configure.cshtml");
+        public ActionResult Configure()
+        {
+            return View(GetViewPath("Configure"));
         }
         [HttpPost]
         [AdminAuthorize]
@@ -21,6 +23,17 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
         public ActionResult Configure(string s)
         {
             return View();
+        }
+        [ChildActionOnly]
+        public ActionResult PublicInfo(string widgetZone)
+        {
+            
+            return View(GetViewPath("PublicInfo"));
+        }
+
+        private string GetViewPath(string viewName)
+        {
+            return string.Format(_Widget_Path_Format, viewName);
         }
     }
 }
