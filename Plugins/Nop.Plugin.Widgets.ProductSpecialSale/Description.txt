@@ -1,0 +1,8 @@
+﻿Group: Widgets
+FriendlyName: 产品特卖
+SystemName: Widgets.PrimaryCategory
+Version: 1.0
+SupportedVersions: 3.30
+Author: exp team
+DisplayOrder: 1
+FileName: Nop.Plugin.Widgets.ProductSpecialSale.dll
