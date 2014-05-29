@@ -2998,6 +2998,8 @@
     <Content Include="Themes\SpecialSale\Views\Common\Favicon.cshtml" />
     <Content Include="Themes\SpecialSale\Views\Common\Footer.cshtml" />
     <Content Include="Themes\SpecialSale\Views\Shared\Header.cshtml" />
+    <Content Include="Themes\SpecialSale\Views\ShoppingCart\Cart.cshtml" />
+    <Content Include="Themes\SpecialSale\Views\Checkout\OnePageCheckout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Plugins\bin\" />
