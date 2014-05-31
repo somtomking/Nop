@@ -56,9 +56,20 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
         #endregion
 
 
-      
+
+        #region 特卖
+        public ActionResult CreateStage()
+        {
+            return View(GetViewPath("CreateStage"));
+        }
+
+        public ActionResult EditStage()
+        {
+            return View(GetViewPath("EditStage"));
+        }
+
+        #endregion
 
 
-      
     }
 }
