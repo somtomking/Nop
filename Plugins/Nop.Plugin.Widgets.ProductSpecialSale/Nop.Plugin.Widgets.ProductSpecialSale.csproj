@@ -108,41 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\WidgetsProductSpecialSaleController.cs" />
-    <Compile Include="Domain\Activity.cs" />
-    <Compile Include="Domain\ActivityCategory.cs" />
-    <Compile Include="Domain\ActivityComment.cs" />
-    <Compile Include="Domain\ActivityCommentPraise.cs" />
-    <Compile Include="Domain\ActivityPictureType.cs" />
-    <Compile Include="Domain\ActivityPlatform.cs" />
-    <Compile Include="Domain\ActivityProduct.cs" />
-    <Compile Include="Domain\ActivityProductGroup.cs" />
-    <Compile Include="Domain\ActivityProgressStatus.cs" />
-    <Compile Include="Domain\ActivityRemind.cs" />
-    <Compile Include="Domain\ActivityRemindStatus.cs" />
-    <Compile Include="Domain\ActivityStatus.cs" />
-    <Compile Include="Domain\ActivityStyle.cs" />
-    <Compile Include="Domain\ActivityType.cs" />
-    <Compile Include="Domain\EnableType.cs" />
-    <Compile Include="Domain\Promotion.cs" />
-    <Compile Include="Domain\PromotionProduct.cs" />
-    <Compile Include="Domain\PromotionProductTracking.cs" />
-    <Compile Include="Domain\PromotionStatus.cs" />
-    <Compile Include="Domain\PromotionTracking.cs" />
-    <Compile Include="Domain\PromotionTrackingType.cs" />
-    <Compile Include="Domain\PromotionType.cs" />
-    <Compile Include="Models\ActivityModel.cs" />
-    <Compile Include="Models\ActivityProductGroupModel.cs" />
-    <Compile Include="Models\ActivityProductModel.cs" />
-    <Compile Include="Models\ActivityStyleModel.cs" />
-    <Compile Include="Models\PromptModel.cs" />
     <Compile Include="ProductSpecialSalePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serivces\ActivityService.cs" />
-    <Compile Include="Serivces\IActivityService.cs" />
-    <Compile Include="Serivces\IPromotionService.cs" />
-    <Compile Include="Serivces\IPromptActivityService.cs" />
-    <Compile Include="Serivces\PromotionService.cs" />
-    <Compile Include="Serivces\PromptActivityService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -157,28 +124,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Views\WidgetsProductSpecialSale\ActivityProductAddPopup.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\CommonActivityCreate.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\CommonActivityEdit.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\CommonActivityList.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\CycleActivityEdit.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\CycleActivityList.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\EditorTemplates\ActivityProductGroupDisplayColor.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\NonPromotionActivityCreate.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\NonPromotionActivityEdit.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\NonPromotionActivityList.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\NonPromotionActivityProductAddPopup.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.Info.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.Products.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdateCommonActivity.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdateCommonActivity.Info.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdateCommonActivity.Products.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdateCommonActivity.StyleTemplates.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdateNonPromotionActivity.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdateNonPromotionActivity.Info.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdateNonPromotionActivity.Products.cshtml" />
-    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdateNonPromotionActivity.StyleTemplates.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ex\NopEx.Common\NopEx.Common.csproj">
@@ -214,7 +159,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />
+    <Folder Include="Domain\" />
+    <Folder Include="Models\" />
     <Folder Include="Scripts\" />
+    <Folder Include="Serivces\" />
     <Folder Include="Validators\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
