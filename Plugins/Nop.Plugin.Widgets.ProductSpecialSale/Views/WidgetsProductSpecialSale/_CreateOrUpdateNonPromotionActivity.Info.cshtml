@@ -1,0 +1,74 @@
+﻿@using System.Globalization
+@model Nop.Admin.Models.Activity.NonPromotionActivityModel
+
+<table class="adminContent">
+    @if (Model.Id > 0)
+    {
+        <tr>
+            <td class="adminTitle">
+                @Html.NopLabelFor(model => model.Id):
+            </td>
+            <td class="adminData">
+                @Model.Id.ToString(CultureInfo.InvariantCulture)
+                @Html.ValidationMessageFor(model => model.Id)
+            </td>
+        </tr>
+    }
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.Name):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.Description):
+        </td>
+        <td class="adminData">
+            @Html.TextAreaFor(model => model.Description, new { style = "Width: 250px; Height: 150px;" })
+            @Html.ValidationMessageFor(model => model.Description)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            使用平台:
+        </td>
+        <td class="adminData">
+            @Html.CheckBoxFor(model => model.IsPcPlatformAvailable, new { onclick = "pcStyleTemplateClick()" })
+            @Html.LabelFor(model => model.IsPcPlatformAvailable)
+            @Html.CheckBoxFor(model => model.IsAppPlatformAvailable, new { onclick = "appStyleTemplateClick()" })
+            @Html.LabelFor(model => model.IsAppPlatformAvailable)
+            @Html.CheckBoxFor(model => model.IsWeixinPlatformAvailable, new { onclick = "weixinStyleTemplateClick()" })
+            @Html.LabelFor(model => model.IsWeixinPlatformAvailable)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.StartDateTime):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.StartDateTime)
+            @Html.ValidationMessageFor(model => model.StartDateTime)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.EndDateTime):
+        </td>
+        <td class="adminData">
+            @Html.EditorFor(model => model.EndDateTime)
+            @Html.ValidationMessageFor(model => model.EndDateTime)
+        </td>
+    </tr>
+    <tr>
+        <td class="adminTitle">
+            @Html.NopLabelFor(model => model.CreatedOn):
+        </td>
+        <td class="adminData">
+            @Model.CreatedOn
+        </td>
+    </tr>
+</table>

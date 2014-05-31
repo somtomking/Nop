@@ -1,0 +1,26 @@
+﻿@model Nop.Admin.Models.Activity.CycleActivityModel
+@{
+    //page title
+    ViewBag.Title = "编辑周期活动信息";
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "activity-form" }))
+{
+    <div class="section-header">
+        <div class="title">
+            <img src="@Url.Content("~/Administration/Content/images/ico-sales.png")" alt="" />
+            <span>编辑周期活动信息</span> - @Model.Id @Html.ActionLink("(返回周期活动列表)", "CycleActivityList")
+        </div>
+        @*<div class="options">
+            @if (Model.PromotionStatusId == (int)PromotionStatus.New)
+            {
+                <input type="submit" name="save" class="t-button" value="@T("Admin.Common.Save")" />
+                <input type="submit" name="save-continue" class="t-button" value="@T("Admin.Common.SaveContinue")" />
+            }
+            @if (Model.PromotionStatusId != (int)PromotionStatus.OnPromotion)
+            {
+                <span id="promotion-delete" class="t-button">@T("Admin.Common.Delete")</span>
+            }
+        </div>*@
+    </div>
+    @Html.Partial("_CreateOrUpdate", Model)
+}

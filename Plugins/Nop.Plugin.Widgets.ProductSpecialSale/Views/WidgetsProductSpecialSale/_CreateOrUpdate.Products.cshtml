@@ -1,0 +1,216 @@
+﻿@model CycleActivityModel
+@using Nop.Admin.Models.Activity
+@using Telerik.Web.Mvc.UI;
+@{
+    var gridPageSize = EngineContext.Current.Resolve<Nop.Core.Domain.Common.AdminAreaSettings>().GridPageSize;
+
+    //page title
+    ViewBag.Title = "周期活动管理";
+}
+@if (Model.Id > 0)
+{
+    <table class="adminContent">
+        <tr>
+            <td width="100%" align="right">
+                <input type="text" id="ProductSearchCondition" name="ProductSearchCondition" />
+                <input type="button" id="btnSearch" name="btnSearch" value="搜索" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.Telerik().Grid<CycleActivityProductModel>()
+                      .Name("activityproducts-grid")
+                      .DataKeys(keys => keys.Add(x => x.Id))
+                      .ClientEvents(events => events.OnDataBinding("onDataBinding"))
+                      .ClientEvents(events=>events.OnDataBound("onDataBound"))
+                      .ClientEvents(events => events.OnSave("onDataSave"))
+                      .ClientEvents(events => events.OnDelete("onDataDelete"))
+                      .ClientEvents(events => events.OnComplete("onComplete"))
+                      .DataBinding(dataBinding => dataBinding.Ajax()
+                          .Select("ActivityProductList", "Activities")
+                          .Update("ActivityProductUpdate", "Activities")
+                          .Delete("ActivityProductDelete", "Activities"))
+                      .Columns(columns =>
+                      {
+                          columns.Bound(x => x.Id)
+                              .ClientTemplate("<input type='checkbox' name='SelectedProductIds' value='<#= Id #>' class='singleCheckBox'/>")
+                              .Title("<input id='allCheckBox' type='checkbox'/>")
+                              .Width(50).ReadOnly();
+                          columns.Bound(x => x.ProductName)
+                              .ReadOnly();
+                          columns.Bound(x => x.Sku)
+                              .ReadOnly();
+                          columns.Template(x => { }).ClientTemplate("<div><span>已发布：</span><#=Published?'是':'<span style=\"color:red;\">否</span>'#></div>" +
+                                    "<div><span>已删除：</span><#=Deleted?'<span style=\"color:red;\">是</span>':'否'#></div>" +
+                                    "<div><span>已禁用：</span><#=DisableBuyButton?'<span style=\"color:red;\">是</span>':'否'#></div>").Title("商品状态");
+                          columns.Bound(x => x.PromotionName)
+                          .ReadOnly();
+                          columns.Template(x => { }).ClientTemplate("<div><span>开始：</span><#=PromotionStartTime#></div>" +
+                                        "<div><span>结束：</span><#=PromotionEndTime#></div>").Title("促销时间");
+                          columns.Template(x => { }).ClientTemplate("<div><span>实际：</span><#=ActualStockQuantity#></div>" +
+                                    "<div><span>促销：</span><#=PromotionStockQuantity#></div>").Title("库存");
+                          columns.Bound(x => x.OriginalPrice).ReadOnly();
+                          columns.Template(x => { }).ClientTemplate("<div><span>网站：</span><#=PcPlatformPrice#></div>" +
+                                            "<div><span>App：</span><#=AppPlatformPrice#></div>" +
+                                            "<div><span>微信：</span><#=WeixinPlatformPrice#></div>").Title("促销价");
+                          columns.Template(x => { }).ClientTemplate("<div><span>网站：</span><#=PcPlatformCustomerMaximumQuantity#></div>" +
+                                            "<div><span>App：</span><#=AppPlatformCustomerMaximumQuantity#></div>" +
+                                            "<div><span>微信：</span><#=WeixinPlatformCustomerMaximumQuantity#></div>").Title("购买上限/人");
+                          columns.Bound(x => x.IsPcPlatformAvailable).ClientTemplate("<input type=\"checkbox\" <#=IsPcPlatformAvailable==true?\"checked\":\"\"#> disabled=\"true\"/>").Title("网站");
+                          columns.Bound(x => x.IsAppPlatformAvailable).ClientTemplate("<input type=\"checkbox\" <#=IsAppPlatformAvailable==true?\"checked\":\"\"#> disabled=\"true\"/>").Title("App");
+                          columns.Bound(x => x.IsWeixinPlatformAvailable).ClientTemplate("<input type=\"checkbox\" <#=IsWeixinPlatformAvailable==true?\"checked\":\"\"#> disabled=\"true\"/>").Title("微信");
+                          columns.Bound(x => x.ShowOnHomePage).ClientTemplate("<input type=\"checkbox\" <#=ShowOnHomePage==true?\"checked\":\"\"#> disabled=\"true\"/>").Title("首页显示");
+                          columns.Command(commands => commands.Edit().Text(T("Admin.Common.Edit").Text));
+                          columns.Command(commands => commands.Delete().Text(T("Admin.Common.Delete").Text));
+                      })
+                              .Pageable(settings => settings.PageSize(gridPageSize).Position(GridPagerPosition.Both))
+                              .EnableCustomBinding(true))
+            </td>
+        </tr>
+        <tr>
+            <td width="100%">
+                <input type="submit" id="btnAddNewPromotionProduct" name="btnAddNewPromotionProduct" value="添加活动商品" onclick=" javascript:OpenWindow('@(Url.Action("ActivityProductAddPopup", "Activities", new { activityId = Model.Id, btnId = "btnRefreshActivityProducts", formId = "activity-form" }))',800, 800, true); return false; " class="t-button" />
+                <input type="submit" id="btnRefreshActivityProducts" name="btnRefreshActivityProducts" style="display: none" />
+                <input type="button" id="deleteProducts" name="btnDeletePromotionProducts" value="删除活动商品" class="t-button" />
+                <input type="hidden" id="toDeleteSingleProductId" value=""/>
+                <script type="text/javascript">
+                    var selectedIds = [];
+
+                    function onDataBinding(e) {
+                        var searchModel = {
+                            SearchCondition: encodeURI($('#ProductSearchCondition').val()),
+                            ActivityId:"@Model.Id"
+                        };
+                        e.data = searchModel;
+                    }
+
+                    function onDataBound(e) {
+                        $('#activityproducts-grid input[type=checkbox][class=singleCheckBox]').each(function () {
+                            var currentId = $(this).val();
+                            var checked = jQuery.inArray(currentId, selectedIds);
+                            //set checked based on if current checkbox's value is in selectedIds.  
+                            $(this).attr('checked', checked > -1);
+                        });
+
+                        updateAllCheckbox();
+                    }
+
+                    function onDataSave(e) {
+                        e.values.SearchCondition = $('#ProductSearchCondition').val();
+                    }
+
+                    function onDataDelete(e) {
+                        $("#toDeleteSingleProductId").val(e.values.id);
+                        e.values.SearchCondition = $('#ProductSearchCondition').val();
+                    }
+
+                    function onComplete(e) {
+                        if (e.name == "delete") {
+                            selectedIds = $.grep(selectedIds, function (item, index) {
+                                return $("#toDeleteSingleProductId").val()!=""&&item != $("#toDeleteSingleProductId").val();
+                            });
+                        }
+                    }
+
+                    function updateAllCheckbox() {
+                        var chkBoxes = $('#activityproducts-grid input[type=checkbox][class=singleCheckBox]');
+                        var numChkBoxes = chkBoxes.length;
+                        var numChkBoxesChecked = 0;
+                        for (var i = 0; i < numChkBoxes; i++) {
+                            if (chkBoxes[i].checked == true) {
+                                numChkBoxesChecked++;
+                            }
+                        }
+                        $('#allCheckBox').attr('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
+                    }
+
+                    $(document).ready(function () {
+                        $('#btnRefreshActivityProducts').click(function () {
+                            //refresh grid
+                            var optionsGrid = $("#activityproducts-grid");
+                            optionsGrid.data('tGrid').ajaxRequest();
+
+                            //return false to don't reload a page
+                            return false;
+                        });
+
+                        $('#allCheckBox').click(function () {
+                            $('.singleCheckBox').attr('checked', $(this).is(':checked')).change();
+                        });
+
+                        $('#btnSearch').click(function () {
+                            //search
+                            var grid = $('#activityproducts-grid').data('tGrid');
+                            grid.currentPage = 1; //new search. Set page size to 1
+                            grid.ajaxRequest();
+
+                            //clear selected checkboxes
+                            $('.singleCheckBox').attr('checked', false).change();
+                            selectedIds = [];
+
+                            return false;
+                        });
+
+                        $('#activityproducts-grid').on('change', 'input[type=checkbox][class=singleCheckBox]', function (e) {
+                            var $check = $(this);
+                            if ($check.is(":checked") == true) {
+                                var checked = jQuery.inArray($check.val(), selectedIds);
+                                if (checked == -1) {
+                                    //add id to selectedIds.  
+                                    selectedIds.push($check.val());
+                                }
+                            }
+                            else {
+                                var checked = jQuery.inArray($check.val(), selectedIds);
+                                if (checked > -1) {
+                                    //remove id from selectedIds.  
+                                    selectedIds = $.grep(selectedIds, function (item, index) {
+                                        return item != $check.val();
+                                    });
+                                }
+                            }
+                            updateAllCheckbox();
+                        });
+                    });
+
+                    $('#deleteProducts').click(function () {
+                        var haveProductsToDelete = false;
+                        var selectedProductIds = selectedIds.join(",");
+                        if (selectedProductIds.length > 0) {
+                            haveProductsToDelete = true;
+                        }
+                        if (haveProductsToDelete) {
+                            var continueDelete = confirm('@T("Admin.Promotion.PromotionProducts.DeleteProductsConfirm")');
+                            if (!continueDelete)return;
+                            $.ajax({
+                                cache: false,
+                                type: "POST",
+                                url: "@(Url.Action("DeleteActivityProducts", "Activities"))",
+                                data: { "activityProductIds": selectedProductIds, "activityId": "@Model.Id", searchCondition: $('#ProductSearchCondition').val() },
+                                success: function(data) {
+                                    //clear selected checkboxes
+                                    $('.singleCheckBox').attr('checked', false).change();
+                                    selectedIds = [];
+
+                                    var grid = $('#activityproducts-grid').data('tGrid');
+                                    grid.currentPage = 1; //new search. Set page size to 1
+                                    grid.ajaxRequest();
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    alert('@Html.Raw(HttpUtility.JavaScriptStringEncode(T("Admin.Promotion.PromotionProducts.FailedToDelete").Text))');
+                                }  
+                            });
+                        } else {
+                            alert('请至少选择一件商品');
+                        }
+                    });
+
+                </script>
+            </td>
+        </tr>
+    </table>
+}
+else
+{
+    <span>您需要先保存才能进一步操作</span>
+}

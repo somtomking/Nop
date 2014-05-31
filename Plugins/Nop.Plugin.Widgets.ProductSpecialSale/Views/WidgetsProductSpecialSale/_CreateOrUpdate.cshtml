@@ -1,0 +1,20 @@
+﻿@model Nop.Admin.Models.Activity.CycleActivityModel
+
+@using Telerik.Web.Mvc.UI;
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+@Html.Telerik().TabStrip().Name("activity-edit").Items(x =>
+{
+    x.Add().Text("活动").Content(TabProducts().ToHtmlString()).Selected(true);
+
+    //generate an event
+    EngineContext.Current.Resolve<IEventPublisher>().Publish(new AdminTabStripCreated(x, "activity-edit"));
+})
+@helper TabInfo()
+{ 
+    @Html.Partial("_CreateOrUpdate.Info", Model)
+}
+@helper TabProducts()
+{
+    @Html.Partial("_CreateOrUpdate.Products", Model)
+}
