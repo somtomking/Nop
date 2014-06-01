@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nop.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Domain
     /// <summary>
     /// 特卖产品分组
     /// </summary>
-    public class SpecialSaleGroup
+    public class SpecialSaleGroup:BaseEntity
     {
         public string Name { get; set; }
         public int PictureId { get; set; }
