@@ -1,0 +1,49 @@
+﻿ @model SpecialSaleStageModel
+@Html.ValidationSummary(false)
+@Html.HiddenFor(model => model.Id)
+<div id="specialSaleStage-edit">
+    <ul>
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>基础信息
+        </li>
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>特卖分组
+        </li>
+        <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>添加商品
+        </li>
+    </ul>
+    <div>
+        @TabInfo()
+    </div>
+    <div>
+        @TabSaleGroup()
+    </div>
+    <div>
+        @TabAddProduct()
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#specialSaleStage-edit").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            },
+            select: tabstrip_on_tab_select
+        });
+    });
+</script>
+@*save selected tab index*@
+<input type="hidden" id="selected-tab-index" name="selected-tab-index" value="@(GetSelectedTabIndex())">
+
+@helper TabInfo()
+{
+    @Html.Partial(ViewPathHelper.GetViewPath( "_CreateOrUpdate.Info"), Model)
+}
+@helper TabSaleGroup()
+{
+    @Html.Partial(ViewPathHelper.GetViewPath("_CreateOrUpdate.SaleGroup"), Model)
+}
+@helper TabAddProduct()
+{
+    @Html.Partial(ViewPathHelper.GetViewPath("_CreateOrUpdate.AddProduct"), Model)
+}
