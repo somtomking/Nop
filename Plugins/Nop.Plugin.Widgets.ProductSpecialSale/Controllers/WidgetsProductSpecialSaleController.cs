@@ -28,7 +28,7 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
 {
     public class WidgetsProductSpecialSaleController : BasePluginController
     {
-        private readonly static string _Widget_Path_Format = "~/Plugins/Widgets.ProductSpecialSale/Views/WidgetsProductSpecialSale/{0}.cshtml";
+
         private readonly IWorkContext _workContext;
         private readonly IStoreContext _storeContext;
         private readonly IStoreService _storeService;
@@ -59,7 +59,7 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
         [ChildActionOnly]
         public ActionResult Configure()
         {
-            return View(GetViewPath("Configure"));
+            return View(GetViewPath("Configure"), new SpecialSaleStageQueryModel());
         }
         [HttpPost]
         [AdminAuthorize]
@@ -77,7 +77,7 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
 
         private string GetViewPath(string viewName)
         {
-            return string.Format(_Widget_Path_Format, viewName);
+            return ViewPathHelper.GetViewPath(viewName);
         }
         #endregion
 
@@ -99,6 +99,7 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
         public ActionResult SpecialSaleStageList(DataSourceRequest command, SpecialSaleStageQueryModel model)
         {
             var result = _specialSaleStageService.QuerySpecialSaleStage(command.Page, command.PageSize);
+
             var modelData = new List<SpecialSaleStageModel>();
             foreach (var item in result)
             {

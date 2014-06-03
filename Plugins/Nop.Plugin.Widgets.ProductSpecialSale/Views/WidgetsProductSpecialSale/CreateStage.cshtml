@@ -1,1 +1,23 @@
-﻿<span>hello!</span>
+﻿@model SpecialSaleStageModel
+@{
+     Layout = "~/Administration/Views/Shared/_AdminPopupLayout.cshtml";
+}
+@{
+    //page title
+    ViewBag.Title = "添加特卖";
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "specialSaleStage-form" }))
+{
+    <div class="section-header">
+        <div class="title">
+            
+           添加新的特卖  
+        </div>
+        <div class="options">
+            <input type="submit" name="save" class="k-button" value="@T("Admin.Common.Save")" />
+            <input type="submit" name="save-continue" class="k-button" value="@T("Admin.Common.SaveContinue")" />
+        </div>
+    </div>
+    @Html.Partial(ViewPathHelper.GetViewPath("_CreateOrUpdate"), Model)
+}
+

@@ -1,5 +1,9 @@
-﻿using Nop.Core.Plugins;
+﻿using Nop.Core;
+using Nop.Core.Plugins;
+using Nop.Plugin.Widgets.ProductSpecialSale.Data;
 using Nop.Services.Cms;
+using Nop.Services.Configuration;
+using Nop.Services.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +13,22 @@ using System.Web.Routing;
 
 namespace Nop.Plugin.Widgets.ProductSpecialSale
 {
-    class ProductSpecialSalePlugin : BasePlugin, IWidgetPlugin
+  public  class ProductSpecialSalePlugin : BasePlugin, IWidgetPlugin
     {
+        private readonly IPictureService _pictureService;
+        private readonly ISettingService _settingService;
+        private readonly IWebHelper _webHelper;
+        private readonly ProductSpecialSaleObjectContext _objectContext;
+      public ProductSpecialSalePlugin(
+          IPictureService pictureService,
+            ISettingService settingService, IWebHelper webHelper, ProductSpecialSaleObjectContext objectContext
+          )
+      {
+          this._pictureService = pictureService;
+          this._settingService = settingService;
+          this._webHelper = webHelper;
+          this._objectContext = objectContext;
+      }
         public IList<string> GetWidgetZones()
         {
             return new string[] { "home_page_productspecialsale" };
