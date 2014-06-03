@@ -54,14 +54,15 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale
         }
         public override void Install()
         {
-            
-            base.Install();
             _objectContext.Install();
+            base.Install();
+       
         }
         public override void Uninstall()
         {
-            base.Uninstall();
             _objectContext.Uninstall();
+            base.Uninstall();
+            
         }
     }
 }
