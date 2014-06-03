@@ -166,5 +166,7 @@ namespace Nop.Web.Framework.ViewEngines.Razor
 
     public abstract class WebViewPage : WebViewPage<dynamic>
     {
+
+        
     }
 }
