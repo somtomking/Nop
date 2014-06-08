@@ -114,6 +114,18 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
             };
             return Json(data);
         }
+        [HttpPost]
+        public ActionResult SpecialSaleGroupList(DataSourceRequest command, int saleStageId)
+        {
+            var modelData = new List<SpecialSaleGroupModel>();
+            var data = new DataSourceResult()
+            {
+                Data = modelData,
+                Total =1,
+            };
+            return Json(data);
+
+        }
         #endregion
 
 

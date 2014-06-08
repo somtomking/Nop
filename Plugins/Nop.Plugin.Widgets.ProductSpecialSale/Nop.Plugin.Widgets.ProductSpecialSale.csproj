@@ -187,11 +187,9 @@
     <Content Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.AddProduct.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Views\Web.config" />
-    <None Include="Web.config">
-      <SubType>
-      </SubType>
-    </None>
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ex\NopEx.Common\NopEx.Common.csproj">

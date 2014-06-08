@@ -22,5 +22,7 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Models
         [DisplayName("特卖显示顺序")]
         [UIHint("Int32Nullable")]
         public int DisplayOrder { get; set; }
+
+       
     }
 }

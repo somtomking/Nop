@@ -9,5 +9,19 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Models
 {
     public class SpecialSaleGroupModel : BaseNopEntityModel
     {
+        public string Name { get; set; }
+        public int PictureId { get; set; }
+        public int DisplayOrder { get; set; }
+        public bool Enable { get; set; }
+
+
+        public class SpecialSaleGroupCreateModel:SpecialSaleGroupModel
+        {
+            public int SpecialSaleStageId { get; set; }
+
+
+        }
     }
+
+   
 }
