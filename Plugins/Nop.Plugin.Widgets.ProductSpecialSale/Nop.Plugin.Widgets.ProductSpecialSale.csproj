@@ -187,9 +187,7 @@
     <Content Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.AddProduct.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Views\Web.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Views\Web.config" />
     <None Include="Web.config">
       <SubType>
       </SubType>
