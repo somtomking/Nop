@@ -1,3 +1,23 @@
-﻿<table class="adminContent">
-
+﻿@model Nop.Plugin.Widgets.ProductSpecialSale.Models.SpecialSaleStageModel
+@{
+ 
+}
+<table class="adminContent">
+    
+    <tr>
+        <td class="adminTitle">@Html.NopLabelFor(s => s.Name)</td>
+        <td class="adminData">@Html.EditorFor(s => Model.Name)</td>
+    </tr>
+    <tr>
+        <td class="adminTitle">@Html.NopLabelFor(s => s.StartTime)</td>
+        <td class="adminData">@Html.EditorFor(s => Model.StartTime)</td>
+    </tr>
+    <tr>
+        <td class="adminTitle">@Html.NopLabelFor(s => s.EndTime)</td>
+        <td class="adminData">@Html.EditorFor(s => Model.EndTime)</td>
+    </tr>
+    <tr>
+        <td class="adminTitle">@Html.NopLabelFor(s => s.DisplayOrder)</td>
+        <td class="adminData">@Html.EditorFor(s => Model.DisplayOrder)</td>
+    </tr>
 </table>

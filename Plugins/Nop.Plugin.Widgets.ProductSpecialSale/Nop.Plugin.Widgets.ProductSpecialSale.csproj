@@ -169,18 +169,11 @@
     <Content Include="Views\WidgetsProductSpecialSale\PublicInfo.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\Web.config">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Views\WidgetsProductSpecialSale\CreateStage.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\WidgetsProductSpecialSale\EditStage.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -194,6 +187,13 @@
     <Content Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.AddProduct.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Views\Web.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Web.config">
+      <SubType>
+      </SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Ex\NopEx.Common\NopEx.Common.csproj">
