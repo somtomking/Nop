@@ -27,8 +27,8 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Infrastructure
             this.RegisterPluginDataContext<ProductSpecialSaleObjectContext>(builder, "nop_object_context_specialsaleobjectcontext");
 
             //override required repository with our custom context
-            builder.RegisterType<EfRepository<SpecialSaleGroup>>()
-                .As<IRepository<SpecialSaleGroup>>()
+            builder.RegisterType<EfRepository<SpecialSaleStage>>()
+                .As<IRepository<SpecialSaleStage>>()
                 .WithParameter(ResolvedParameter.ForNamed<IDbContext>("nop_object_context_specialsaleobjectcontext"))
                 .InstancePerHttpRequest();
 
@@ -38,8 +38,8 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Infrastructure
                .InstancePerHttpRequest();
 
 
-            builder.RegisterType<EfRepository<SpecialSaleStage>>()
-               .As<IRepository<SpecialSaleStage>>()
+            builder.RegisterType<EfRepository<SpecialSaleStageGroup>>()
+               .As<IRepository<SpecialSaleStageGroup>>()
                .WithParameter(ResolvedParameter.ForNamed<IDbContext>("nop_object_context_specialsaleobjectcontext"))
                .InstancePerHttpRequest();
         }

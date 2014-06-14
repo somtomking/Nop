@@ -84,26 +84,66 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
 
 
         #region 特卖
-        public ActionResult CreateStage()
+        public ActionResult CreateStageGroup()
         {
-            return View(GetViewPath("CreateStage"));
+            return View(GetViewPath("CreateStageGroup"), new SpecialSaleStageGroupModel());
+        }
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult CreateStageGroup(SpecialSaleStageGroupModel model, bool continueEditing)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var data = model.ToEntity();
+                _specialSaleStageService.CreateSpecialSaleStageGroup(data);
+                var vm = data.ToModel();
+                vm.SaleGroupCreate.SpecialSaleStageGroupId = vm.Id;
+
+                SuccessNotification("添加特卖分组成功!");
+                return continueEditing ? RedirectToAction("EditStageGroup", new { id = vm.Id }) : RedirectToAction("List");
+            }
+            return View(GetViewPath("CreateStageGroup"), model);
         }
 
-        public ActionResult EditStage()
+        public ActionResult EditStageGroup(int? id)
         {
-            return View(GetViewPath("EditStage"));
-        }
+            if (!id.HasValue)
+            {
+                return Content("Id is null");
+            }
+            var data = _specialSaleStageService.GetSpecialSaleStageGroupById(id.Value);
+            if (data == null)
+            {
+                return Content(string.Format("未能找到分组:[ID:{0}]", id));
+            }
+            var model = data.ToModel();
+            model.SaleGroupCreate.SpecialSaleStageGroupId = model.Id;
 
+            return View(GetViewPath("CreateStageGroup"), model);
+        }
+        [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+        public ActionResult EditStageGroup(SpecialSaleStageGroupModel model, bool continueEditing)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var data = model.ToEntity();
+                _specialSaleStageService.UpdateSpecialSaleStageGroup(data);
+                SuccessNotification("更新特卖分组成功!");
+                return continueEditing ? RedirectToAction("EditStageGroup", new { id = model.Id }) : RedirectToAction("List");
+            }
+
+
+            return View(GetViewPath("CreateStageGroup"), model);
+        }
 
         [HttpPost]
         public ActionResult SpecialSaleStageList(DataSourceRequest command, SpecialSaleStageQueryModel model)
         {
-            var result = _specialSaleStageService.QuerySpecialSaleStage(command.Page, command.PageSize);
+            var result = _specialSaleStageService.QuerySpecialSaleStage(command.Page-1, command.PageSize);
 
-            var modelData = new List<SpecialSaleStageModel>();
+            var modelData = new List<SpecialSaleStageGroupModel>();
             foreach (var item in result)
             {
-                var vm = new SpecialSaleStageModel();
+                var vm = new SpecialSaleStageGroupModel();
                 vm = AutoMapper.Mapper.Map(item, vm);
                 modelData.Add(vm);
             }
@@ -117,11 +157,11 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
         [HttpPost]
         public ActionResult SpecialSaleGroupList(DataSourceRequest command, int saleStageId)
         {
-            var modelData = new List<SpecialSaleGroupModel>();
+            var modelData = new List<SpecialSaleStageModel>();
             var data = new DataSourceResult()
             {
                 Data = modelData,
-                Total =1,
+                Total = 1,
             };
             return Json(data);
 

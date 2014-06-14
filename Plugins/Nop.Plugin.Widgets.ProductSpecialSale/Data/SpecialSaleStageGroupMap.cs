@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Nop.Plugin.Widgets.ProductSpecialSale.Data
 {
-    public class SpecialSaleGroupMap : EntityTypeConfiguration<SpecialSaleGroup>
+    public class SpecialSaleStageGroupMap : EntityTypeConfiguration<SpecialSaleStageGroup>
     {
-        public SpecialSaleGroupMap()
+        public SpecialSaleStageGroupMap()
         {
-            this.ToTable("SpecialSaleGroup");
+            this.ToTable("SpecialSaleStageGroup");
             this.HasKey(c => c.Id);
 
          

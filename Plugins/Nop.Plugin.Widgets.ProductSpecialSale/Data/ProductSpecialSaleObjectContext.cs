@@ -22,9 +22,9 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Data
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Configurations.Add(new SpecialSaleStageMap());
+            modelBuilder.Configurations.Add(new SpecialSaleStageGroupMap());
             modelBuilder.Configurations.Add(new SpecialSaleProductMap());
-            modelBuilder.Configurations.Add(new SpecialSaleGroupMap());
+            modelBuilder.Configurations.Add(new SpecialSaleStageMap());
 
             //disable EdmMetadata generation
             //modelBuilder.Conventions.Remove<IncludeMetadataConvention>();
@@ -58,9 +58,9 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Data
         public void Uninstall()
         {
             this.DropPluginTable("SpecialSaleProduct");
-            this.DropPluginTable("SpecialSaleGroup");
-            //drop the table
             this.DropPluginTable("SpecialSaleStage");
+            //drop the table
+            this.DropPluginTable("SpecialSaleStageGroup");
 
 
         }

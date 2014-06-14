@@ -13,7 +13,9 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Infrastructure
     {
         public void Execute()
         {
-            Mapper.CreateMap<SpecialSaleStage, SpecialSaleStageModel>().ForMember(desc => desc.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<SpecialSaleStageGroup, SpecialSaleStageGroupModel>().ForMember(desc => desc.CustomProperties, mo => mo.Ignore());
+
+            Mapper.CreateMap<SpecialSaleStageGroupModel, SpecialSaleStageGroup>().ForMember(desc => desc.SpecialSaleStages, mo => mo.Ignore());
 
         }
 

@@ -11,24 +11,43 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Services
 {
     public class SpecialSaleStageService : ISpecialSaleStageService
     {
-        private readonly IRepository<SpecialSaleGroup> _specialSaleGroupRepository;
-        private readonly IRepository<SpecialSaleProduct> _specialSaleProductRepository;
         private readonly IRepository<SpecialSaleStage> _specialSaleStageRepository;
+        private readonly IRepository<SpecialSaleProduct> _specialSaleProductRepository;
+        private readonly IRepository<SpecialSaleStageGroup> _specialSaleStageGroupRepository;
         public SpecialSaleStageService(
-            IRepository<SpecialSaleGroup> specialSaleGroupRepository,
+            IRepository<SpecialSaleStage> specialSaleStageRepository,
             IRepository<SpecialSaleProduct> specialSaleProductRepository,
-            IRepository<SpecialSaleStage> specialSaleStageRepository
+            IRepository<SpecialSaleStageGroup> specialSaleStageGroupRepository
             )
         {
-            _specialSaleGroupRepository=specialSaleGroupRepository;
-            _specialSaleProductRepository=specialSaleProductRepository;
             _specialSaleStageRepository=specialSaleStageRepository;
+            _specialSaleProductRepository=specialSaleProductRepository;
+            _specialSaleStageGroupRepository=specialSaleStageGroupRepository;
         }
-        public IPagedList<SpecialSaleStage> QuerySpecialSaleStage(int pageIndex, int pageSize)
+        public IPagedList<SpecialSaleStageGroup> QuerySpecialSaleStage(int pageIndex, int pageSize)
         {
-            var query=_specialSaleStageRepository.Table;
+            var query=_specialSaleStageGroupRepository.Table;
             var result=from s in query where s.Deleted==false orderby s.LastUpdateTime select s;
-            return new PagedList<SpecialSaleStage>(result,pageIndex,pageSize);
+            return new PagedList<SpecialSaleStageGroup>(result,pageIndex,pageSize);
+        }
+
+
+        public void CreateSpecialSaleStageGroup(SpecialSaleStageGroup data)
+        {
+            data.CreateTime = DateTime.Now;
+            data.LastUpdateTime = DateTime.Now;
+            _specialSaleStageGroupRepository.Insert(data);
+        }
+
+        public SpecialSaleStageGroup GetSpecialSaleStageGroupById(int id)
+        {
+          return  _specialSaleStageGroupRepository.GetById(id);
+        }
+
+        public void UpdateSpecialSaleStageGroup(SpecialSaleStageGroup data)
+        {
+            data.LastUpdateTime = DateTime.Now;
+              _specialSaleStageGroupRepository.Update(data);
         }
     }
 }

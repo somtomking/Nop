@@ -1,11 +1,11 @@
-﻿ @model SpecialSaleStageModel
+﻿ @model SpecialSaleStageGroupModel
 @Html.ValidationSummary(false)
 @Html.HiddenFor(model => model.Id)
 <div id="specialSaleStage-edit">
     <ul>
-        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>基础信息
+        <li @Html.RenderSelectedTabIndex(0, GetSelectedTabIndex())>设置分组
         </li>
-        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>特卖分组
+        <li @Html.RenderSelectedTabIndex(1, GetSelectedTabIndex())>添加特卖
         </li>
         <li @Html.RenderSelectedTabIndex(2, GetSelectedTabIndex())>添加商品
         </li>
@@ -42,7 +42,7 @@
 }
 @helper TabSaleGroup()
 {
-    @Html.Partial(ViewPathHelper.GetViewPath("_CreateOrUpdate.SaleGroup"), Model)
+    @Html.Partial(ViewPathHelper.GetViewPath("_CreateOrUpdate.SaleStage"), Model.SaleGroupCreate)
 }
 @helper TabAddProduct()
 {

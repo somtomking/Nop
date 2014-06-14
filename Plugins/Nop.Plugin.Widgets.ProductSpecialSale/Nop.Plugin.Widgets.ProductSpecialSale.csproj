@@ -134,20 +134,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\WidgetsProductSpecialSaleController.cs" />
-    <Compile Include="Data\SpecialSaleGroupMap.cs" />
-    <Compile Include="Data\SpecialSaleProductMap.cs" />
     <Compile Include="Data\SpecialSaleStageMap.cs" />
+    <Compile Include="Data\SpecialSaleProductMap.cs" />
+    <Compile Include="Data\SpecialSaleStageGroupMap.cs" />
     <Compile Include="Data\ProductSpecialSaleObjectContext.cs" />
     <Compile Include="Data\EfStartUpTask.cs" />
-    <Compile Include="Domain\SpecialSaleGroup.cs" />
+    <Compile Include="Domain\SpecialSaleStage.cs" />
     <Compile Include="Domain\Extensions.cs" />
     <Compile Include="Domain\SpecialSaleProduct.cs" />
-    <Compile Include="Domain\SpecialSaleStage.cs" />
+    <Compile Include="Domain\SpecialSaleStageGroup.cs" />
     <Compile Include="Infrastructure\AutoMapperStartupTask.cs" />
     <Compile Include="Infrastructure\DependencyRegistrar.cs" />
-    <Compile Include="Models\SpecialSaleGroupModel.cs" />
-    <Compile Include="Models\SpecialSaleProductModel.cs" />
+    <Compile Include="MappingExtensions.cs" />
     <Compile Include="Models\SpecialSaleStageModel.cs" />
+    <Compile Include="Models\SpecialSaleProductModel.cs" />
+    <Compile Include="Models\SpecialSaleStageGroupModel.cs" />
     <Compile Include="Models\SpecialSaleStageQueryModel.cs" />
     <Compile Include="ViewPathHelper.cs" />
     <Compile Include="ProductSpecialSalePlugin.cs" />
@@ -169,16 +170,13 @@
     <Content Include="Views\WidgetsProductSpecialSale\PublicInfo.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\WidgetsProductSpecialSale\CreateStage.cshtml">
+    <Content Include="Views\WidgetsProductSpecialSale\CreateStageGroup.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\WidgetsProductSpecialSale\EditStage.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.SaleGroup.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.Info.cshtml">
@@ -190,6 +188,9 @@
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Views\WidgetsProductSpecialSale\_CreateOrUpdate.SaleStage.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="web.config" />
   </ItemGroup>
   <ItemGroup>

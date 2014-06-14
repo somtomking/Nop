@@ -7,7 +7,7 @@
  @using (Html.BeginForm())
  { 
 <table width="100%">
-    <tr>
+    @*<tr>
         <td class="adminTitle">
             @Html.NopLabelFor(m => m.StartDate):
         </td>
@@ -23,7 +23,7 @@
         <td class="adminData">
             @Html.EditorFor(m => m.EndDate)
         </td>
-    </tr>
+    </tr>*@
     <tr>
         <td colspan="2">
             <input type="button" id="btnSearch" class="k-button" value="@T("Admin.Common.Search")" />
@@ -88,18 +88,18 @@
                                 field: "Name",
                                 title:"名称",
                             },
-                            {
-                                field: "StartTime",
-                                title:"开始时间",
-                                type: "date",
-                                format: "{0:G}"
-                            },
-                            {
-                                field: "EndTime",
-                                title:"结束时间",
-                                type: "date",
-                                format: "{0:G}"
-                            },
+                            //{
+                            //    field: "StartTime",
+                            //    title:"开始时间",
+                            //    type: "date",
+                            //    format: "{0:G}"
+                            //},
+                            //{
+                            //    field: "EndTime",
+                            //    title:"结束时间",
+                            //    type: "date",
+                            //    format: "{0:G}"
+                            //},
                             {
                                 field: "DisplayOrder",
                                 title:"顺序",
@@ -139,7 +139,7 @@
         <td width="100%">
             @{
                      
-                         var addNewUrl = Url.RouteUrl("Plugin.Widgets.ProductSpecialSale.CreateStage");
+     var addNewUrl = Url.RouteUrl("Plugin.Widgets.ProductSpecialSale.CreateStageGroup");
                
             }
             <input type="submit" id="btnAddSpecialSaleStage" name="btnAddSpecialSaleStage" value="添加特卖" onclick="javascript:OpenWindow('@addNewUrl', 800, 800, true); return false;" class="k-button" />

@@ -9,6 +9,12 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Services
 {
     public interface ISpecialSaleStageService
     {
-        IPagedList<SpecialSaleStage> QuerySpecialSaleStage(int pageIndex, int pageSize);
+        IPagedList<SpecialSaleStageGroup> QuerySpecialSaleStage(int pageIndex, int pageSize);
+
+        void CreateSpecialSaleStageGroup(SpecialSaleStageGroup data);
+
+        SpecialSaleStageGroup GetSpecialSaleStageGroupById(int p);
+
+        void UpdateSpecialSaleStageGroup(SpecialSaleStageGroup data);
     }
 }
