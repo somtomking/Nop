@@ -19,6 +19,9 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale
                  new { controller = "WidgetsProductSpecialSale", action = "EditStageGroup" },
                  new[] { "Nop.Plugin.Widgets.ProductSpecialSale.Controllers" }
             );
+
+
+     
          
         }
         public int Priority

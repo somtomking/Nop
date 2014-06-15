@@ -26,6 +26,11 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Models
         public DateTime CreateTime { get; set; }
         [DisplayName("最后更新时间")]
         public DateTime? LastUpdateTime { get; set; }
+
+        public bool HasSaleStage { get; set; }
         public SpecialSaleStageModel.SpecialSaleStageCreateModel SaleGroupCreate { get; set; }
+
+
     }
+
 }

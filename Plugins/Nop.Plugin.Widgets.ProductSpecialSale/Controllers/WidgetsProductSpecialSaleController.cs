@@ -117,7 +117,7 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
             }
             var model = data.ToModel();
             model.SaleGroupCreate.SpecialSaleStageGroupId = model.Id;
-
+            model.HasSaleStage = data.SpecialSaleStages.Count() > 0;
             return View(GetViewPath("CreateStageGroup"), model);
         }
         [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
@@ -136,9 +136,27 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
         }
 
         [HttpPost]
+        public ActionResult CreateSaleTage(SpecialSaleStageModel.SpecialSaleStageCreateModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.SpecialSaleStageGroupId == 0)
+                {
+                    return Content("SpecialSaleStageGroupId is set!");
+                }
+                var group = _specialSaleStageService.GetSpecialSaleStageGroupById(model.SpecialSaleStageGroupId);
+
+                group.SpecialSaleStages.Add(model.ToEntity());
+                _specialSaleStageService.UpdateSpecialSaleStageGroup(group);
+
+                return Json(new { Result = true });
+            }
+            return Json(new { Result = false });
+        }
+        [HttpPost]
         public ActionResult SpecialSaleStageList(DataSourceRequest command, SpecialSaleStageQueryModel model)
         {
-            var result = _specialSaleStageService.QuerySpecialSaleStage(command.Page-1, command.PageSize);
+            var result = _specialSaleStageService.QuerySpecialSaleStage(command.Page - 1, command.PageSize);
 
             var modelData = new List<SpecialSaleStageGroupModel>();
             foreach (var item in result)
@@ -155,16 +173,79 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Controllers
             return Json(data);
         }
         [HttpPost]
-        public ActionResult SpecialSaleGroupList(DataSourceRequest command, int saleStageId)
+        public ActionResult SpecialSaleTageList(DataSourceRequest command, int saleStageGroupId)
         {
-            var modelData = new List<SpecialSaleStageModel>();
+
+            var group = _specialSaleStageService.GetSpecialSaleStageGroupById(saleStageGroupId);
+            var modelData = new List<SpecialSaleStageModel.SpecialSaleStageListModel>();
+            if (group != null)
+            {
+                foreach (var item in group.SpecialSaleStages)
+                {
+                    var model = item.ToModel();
+
+                    SpecialSaleStageModel.SpecialSaleStageListModel lmodel = new SpecialSaleStageModel.SpecialSaleStageListModel();
+                    Mapper.DynamicMap(model, lmodel);
+                    modelData.Add(lmodel);
+                    var defaultProductPicture = _pictureService.GetPictureById(item.PictureId);
+                    lmodel.ImagePath = _pictureService.GetPictureUrl(defaultProductPicture, 75, true);
+                    lmodel.SourceImagePath = _pictureService.GetPictureUrl(defaultProductPicture);
+
+                }
+            }
+
             var data = new DataSourceResult()
             {
                 Data = modelData,
-                Total = 1,
+                Total = modelData.Count,
             };
             return Json(data);
 
+        }
+        [HttpPost]
+        public ActionResult SpecialSaleTageProductList(DataSourceRequest command, int? saleStageId)
+        {
+            DataSourceResult data = null;
+            IPagedList<SpecialSaleProduct> list = null;
+            if (!saleStageId.HasValue || saleStageId.Value < 1)
+            {
+                list = new PagedList<SpecialSaleProduct>(new List<SpecialSaleProduct>(), command.Page - 1, command.PageSize);
+            }
+            else
+            {
+                list = _specialSaleStageService.GetSpecialSaleStageProductList(saleStageId.Value, command.Page - 1, command.PageSize);
+            }
+            var vmList = new List<SpecialSaleProductModel>();
+            foreach (var item in list)
+            {
+                var vm = new SpecialSaleProductModel();
+                Mapper.DynamicMap(item, vm);
+                vmList.Add(vm);
+            }
+            data = new DataSourceResult()
+          {
+              Data = vmList,
+              Total = list.TotalCount,
+          };
+
+            return Json(data);
+
+        }
+
+        public ActionResult GetSimpleSpecialSaleTageListBySaleGroupId(int? saleGroupId)
+        {
+            IList<SpecialSaleStage> saleStageList = null;
+            if (!saleGroupId.HasValue || saleGroupId.Value < 1)
+            {
+                saleStageList = new List<SpecialSaleStage>();
+
+            }
+            else
+            {
+                saleStageList = _specialSaleStageService.GetSpecialSaleStageBySaleGroupId(saleGroupId.Value);
+            }
+
+            return Json(saleStageList.Select(s => new { Id = s.Id, Name = s.Name }), JsonRequestBehavior.AllowGet);
         }
         #endregion
 

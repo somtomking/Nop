@@ -15,7 +15,7 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Data
             this.ToTable("SpecialSaleProduct");
             this.HasKey(c => c.Id);
 
-         
+            this.HasRequired(s => s.SpecialSaler).WithMany(s => s.SpecialSaleProducts).HasForeignKey(s=>s.SpecialSalerId);
         }
     }
 }

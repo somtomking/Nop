@@ -37,6 +37,13 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Models
 
 
         }
+        public class SpecialSaleStageListModel : SpecialSaleStageModel
+        {
+            public string ImagePath { get; set; }
+            public string SourceImagePath { get; set; }
+
+
+        }
     }
 
 

@@ -1,1 +1,121 @@
-﻿<span>hello!</span>
+﻿@model SpecialSaleStageGroupModel
+<table class="adminContent">
+
+    <tr>
+        <td class="adminTitle">分组选择</td>
+        <td class="adminData">
+            <select id="saleStageSel"></select>
+            <input type="button" class="k-button" onclick="reLoadGroup()" value="刷新分组" />
+        </td>
+    </tr>
+
+
+</table>
+
+<table class="adminContent">
+
+    <tr>
+        <td colspan="2" class="adminData">
+            <div id="saleStageProducts-grid"></div>
+            <script>
+                var selectSaleStageId = 0;
+                $(document).ready(function () {
+                    $("#saleStageProducts-grid").kendoGrid({
+                        dataSource: {
+                            type: "json",
+                            transport: {
+                                read: {
+                                    url: "@Html.Raw(Url.Action("SpecialSaleTageProductList", "WidgetsProductSpecialSale", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.ProductSpecialSale" }, { "area", "" } }))&saleStageId=" + selectSaleStageId,
+                                    type: "POST",
+                                    dataType: "json",
+
+                                }
+                            },
+                            schema: {
+                                data: "Data",
+                                total: "Total",
+                                errors: "Errors"
+                            },
+                            requestEnd: function (e) {
+
+                            },
+                            error: function (e) {
+                                display_kendoui_grid_error(e);
+                                // Cancel the changes
+                                this.cancelChanges();
+                            },
+                            serverPaging: true,
+                            serverFiltering: true,
+                            serverSorting: true
+                        },
+                        pageable: {
+                            refresh: true
+                        },
+                        editable: {
+                            confirmation: false,
+                            mode: "inline"
+                        },
+                        scrollable: false,
+                        dataBound: onDataBound,
+                        columns: [
+                            {
+                                field: "ProductName",
+                                title: "产品名称",
+
+                            },
+                            {
+                                field: "Sku",
+                                title: "Sku",
+                            },
+                            {
+                                field: "Price",
+                                title: "当前价格",
+                            },
+                            {
+                                field: "OriginalPrice",
+                                title: "特卖前价格",
+
+                            },
+                            {
+                                field: "Quantity",
+                                title: "特卖数量",
+                            },
+                            {
+                                field: "DisplayOrder",
+                                title: "排序",
+                            }
+
+                        ]
+                    });
+                });
+
+
+
+                function onDataBound(e) {
+
+
+                }
+            </script>
+        </td>
+    </tr>
+
+
+</table>
+<script type="text/javascript">
+    function reLoadGroup() {
+        var url = '@Url.Action("GetSimpleSpecialSaleTageListBySaleGroupId", "WidgetsProductSpecialSale", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.ProductSpecialSale" }, { "area", "" } })' + '&saleGroupId=@Model.Id';
+        $.getJSON(url, function (data) {
+            $("#saleStageSel").empty();
+            for (var d in data) {
+                var item = data[d];
+                if (item.Id == selectSaleStageId) {
+                    $("#saleStageSel").append("<option value='" + item.Id + "' selected >" + item.Name + "</option>");
+
+                } else {
+                    $("#saleStageSel").append("<option value='" + item.Id + "'>" + item.Name + "</option>");
+                }
+            }
+
+        });
+    }
+</script>

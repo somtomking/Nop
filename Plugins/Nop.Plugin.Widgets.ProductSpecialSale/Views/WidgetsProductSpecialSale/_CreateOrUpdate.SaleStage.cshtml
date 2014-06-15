@@ -42,7 +42,7 @@ else
         </tr>
         <tr>
 
-            <td class="adminData" colspan="2"> <input type="button" class="k-button" value="添加" /> </td>
+            <td class="adminData" colspan="2"> <input type="button" id="btnAddStage" class="k-button" value="添加" /> </td>
         </tr>
     </table>
 
@@ -60,7 +60,7 @@ else
                                 type: "json",
                                 transport: {
                                     read: {
-                                        url: "@Html.Raw(Url.Action("SpecialSaleGroupList", "WidgetsProductSpecialSale", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.ProductSpecialSale" }, { "area", "" }, { "saleStageId", Model.SpecialSaleStageGroupId } }))",
+                                        url: "@Html.Raw(Url.Action("SpecialSaleTageList", "WidgetsProductSpecialSale", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.ProductSpecialSale" }, { "area", "" }, { "saleStageGroupId", Model.SpecialSaleStageGroupId } }))",
                                         type: "POST",
                                         dataType: "json",
 
@@ -94,17 +94,35 @@ else
                             dataBound: onDataBound,
                             columns: [
                                 {
-                                    field: "Id",
-                                    title: "Id",
+                                    field: "ImagePath",
+                                    title: "图片",
+                                    template: '<a href="#=SourceImagePath#" target="_blank"><img src="#=ImagePath#" /></a> ',
                                 },
                                 {
                                     field: "Name",
-                                    title: "名称",
+                                    title: "特卖名称",
+                                },
+                                {
+                                    field: "ShortDescription",
+                                    title: "描述",
+                                },
+                                {
+                                    field: "StartTime",
+                                    title: "开始时间",
+                                    type: "date",
+                                    format: "{0:G}"
+                                },
+                                {
+                                    field: "EndTime",
+                                    title: "结束时间",
+                                    type: "date",
+                                    format: "{0:G}"
                                 },
                                 {
                                     field: "DisplayOrder",
-                                    title: "顺序",
-                                },
+                                    title: "排序",
+                                }
+                                ,
                                 {
                                     field: "Enable",
                                     title: "启用",
@@ -123,5 +141,49 @@ else
             </td>
         </tr>
     </table>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnAddStage").click(function () {
+                var name = $("#@Html.FieldIdFor(model =>Model.Name)").val();
+                var desc = $("#@Html.FieldIdFor(model => Model.ShortDescription)").val();
+                var start = $("#@Html.FieldIdFor(model => Model.StartTime)").val();
+                var end = $("#@Html.FieldIdFor(model => Model.EndTime)").val();
+                var enable = $("#@Html.FieldIdFor(model => Model.Enable)").val();
+                var displayOrder = $("#@Html.FieldIdFor(model => Model.DisplayOrder)").val();
+                var pictureId=$("#@Html.FieldIdFor(model => Model.PictureId)").val();
+                var groupId= @Model.SpecialSaleStageGroupId;
+                if (pictureId==0) {
+                    alert('请先上传图片!');
+                    return;
+                }
+
+                $.ajax({
+                    cache:false,
+                    type: "POST",
+                    url: "@Html.Raw(Url.Action("CreateSaleTage", "WidgetsProductSpecialSale", new RouteValueDictionary() { { "Namespaces", "Nop.Plugin.Widgets.ProductSpecialSale" }, { "area", "" } }))",
+                    data: {
+                        "Name": name,
+                        "ShortDescription": desc,
+                        "StartTime": start,
+                        "EndTime": end,
+                        "Enable": enable,
+                        "PictureId": pictureId,
+                        "DisplayOrder": displayOrder,
+                        "SpecialSaleStageGroupId":groupId
+                    },
+                    success: function (data) {
+                        var grid = $("#salegroup-grid").data('kendoGrid');
+                        grid.dataSource.read();
+
+                    },
+                    error:function (xhr, ajaxOptions, thrownError){
+                        alert('Failed to CreateSaleTage .');
+
+                    }
+                });
+
+            });
+        });
+    </script>
 }
 

@@ -20,15 +20,15 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Services
             IRepository<SpecialSaleStageGroup> specialSaleStageGroupRepository
             )
         {
-            _specialSaleStageRepository=specialSaleStageRepository;
-            _specialSaleProductRepository=specialSaleProductRepository;
-            _specialSaleStageGroupRepository=specialSaleStageGroupRepository;
+            _specialSaleStageRepository = specialSaleStageRepository;
+            _specialSaleProductRepository = specialSaleProductRepository;
+            _specialSaleStageGroupRepository = specialSaleStageGroupRepository;
         }
         public IPagedList<SpecialSaleStageGroup> QuerySpecialSaleStage(int pageIndex, int pageSize)
         {
-            var query=_specialSaleStageGroupRepository.Table;
-            var result=from s in query where s.Deleted==false orderby s.LastUpdateTime select s;
-            return new PagedList<SpecialSaleStageGroup>(result,pageIndex,pageSize);
+            var query = _specialSaleStageGroupRepository.Table;
+            var result = from s in query where s.Deleted == false orderby s.LastUpdateTime select s;
+            return new PagedList<SpecialSaleStageGroup>(result, pageIndex, pageSize);
         }
 
 
@@ -41,13 +41,26 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Services
 
         public SpecialSaleStageGroup GetSpecialSaleStageGroupById(int id)
         {
-          return  _specialSaleStageGroupRepository.GetById(id);
+            return _specialSaleStageGroupRepository.GetById(id);
         }
 
         public void UpdateSpecialSaleStageGroup(SpecialSaleStageGroup data)
         {
             data.LastUpdateTime = DateTime.Now;
-              _specialSaleStageGroupRepository.Update(data);
+            _specialSaleStageGroupRepository.Update(data);
+        }
+
+
+        public IPagedList<SpecialSaleProduct> GetSpecialSaleStageProductList(int saleStageId, int page, int pageSize)
+        {
+            var query = _specialSaleProductRepository.Table;
+            query = from s in query where s.Id == saleStageId select s;
+            return new PagedList<SpecialSaleProduct>(query, page, pageSize);
+        }
+
+        public IList<SpecialSaleStage> GetSpecialSaleStageBySaleGroupId(int p)
+        {
+            return _specialSaleStageRepository.Table.Where(s => s.SaleStageGroupId == p).ToList();
         }
     }
 }

@@ -9,6 +9,8 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Domain
 {
     public class SpecialSaleStageGroup : BaseEntity
     {
+        private ICollection<SpecialSaleStage> _specialSaleStages;
+
         /// <summary>
         /// 卖场分组名称
         /// </summary>
@@ -18,7 +20,19 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Domain
         public bool Enable { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime? LastUpdateTime { get; set; }
-        public ICollection<SpecialSaleStage> SpecialSaleStages { get; set; }
+        public virtual ICollection<SpecialSaleStage> SpecialSaleStages
+        {
+            get
+            {
+                return _specialSaleStages ?? (_specialSaleStages = new List<SpecialSaleStage>());
+
+            }
+            set
+            {
+                _specialSaleStages = value;
+            }
+
+        }
 
 
 

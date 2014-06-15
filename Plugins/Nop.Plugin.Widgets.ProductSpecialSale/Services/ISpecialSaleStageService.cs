@@ -16,5 +16,9 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Services
         SpecialSaleStageGroup GetSpecialSaleStageGroupById(int p);
 
         void UpdateSpecialSaleStageGroup(SpecialSaleStageGroup data);
+
+        IPagedList<SpecialSaleProduct> GetSpecialSaleStageProductList(int saleStageId, int page, int pageSize);
+
+        IList<SpecialSaleStage> GetSpecialSaleStageBySaleGroupId(int p);
     }
 }

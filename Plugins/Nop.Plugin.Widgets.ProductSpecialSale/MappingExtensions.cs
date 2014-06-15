@@ -20,5 +20,15 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale
         {
             return Mapper.Map<SpecialSaleStageGroupModel, SpecialSaleStageGroup>(model);
         }
+
+        public static SpecialSaleStageModel ToModel(this SpecialSaleStage entity)
+        {
+            return Mapper.Map<SpecialSaleStage, SpecialSaleStageModel>(entity);
+        }
+
+        public static SpecialSaleStage ToEntity(this SpecialSaleStageModel model)
+        {
+            return Mapper.Map<SpecialSaleStageModel, SpecialSaleStage>(model);
+        }
     }
 }

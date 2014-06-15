@@ -17,6 +17,10 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Infrastructure
 
             Mapper.CreateMap<SpecialSaleStageGroupModel, SpecialSaleStageGroup>().ForMember(desc => desc.SpecialSaleStages, mo => mo.Ignore());
 
+
+            Mapper.CreateMap<SpecialSaleStage, SpecialSaleStageModel>().ForMember(desc => desc.CustomProperties, mo => mo.Ignore());
+            Mapper.CreateMap<SpecialSaleStageModel, SpecialSaleStage>().ForMember(desc => desc.SpecialSaleStageGroup, mo => mo.Ignore());
+
         }
 
         public int Order

@@ -14,7 +14,11 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Domain
     {
         public int ProdcutId { get; set; }
         public double Price { get; set; }
+        public double OriginalPrice { get; set; }
+        public int DisplayOrder { get; set; }
         public int Quantity { get; set; }
         public SpecialSaleStage SpecialSaler { get; set; }
+
+        public int SpecialSalerId { get; set; }
     }
 }
