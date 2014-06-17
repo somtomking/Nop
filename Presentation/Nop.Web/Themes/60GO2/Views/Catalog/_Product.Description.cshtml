@@ -1,6 +1,0 @@
-﻿@model ProductDetailsModel
-@using Nop.Web.Models.Catalog;
-@Html.Action("ProductSpecifications", "Catalog", new { productId = Model.Id })
-<p class="text-center">
-    @Html.Raw(Model.FullDescription)
-</p>

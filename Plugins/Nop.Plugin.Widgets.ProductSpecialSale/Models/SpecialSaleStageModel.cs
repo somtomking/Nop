@@ -13,6 +13,11 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Models
     {
         [DisplayName("特卖名称")]
         public string Name { get; set; }
+        /// <summary>
+        /// 为了解决在统一哥Form出现同名的ID的字段但又
+        /// 想使用AutoMapper
+        /// </summary>
+
         [DisplayName("描述")]
         public string ShortDescription { get; set; }
         [DisplayName("特卖开始时间")]
@@ -35,7 +40,12 @@ namespace Nop.Plugin.Widgets.ProductSpecialSale.Models
         {
             public int SpecialSaleStageGroupId { get; set; }
 
-
+            [DisplayName("特卖名称")]
+            public string StageName
+            {
+                get { return base.Name; }
+                set { base.Name = value; }
+            }
         }
         public class SpecialSaleStageListModel : SpecialSaleStageModel
         {

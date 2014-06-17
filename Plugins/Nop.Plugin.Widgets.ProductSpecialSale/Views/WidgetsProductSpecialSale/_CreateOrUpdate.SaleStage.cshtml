@@ -11,8 +11,8 @@ else
 {
     <table class="adminContent">
         <tr>
-            <td class="adminTitle">@Html.NopLabelFor(s => Model.Name)</td>
-            <td class="adminData">@Html.EditorFor(s => Model.Name)</td>
+            <td class="adminTitle">@Html.NopLabelFor(s => Model.StageName)</td>
+            <td class="adminData">@Html.EditorFor(s => Model.StageName)</td>
         </tr>
 
         <tr>
@@ -144,7 +144,7 @@ else
     <script type="text/javascript">
         $(document).ready(function () {
             $("#btnAddStage").click(function () {
-                var name = $("#@Html.FieldIdFor(model =>Model.Name)").val();
+                var name = $("#@Html.FieldIdFor(model =>Model.StageName)").val();
                 var desc = $("#@Html.FieldIdFor(model => Model.ShortDescription)").val();
                 var start = $("#@Html.FieldIdFor(model => Model.StartTime)").val();
                 var end = $("#@Html.FieldIdFor(model => Model.EndTime)").val();
