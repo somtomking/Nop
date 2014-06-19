@@ -1835,6 +1835,45 @@
     <Content Include="Themes\PowerHub\Content\styles.rtl.css" />
     <Content Include="Themes\PowerHub\preview.jpg" />
     <Content Include="Themes\print.css" />
+    <Content Include="Themes\SpecialSale\Content\ie6.css" />
+    <Content Include="Themes\SpecialSale\Content\ie7.css" />
+    <Content Include="Themes\SpecialSale\Content\images\ajax_loader_large.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ajax_loader_small.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\arrow-up.png" />
+    <Content Include="Themes\SpecialSale\Content\images\bbeditor-button-bg.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\bullet-left.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\bullet-right.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\download-sample-bg.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\forum-footer-bg.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\forum-header-bg.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\free-shipping.png" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-arrow-r.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-close-notification-bar.png" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-delete.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-edit.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-forum-post-add.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-forum-post-high.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-forum-post.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-forum-watch.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-forum.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-move-topic.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-pm.png" />
+    <Content Include="Themes\SpecialSale\Content\images\ico-rss.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\logo.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\mobile-menu-collapse.png" />
+    <Content Include="Themes\SpecialSale\Content\images\mobile-menu-expand.png" />
+    <Content Include="Themes\SpecialSale\Content\images\progress-step-active.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\progress-step-inactive.gif" />
+    <Content Include="Themes\SpecialSale\Content\images\star-x-active.png" />
+    <Content Include="Themes\SpecialSale\Content\images\star-x-inactive.png" />
+    <Content Include="Themes\SpecialSale\Content\images\top-menu-background.png" />
+    <Content Include="Themes\SpecialSale\Content\images\top-menu-divider.png" />
+    <Content Include="Themes\SpecialSale\Content\images\top-menu-list-image-hover.png" />
+    <Content Include="Themes\SpecialSale\Content\images\top-menu-list-image.png" />
+    <Content Include="Themes\SpecialSale\Content\images\top-menu-triangle.png" />
+    <Content Include="Themes\SpecialSale\Content\responsive.css" />
+    <Content Include="Themes\SpecialSale\Content\styles.css" />
+    <Content Include="Themes\SpecialSale\Content\styles.rtl.css" />
     <Content Include="Themes\SpecialSale\preview.jpg" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -2525,6 +2564,7 @@
     <Content Include="Themes\K\theme.config" />
     <Content Include="Themes\K\Views\Shared\Head.cshtml" />
     <Content Include="Themes\K\Views\Web.config" />
+    <Content Include="Themes\SpecialSale\Views\Shared\Head.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Plugins\bin\" />
@@ -2532,7 +2572,6 @@
     <Folder Include="Themes\o2o\Scripts\" />
     <Folder Include="Themes\o2o\Views\Home\" />
     <Folder Include="Themes\o2o\Views\Shared\" />
-    <Folder Include="Themes\SpecialSale\Content\" />
     <Folder Include="Themes\SpecialSale\Scripts\" />
   </ItemGroup>
   <ItemGroup>
