@@ -13,8 +13,8 @@ namespace NopEx.Common
         | AttributeTargets.Constructor
         , Inherited = false, AllowMultiple = false)]
     public sealed class NopExAttribute : Attribute
-    {
-
+    {   
+          
         // See the attribute guidelines at 
         //  http://go.microsoft.com/fwlink/?LinkId=85236
         readonly string positionalString;
@@ -22,7 +22,8 @@ namespace NopEx.Common
         // This is a positional argument
         public NopExAttribute( )
         {
-             
+              
+
         }
 
        
